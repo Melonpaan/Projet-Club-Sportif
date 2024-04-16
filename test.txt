@@ -1,1 +1,6 @@
-cc
+Bonjour monsieur,
+Petite question: peut-on faire des boucles ds le diagramme?
+
+Merci,
+
+--
