@@ -8,6 +8,23 @@ class Joueur(Personnel):
         self.salaire = salaire
         self.contrat = contrat
     
+    def to_dict(self):
+        return {
+            "nom": self.nom,
+            "prenom": self.prenom,
+            "date_naissance": self.date_naissance,
+            "poste": self.poste,
+            "position": self.position,
+            "salaire": self.salaire,
+            "contrat": self.contrat
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            data["nom"], data["prenom"], data["date_naissance"],
+            data["poste"], data["position"], data["salaire"], data["contrat"]
+        )
     
 
  
