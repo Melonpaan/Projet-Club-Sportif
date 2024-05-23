@@ -135,9 +135,15 @@ class App(tk.Tk):
 
     
     def sauvegarder_joueurs(self):
+        # Convertir les objets joueur en dictionnaires pour la sauvegarde
         joueurs_dict = [joueur.to_dict() for joueur in self.joueurs]
-        with open("Application/data/joueurs.json", "w") as f:
-            json.dump(joueurs_dict, f)
+
+        # Chemin du fichier où les joueurs seront sauvegardés
+        fichier_path = "Application/data/joueurs.json"
+
+        # Ouvrir le fichier en mode écriture et sauvegarder les joueurs en format JSON
+        with open(fichier_path, "w") as fichier:
+            json.dump(joueurs_dict, fichier)
 
     def charger_joueurs(self):
         try:
