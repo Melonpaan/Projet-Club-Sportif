@@ -7,8 +7,8 @@ class Match:
         self.home_team = home_team
         self.away_team = away_team
         self.match_result = None
-        self.player_statistics = []  # List of PlayerStatistics
-        self.sanctions = []  # List of Sanction
+        self.player_statistics = []  
+        self.sanctions = []  
 
     def add_player_statistics(self, player_statistics):
         self.player_statistics.append(player_statistics)
