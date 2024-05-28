@@ -38,7 +38,6 @@ class Staff(Person):
             messagebox.showerror("Erreur", "L'ID est obligatoire.")
             return
 
-        # Vérifier si le staff existe déjà
         if any(staff.person_ID == person_ID for staff in gui_manager.staff_members):
             messagebox.showerror("Erreur", "Un staff avec cet ID existe déjà.")
             return
@@ -86,7 +85,7 @@ class Staff(Person):
         new_staff = Staff(person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, role)
         gui_manager.staff_members.append(new_staff)
         gui_manager.update_staff_treeview()
-        Staff.save_to_file(gui_manager.staff_members)  # Enregistrer le staff dans le fichier JSON
+        Staff.save_to_file(gui_manager.staff_members) 
 
     @staticmethod
     def modify_staff(gui_manager):
@@ -107,7 +106,7 @@ class Staff(Person):
                 staff.role = simpledialog.askstring("Rôle", "Entrez le rôle du staff", initialvalue=staff.role)
                 
                 gui_manager.update_staff_treeview()
-                Staff.save_to_file(gui_manager.staff_members)  # Enregistrer le staff dans le fichier JSON
+                Staff.save_to_file(gui_manager.staff_members)  
             else:
                 messagebox.showerror("Erreur", "Staff non trouvé")
         else:
@@ -122,6 +121,6 @@ class Staff(Person):
             person_ID = values[0]
             gui_manager.staff_members = [s for s in gui_manager.staff_members if s.person_ID != person_ID]
             gui_manager.update_staff_treeview()
-            Staff.save_to_file(gui_manager.staff_members)  # Enregistrer le staff dans le fichier JSON
+            Staff.save_to_file(gui_manager.staff_members)  
         else:
             messagebox.showerror("Erreur", "Aucun staff sélectionné")

@@ -10,8 +10,8 @@ class GUIManager(tk.Tk):
         self.title("Gestion du club")
         self.geometry("800x600")
 
-        self.joueurs = Player.load_from_file()  # Charger les joueurs depuis le fichier JSON
-        self.staff_members = Staff.load_from_file()  # Charger le staff depuis le fichier JSON
+        self.joueurs = Player.load_from_file() 
+        self.staff_members = Staff.load_from_file()
 
         # Boutons d'accueil, joueurs et staff
         self.button_frame = tk.Frame(self)

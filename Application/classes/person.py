@@ -9,11 +9,6 @@ class Person:
         self.address = address
         self.phone_number = phone_number
 
-    def __str__(self):
-        return f"Person[ID={self.person_ID}, Name={self.first_name} {self.last_name}, Birth Date={self.birth_date}, Salary={self.salary}, Contract={self.contract}, Address={self.address}, Phone Number={self.phone_number}]"
-    
-    def __repr__(self):
-        return self.__str__()
     
     def to_dict(self):
         return {

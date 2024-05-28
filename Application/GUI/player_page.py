@@ -9,7 +9,7 @@ class PlayerPage:
             messagebox.showerror("Erreur", "L'ID est obligatoire.")
             return
 
-        # Vérifier si le joueur existe déjà
+        
         if any(joueur.person_ID == person_ID for joueur in gui_manager.joueurs):
             messagebox.showerror("Erreur", "Un joueur avec cet ID existe déjà.")
             return
@@ -62,7 +62,7 @@ class PlayerPage:
         new_joueur = Player(person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
         gui_manager.joueurs.append(new_joueur)
         gui_manager.update_joueurs_treeview()
-        Player.save_to_file(gui_manager.joueurs)  # Enregistrer les joueurs dans le fichier JSON
+        Player.save_to_file(gui_manager.joueurs) 
 
     @staticmethod
     def modify_joueur(gui_manager):
@@ -84,7 +84,7 @@ class PlayerPage:
                 joueur.jersey_number = simpledialog.askinteger("Numéro de Maillot", "Entrez le numéro de maillot du joueur", initialvalue=joueur.jersey_number)
                 
                 gui_manager.update_joueurs_treeview()
-                Player.save_to_file(gui_manager.joueurs)  # Enregistrer les joueurs dans le fichier JSON
+                Player.save_to_file(gui_manager.joueurs) 
             else:
                 messagebox.showerror("Erreur", "Joueur non trouvé")
         else:
@@ -99,6 +99,6 @@ class PlayerPage:
             person_ID = values[0]
             gui_manager.joueurs = [j for j in gui_manager.joueurs if j.person_ID != person_ID]
             gui_manager.update_joueurs_treeview()
-            Player.save_to_file(gui_manager.joueurs)  # Enregistrer les joueurs dans le fichier JSON
+            Player.save_to_file(gui_manager.joueurs) 
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
