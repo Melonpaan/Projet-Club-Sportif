@@ -24,11 +24,11 @@ class Staff(Person):
 
     @staticmethod
     def save_to_file(staff_members):
-        DataManager.save_to_file([staff.to_dict() for staff in staff_members], 'Application/data/staff.json')
+        DataManager.save_to_file([staff.to_dict() for staff in staff_members], 'data/staff.json')
 
     @staticmethod
     def load_from_file():
-        staff_data = DataManager.load_from_file('Application/data/staff.json')
+        staff_data = DataManager.load_from_file('data/staff.json')
         return [Staff.from_dict(data) for data in staff_data]
 
     @staticmethod

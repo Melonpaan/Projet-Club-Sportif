@@ -26,9 +26,9 @@ class Player(Person):
 
     @staticmethod
     def save_to_file(joueurs):
-        DataManager.save_to_file([joueur.to_dict() for joueur in joueurs], 'Application/data/joueurs.json')
+        DataManager.save_to_file([joueur.to_dict() for joueur in joueurs], 'data/joueurs.json')
 
     @staticmethod
     def load_from_file():
-        joueurs_data = DataManager.load_from_file('Application/data/joueurs.json')
+        joueurs_data = DataManager.load_from_file('data/joueurs.json')
         return [Player.from_dict(data) for data in joueurs_data]

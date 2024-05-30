@@ -1,104 +1,123 @@
-from tkinter import simpledialog, messagebox
+from tkinter import Toplevel, Label, Entry, Button, messagebox
 from classes.player import Player
 
 class PlayerPage:
-    @staticmethod
-    def add_joueur(gui_manager):
-        person_ID = simpledialog.askinteger("ID", "Entrez l'ID du joueur")
-        if not person_ID:
-            messagebox.showerror("Erreur", "L'ID est obligatoire.")
-            return
+    def __init__(self, gui_manager):
+        self.gui_manager = gui_manager
 
-        
-        if any(joueur.person_ID == person_ID for joueur in gui_manager.joueurs):
-            messagebox.showerror("Erreur", "Un joueur avec cet ID existe déjà.")
-            return
+    def open_joueur_form(self, joueur=None):
+        def submit():
+            try:
+                person_ID = int(entry_id.get())
+                last_name = entry_last_name.get()
+                first_name = entry_first_name.get()
+                birth_date = entry_birth_date.get()
+                salary = float(entry_salary.get())
+                contract = entry_contract.get()
+                address = entry_address.get()
+                phone_number = entry_phone_number.get()
+                position = entry_position.get()
+                jersey_number = int(entry_jersey_number.get())
+            except ValueError:
+                messagebox.showerror("Erreur", "Veuillez entrer des valeurs valides.")
+                return
 
-        last_name = simpledialog.askstring("Nom", "Entrez le nom du joueur")
-        if not last_name:
-            messagebox.showerror("Erreur", "Le nom est obligatoire.")
-            return
+            if any(not field for field in [person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number]):
+                messagebox.showerror("Erreur", "Tous les champs sont obligatoires.")
+                return
 
-        first_name = simpledialog.askstring("Prénom", "Entrez le prénom du joueur")
-        if not first_name:
-            messagebox.showerror("Erreur", "Le prénom est obligatoire.")
-            return
+            if joueur is None and any(j.player_ID == person_ID for j in self.gui_manager.joueurs):
+                messagebox.showerror("Erreur", "Un joueur avec cet ID existe déjà.")
+                return
 
-        birth_date = simpledialog.askstring("Date de Naissance", "Entrez la date de naissance (YYYY-MM-DD)")
-        if not birth_date:
-            messagebox.showerror("Erreur", "La date de naissance est obligatoire.")
-            return
+            if joueur is None:
+                new_joueur = Player(person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
+                self.gui_manager.joueurs.append(new_joueur)
+            else:
+                joueur.person_ID = person_ID
+                joueur.last_name = last_name
+                joueur.first_name = first_name
+                joueur.birth_date = birth_date
+                joueur.salary = salary
+                joueur.contract = contract
+                joueur.address = address
+                joueur.phone_number = phone_number
+                joueur.position = position
+                joueur.jersey_number = jersey_number
 
-        salary = simpledialog.askfloat("Salaire", "Entrez le salaire du joueur")
-        if salary is None:
-            messagebox.showerror("Erreur", "Le salaire est obligatoire.")
-            return
+            self.gui_manager.update_joueurs_treeview()
+            Player.save_to_file(self.gui_manager.joueurs)
+            form_window.destroy()
 
-        contract = simpledialog.askstring("Contrat", "Entrez la date de fin de contrat (YYYY-MM-DD)")
-        if not contract:
-            messagebox.showerror("Erreur", "La date de fin de contrat est obligatoire.")
-            return
+        form_window = Toplevel(self.gui_manager)
+        form_window.title("Modifier un joueur" if joueur else "Ajouter un joueur")
 
-        address = simpledialog.askstring("Adresse", "Entrez l'adresse du joueur")
-        if not address:
-            messagebox.showerror("Erreur", "L'adresse est obligatoire.")
-            return
+        fields = [
+            ("ID", "person_ID", int),
+            ("Nom", "last_name", str),
+            ("Prénom", "first_name", str),
+            ("Date de Naissance (YYYY-MM-DD)", "birth_date", str),
+            ("Salaire", "salary", float),
+            ("Contrat (YYYY-MM-DD)", "contract", str),
+            ("Adresse", "address", str),
+            ("Téléphone", "phone_number", str),
+            ("Poste", "position", str),
+            ("Numéro de Maillot", "jersey_number", int)
+        ]
 
-        phone_number = simpledialog.askstring("Téléphone", "Entrez le numéro de téléphone")
-        if not phone_number:
-            messagebox.showerror("Erreur", "Le numéro de téléphone est obligatoire.")
-            return
+        entries = {}
+        for i, (label_text, field_name, field_type) in enumerate(fields):
+            Label(form_window, text=label_text).grid(row=i, column=0)
+            entry = Entry(form_window)
+            entry.grid(row=i, column=1)
+            if joueur:
+                entry.insert(0, getattr(joueur, field_name))
+                if field_name == "person_ID":
+                    entry.config(state='disabled')
+            entries[field_name] = entry
 
-        position = simpledialog.askstring("Poste", "Entrez le poste du joueur")
-        if not position:
-            messagebox.showerror("Erreur", "Le poste est obligatoire.")
-            return
+        entry_id = entries["person_ID"]
+        entry_last_name = entries["last_name"]
+        entry_first_name = entries["first_name"]
+        entry_birth_date = entries["birth_date"]
+        entry_salary = entries["salary"]
+        entry_contract = entries["contract"]
+        entry_address = entries["address"]
+        entry_phone_number = entries["phone_number"]
+        entry_position = entries["position"]
+        entry_jersey_number = entries["jersey_number"]
 
-        jersey_number = simpledialog.askinteger("Numéro de Maillot", "Entrez le numéro de maillot du joueur")
-        if jersey_number is None:
-            messagebox.showerror("Erreur", "Le numéro de maillot est obligatoire.")
-            return
+        Button(form_window, text="Modifier" if joueur else "Ajouter", command=submit).grid(row=len(fields), column=0, columnspan=2)
 
-        new_joueur = Player(person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
-        gui_manager.joueurs.append(new_joueur)
-        gui_manager.update_joueurs_treeview()
-        Player.save_to_file(gui_manager.joueurs) 
+    def add_joueur(self):
+        self.open_joueur_form()
 
-    @staticmethod
-    def modify_joueur(gui_manager):
-        selected_item = gui_manager.tree_joueurs.selection()
+    def modify_joueur(self):
+        selected_item = self.gui_manager.tree_joueurs.selection()
         if selected_item:
-            item = gui_manager.tree_joueurs.item(selected_item)
+            item = self.gui_manager.tree_joueurs.item(selected_item)
             values = item['values']
             person_ID = values[0]
-            joueur = next((j for j in gui_manager.joueurs if j.person_ID == person_ID), None)
+            joueur = next((j for j in self.gui_manager.joueurs if j.person_ID == person_ID), None)
             if joueur:
-                joueur.last_name = simpledialog.askstring("Nom", "Entrez le nom du joueur", initialvalue=joueur.last_name)
-                joueur.first_name = simpledialog.askstring("Prénom", "Entrez le prénom du joueur", initialvalue=joueur.first_name)
-                joueur.birth_date = simpledialog.askstring("Date de Naissance", "Entrez la date de naissance (YYYY-MM-DD)", initialvalue=joueur.birth_date)
-                joueur.salary = simpledialog.askfloat("Salaire", "Entrez le salaire du joueur", initialvalue=joueur.salary)
-                joueur.contract = simpledialog.askstring("Contrat", "Entrez la date de fin de contrat (YYYY-MM-DD)", initialvalue=joueur.contract)
-                joueur.address = simpledialog.askstring("Adresse", "Entrez l'adresse du joueur", initialvalue=joueur.address)
-                joueur.phone_number = simpledialog.askstring("Téléphone", "Entrez le numéro de téléphone", initialvalue=joueur.phone_number)
-                joueur.position = simpledialog.askstring("Poste", "Entrez le poste du joueur", initialvalue=joueur.position)
-                joueur.jersey_number = simpledialog.askinteger("Numéro de Maillot", "Entrez le numéro de maillot du joueur", initialvalue=joueur.jersey_number)
-                
-                gui_manager.update_joueurs_treeview()
-                Player.save_to_file(gui_manager.joueurs) 
+                self.open_joueur_form(joueur)
             else:
                 messagebox.showerror("Erreur", "Joueur non trouvé")
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
-    
-    @staticmethod
-    def delete_joueur(gui_manager):
-        selected_item = gui_manager.tree_joueurs.selection()
+
+    def delete_joueur(self):
+        selected_item = self.gui_manager.tree_joueurs.selection()
         if selected_item:
-            item = gui_manager.tree_joueurs.item(selected_item)
+            item = self.gui_manager.tree_joueurs.item(selected_item)
             values = item['values']
             person_ID = values[0]
-            gui_manager.joueurs = [j for j in gui_manager.joueurs if j.person_ID != person_ID]
-            gui_manager.update_joueurs_treeview()
-            Player.save_to_file(gui_manager.joueurs) 
+            joueur = next((j for j in self.gui_manager.joueurs if j.person_ID == person_ID), None)
+            if joueur:
+                self.gui_manager.joueurs.remove(joueur)
+                self.gui_manager.update_joueurs_treeview()
+                Player.save_to_file(self.gui_manager.joueurs)
+            else:
+                messagebox.showerror("Erreur", "Joueur non trouvé")
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")

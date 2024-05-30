@@ -59,13 +59,15 @@ class GUIManager(tk.Tk):
         self.joueur_action_frame = tk.Frame(self)
         self.staff_action_frame = tk.Frame(self)
 
-        self.btn_ajouter_joueur = tk.Button(self.joueur_action_frame, text="Ajouter Joueur", command=lambda: PlayerPage.add_joueur(self))
+        self.player_page = PlayerPage(self)
+
+        self.btn_ajouter_joueur = tk.Button(self.joueur_action_frame, text="Ajouter Joueur", command=self.player_page.add_joueur)
         self.btn_ajouter_joueur.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.btn_modifier_joueur = tk.Button(self.joueur_action_frame, text="Modifier Joueur", command=lambda: PlayerPage.modify_joueur(self))
+        self.btn_modifier_joueur = tk.Button(self.joueur_action_frame, text="Modifier Joueur", command=self.player_page.modify_joueur)
         self.btn_modifier_joueur.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.btn_supprimer_joueur = tk.Button(self.joueur_action_frame, text="Supprimer Joueur", command=lambda: PlayerPage.delete_joueur(self))
+        self.btn_supprimer_joueur = tk.Button(self.joueur_action_frame, text="Supprimer Joueur", command=self.player_page.delete_joueur)
         self.btn_supprimer_joueur.pack(side=tk.LEFT, padx=5, pady=5)
 
         self.btn_ajouter_staff = tk.Button(self.staff_action_frame, text="Ajouter Staff", command=lambda: Staff.add_staff(self))
@@ -125,4 +127,3 @@ class GUIManager(tk.Tk):
                 staff.person_ID, staff.last_name, staff.first_name, 
                 staff.role
             ))
-
