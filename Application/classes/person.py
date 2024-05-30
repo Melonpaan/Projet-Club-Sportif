@@ -15,9 +15,9 @@ class Person:
             'person_ID': self.person_ID,
             'last_name': self.last_name,
             'first_name': self.first_name,
-            'birth_date': self.birth_date,
+            'birth_date': self.birth_date,"""mettre la methode europe"""
             'salary': self.salary,
             'contract': self.contract,
-            'address': self.address,
-            'phone_number': self.phone_number
+            'address': self.address,"""enlever """
+            'phone_number': self.phone_number 
         }

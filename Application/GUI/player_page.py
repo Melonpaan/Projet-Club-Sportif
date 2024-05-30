@@ -5,6 +5,16 @@ class PlayerPage:
     def __init__(self, gui_manager):
         self.gui_manager = gui_manager
 
+    def create_form_field(self, parent, label_text, row, default_value=None, disabled=False):
+        Label(parent, text=label_text).grid(row=row, column=0)
+        entry = Entry(parent)
+        entry.grid(row=row, column=1)
+        if default_value:
+            entry.insert(0, default_value)
+            if disabled:
+                entry.config(state='disabled')
+        return entry
+
     def open_joueur_form(self, joueur=None):
         def submit():
             try:
@@ -22,15 +32,15 @@ class PlayerPage:
                 messagebox.showerror("Erreur", "Veuillez entrer des valeurs valides.")
                 return
 
-            if any(not field for field in [person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number]):
+            required_fields = [person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number]
+            if any(not field for field in required_fields):
                 messagebox.showerror("Erreur", "Tous les champs sont obligatoires.")
                 return
 
-            if joueur is None and any(j.player_ID == person_ID for j in self.gui_manager.joueurs):
-                messagebox.showerror("Erreur", "Un joueur avec cet ID existe déjà.")
-                return
-
             if joueur is None:
+                if any(j.player_ID == person_ID for j in self.gui_manager.joueurs):
+                    messagebox.showerror("Erreur", "Un joueur avec cet ID existe déjà.")
+                    return
                 new_joueur = Player(person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
                 self.gui_manager.joueurs.append(new_joueur)
             else:
@@ -52,42 +62,18 @@ class PlayerPage:
         form_window = Toplevel(self.gui_manager)
         form_window.title("Modifier un joueur" if joueur else "Ajouter un joueur")
 
-        fields = [
-            ("ID", "person_ID", int),
-            ("Nom", "last_name", str),
-            ("Prénom", "first_name", str),
-            ("Date de Naissance (YYYY-MM-DD)", "birth_date", str),
-            ("Salaire", "salary", float),
-            ("Contrat (YYYY-MM-DD)", "contract", str),
-            ("Adresse", "address", str),
-            ("Téléphone", "phone_number", str),
-            ("Poste", "position", str),
-            ("Numéro de Maillot", "jersey_number", int)
-        ]
+        entry_id = self.create_form_field(form_window, "ID", 0, getattr(joueur, 'person_ID', ''), disabled=bool(joueur))
+        entry_last_name = self.create_form_field(form_window, "Nom", 1, getattr(joueur, 'last_name', ''))
+        entry_first_name = self.create_form_field(form_window, "Prénom", 2, getattr(joueur, 'first_name', ''))
+        entry_birth_date = self.create_form_field(form_window, "Date de Naissance (YYYY-MM-DD)", 3, getattr(joueur, 'birth_date', ''))
+        entry_salary = self.create_form_field(form_window, "Salaire", 4, getattr(joueur, 'salary', ''))
+        entry_contract = self.create_form_field(form_window, "Contrat (YYYY-MM-DD)", 5, getattr(joueur, 'contract', ''))
+        entry_address = self.create_form_field(form_window, "Adresse", 6, getattr(joueur, 'address', ''))
+        entry_phone_number = self.create_form_field(form_window, "Téléphone", 7, getattr(joueur, 'phone_number', ''))
+        entry_position = self.create_form_field(form_window, "Poste", 8, getattr(joueur, 'position', ''))
+        entry_jersey_number = self.create_form_field(form_window, "Numéro de Maillot", 9, getattr(joueur, 'jersey_number', ''))
 
-        entries = {}
-        for i, (label_text, field_name, field_type) in enumerate(fields):
-            Label(form_window, text=label_text).grid(row=i, column=0)
-            entry = Entry(form_window)
-            entry.grid(row=i, column=1)
-            if joueur:
-                entry.insert(0, getattr(joueur, field_name))
-                if field_name == "person_ID":
-                    entry.config(state='disabled')
-            entries[field_name] = entry
-
-        entry_id = entries["person_ID"]
-        entry_last_name = entries["last_name"]
-        entry_first_name = entries["first_name"]
-        entry_birth_date = entries["birth_date"]
-        entry_salary = entries["salary"]
-        entry_contract = entries["contract"]
-        entry_address = entries["address"]
-        entry_phone_number = entries["phone_number"]
-        entry_position = entries["position"]
-        entry_jersey_number = entries["jersey_number"]
-
-        Button(form_window, text="Modifier" if joueur else "Ajouter", command=submit).grid(row=len(fields), column=0, columnspan=2)
+        Button(form_window, text="Modifier" if joueur else "Ajouter", command=submit).grid(row=10, column=0, columnspan=2)
 
     def add_joueur(self):
         self.open_joueur_form()
@@ -98,11 +84,11 @@ class PlayerPage:
             item = self.gui_manager.tree_joueurs.item(selected_item)
             values = item['values']
             person_ID = values[0]
-            joueur = next((j for j in self.gui_manager.joueurs if j.person_ID == person_ID), None)
-            if joueur:
-                self.open_joueur_form(joueur)
-            else:
-                messagebox.showerror("Erreur", "Joueur non trouvé")
+            joueur_found = False
+            for j in self.gui_manager.joueurs:
+                if j.person_ID == person_ID:
+                    self.open_joueur_form(j)
+                    joueur_found = True
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
 
@@ -112,11 +98,20 @@ class PlayerPage:
             item = self.gui_manager.tree_joueurs.item(selected_item)
             values = item['values']
             person_ID = values[0]
-            joueur = next((j for j in self.gui_manager.joueurs if j.person_ID == person_ID), None)
-            if joueur:
-                self.gui_manager.joueurs.remove(joueur)
+            joueur_found = False
+            new_joueurs_list = []
+
+            for j in self.gui_manager.joueurs:
+                if j.person_ID == person_ID:
+                    joueur_found = True
+                else:
+                    new_joueurs_list.append(j)
+
+            if joueur_found:
+                self.gui_manager.joueurs = new_joueurs_list
                 self.gui_manager.update_joueurs_treeview()
                 Player.save_to_file(self.gui_manager.joueurs)
+                messagebox.showinfo("Joueur supprimé", "Le joueur a été supprimé avec succès.")
             else:
                 messagebox.showerror("Erreur", "Joueur non trouvé")
         else:
