@@ -1,0 +1,10 @@
+{
+    "name": "Faucons de charleroi",
+    "address": "Rue des olives 14",
+    "president": "John",
+    "teams": [
+        "equipe1",
+        "zero",
+        "equipe2"
+    ]
+}

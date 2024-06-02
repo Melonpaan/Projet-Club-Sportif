@@ -1,0 +1,38 @@
+[
+    {
+        "person_ID": 33,
+        "last_name": "nano",
+        "first_name": "reda",
+        "birth_date": "1995-04-22",
+        "salary": 13000.0,
+        "contract": "1998-03-03",
+        "address": "rue de palme",
+        "phone_number": "0789232323",
+        "position": "attaquant",
+        "jersey_number": 11
+    },
+    {
+        "person_ID": 2,
+        "last_name": "elfa",
+        "first_name": "champion",
+        "birth_date": "2000-04-22",
+        "salary": 4500.0,
+        "contract": "2016-09-27",
+        "address": "rue de marci",
+        "phone_number": "0899454545",
+        "position": "attaquant",
+        "jersey_number": 9
+    },
+    {
+        "person_ID": 3,
+        "last_name": "oufk",
+        "first_name": "yass",
+        "birth_date": "2000-04-02",
+        "salary": 1300.0,
+        "contract": "2016-05-13",
+        "address": "rue de charles",
+        "phone_number": "12345656",
+        "position": "centre",
+        "jersey_number": 8
+    }
+]

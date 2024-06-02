@@ -1,0 +1,13 @@
+[
+    {
+        "person_ID": 1,
+        "last_name": "rere",
+        "first_name": "undeux",
+        "birth_date": "1995-06-26",
+        "salary": 2300.0,
+        "contract": "1996-05-24",
+        "address": "rue de cici",
+        "phone_number": "123123123",
+        "role": "med"
+    }
+]
