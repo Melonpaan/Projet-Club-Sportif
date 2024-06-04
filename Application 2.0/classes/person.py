@@ -19,5 +19,5 @@ class Person:
             'salary': self.salary,
             'contract': self.contract,
             'address': self.address,
-            'phone_number': self.phone_number
+            'phone_number': self.phone_number 
         }

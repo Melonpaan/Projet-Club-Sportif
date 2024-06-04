@@ -1,130 +1,132 @@
-from tkinter import Toplevel, messagebox
+from tkinter import Toplevel, Label, Entry, Button, messagebox
 from classes.player import Player
-from utils import Utils
+from datetime import datetime
 
 class PlayerPage:
-    """
-    Classe pour gérer les interactions de la page des joueurs, y compris l'ajout, la modification et la suppression de joueurs.
-    """
     def __init__(self, gui_manager):
-        """
-        Initialise PlayerPage avec une référence au gestionnaire de l'interface graphique.
-
-        Args:
-            gui_manager (GUIManager): Instance du gestionnaire de l'interface graphique.
-        """
         self.gui_manager = gui_manager
 
-    def open_joueur_form(self, joueur=None):
-        """
-        Ouvre une fenêtre de formulaire pour ajouter ou modifier un joueur.
+    def create_form_widget(self, parent, label_text, row, default_value=None, disabled=False):
+        """Create and configure a form field (label + entry) in a Tkinter GUI."""
+        Label(parent, text=label_text).grid(row=row, column=0)
+        entry = Entry(parent)
+        entry.grid(row=row, column=1)
+        if default_value:
+            entry.insert(0, default_value)
+        if disabled:
+            entry.config(state='disabled')
+        return entry
 
-        Args:
-            joueur (Player, optional): Instance du joueur à modifier. Si None, un nouveau joueur sera ajouté.
-        """
+    def open_form_widget(self, player=None):
+        """Méthode qui permet d'ajouter ou de modifier un joueur suivant si player est donné"""
         def submit():
-            """
-            Soumet le formulaire de joueur et met à jour les informations du joueur ou ajoute un nouveau joueur.
-            """
+            """Méthode permettant de soumettre les données entrées"""
+            last_name = entry_last_name.get()
+            first_name = entry_first_name.get()
+            birth_date = entry_birth_date.get()
+            salary = entry_salary.get()
+            contract = entry_contract.get()
+            address = entry_address.get()
+            phone_number = entry_phone_number.get()
+            position = entry_position.get()
+            jersey_number = entry_jersey_number.get()
+
+            if not last_name.isalpha():
+                messagebox.showerror("Erreur", "Le nom de famille doit être composé uniquement de lettres.")
+                return
+            if not first_name.isalpha():
+                messagebox.showerror("Erreur", "Le prénom doit être composé uniquement de lettres.")
+                return
+
             try:
-                person_ID = int(entry_id.get())
-                last_name = entry_last_name.get()
-                first_name = entry_first_name.get()
-                birth_date = entry_birth_date.get()
-                salary = float(entry_salary.get())
-                contract = entry_contract.get()
-                address = entry_address.get()
-                phone_number = entry_phone_number.get()
-                position = entry_position.get()
-                jersey_number = int(entry_jersey_number.get())
+                datetime.strptime(birth_date, '%d-%m-%Y')
             except ValueError:
-                messagebox.showerror("Erreur", "Veuillez entrer des valeurs valides.")
+                messagebox.showerror("Erreur", "Le format de la date de naissance doit être JJ-MM-AAAA.")
                 return
 
-            if any(not field for field in [person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number]):
-                messagebox.showerror("Erreur", "Tous les champs sont obligatoires.")
+            if not salary.isdigit():
+                messagebox.showerror("Erreur", "Le salaire doit être un nombre.")
+                return
+            if not phone_number.isdigit():
+                messagebox.showerror("Erreur", "Le numéro de téléphone doit contenir uniquement des chiffres.")
+                return
+            if not jersey_number.isdigit():
+                messagebox.showerror("Erreur", "Le numéro de maillot doit être un nombre.")
                 return
 
-            if joueur is None and any(j.person_ID == person_ID for j in self.gui_manager.joueurs):
-                messagebox.showerror("Erreur", "Un joueur avec cet ID existe déjà.")
-                return
-
-            if joueur is None:
-                new_joueur = Player(person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
-                self.gui_manager.joueurs.append(new_joueur)
+            # Crée ou met à jour l'objet player
+            if player is None:
+                new_player = Player.create_new(last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
+                self.gui_manager.players.append(new_player)
             else:
-                joueur.person_ID = person_ID
-                joueur.last_name = last_name
-                joueur.first_name = first_name
-                joueur.birth_date = birth_date
-                joueur.salary = salary
-                joueur.contract = contract
-                joueur.address = address
-                joueur.phone_number = phone_number
-                joueur.position = position
-                joueur.jersey_number = jersey_number
+                player.update_details(player.person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
 
-            self.gui_manager.update_joueurs_treeview()
-            Player.save_to_file(self.gui_manager.joueurs)
+            # Mettre à jour l'interface avec les infos et enregistrer les modifications
+            self.gui_manager.update_players_treeview()
+            Player.save_to_file(self.gui_manager.players)
             form_window.destroy()
 
+        # Set up le formulaire, Toplevel permet de créer une page au-dessus d'une autre page
         form_window = Toplevel(self.gui_manager)
-        form_window.title("Modifier un joueur" if joueur else "Ajouter un joueur")
+        form_window.title("Modifier un joueur" if player else "Ajouter un joueur")
 
-        entry_id = Utils.create_label_and_entry(form_window, "ID", 0, getattr(joueur, 'person_ID', ''), disabled=bool(joueur))
-        entry_last_name = Utils.create_label_and_entry(form_window, "Nom", 1, getattr(joueur, 'last_name', ''))
-        entry_first_name = Utils.create_label_and_entry(form_window, "Prénom", 2, getattr(joueur, 'first_name', ''))
-        entry_birth_date = Utils.create_label_and_entry(form_window, "Date de Naissance (YYYY-MM-DD)", 3, getattr(joueur, 'birth_date', ''))
-        entry_salary = Utils.create_label_and_entry(form_window, "Salaire", 4, getattr(joueur, 'salary', ''))
-        entry_contract = Utils.create_label_and_entry(form_window, "Contrat (YYYY-MM-DD)", 5, getattr(joueur, 'contract', ''))
-        entry_address = Utils.create_label_and_entry(form_window, "Adresse", 6, getattr(joueur, 'address', ''))
-        entry_phone_number = Utils.create_label_and_entry(form_window, "Téléphone", 7, getattr(joueur, 'phone_number', ''))
-        entry_position = Utils.create_label_and_entry(form_window, "Poste", 8, getattr(joueur, 'position', ''))
-        entry_jersey_number = Utils.create_label_and_entry(form_window, "Numéro de Maillot", 9, getattr(joueur, 'jersey_number', ''))
+        # Création des entrées pour le formulaire vide ou rempli suivant si l'objet player est donné. getattr permet d'accéder à un attribut d'un objet (objet, 'nom_attribut', valeur_attribut)
+        entry_id = self.create_form_widget(form_window, "ID", 0, getattr(player, 'person_ID', ''), disabled=True)
+        entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(player, 'last_name', ''))
+        entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(player, 'first_name', ''))
+        entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(player, 'birth_date', ''))
+        entry_salary = self.create_form_widget(form_window, "Salaire", 4, getattr(player, 'salary', ''))
+        entry_contract = self.create_form_widget(form_window, "Contrat (JJ-MM-AAAA)", 5, getattr(player, 'contract', ''))
+        entry_address = self.create_form_widget(form_window, "Adresse", 6, getattr(player, 'address', ''))
+        entry_phone_number = self.create_form_widget(form_window, "Téléphone", 7, getattr(player, 'phone_number', ''))
+        entry_position = self.create_form_widget(form_window, "Poste", 8, getattr(player, 'position', ''))
+        entry_jersey_number = self.create_form_widget(form_window, "Numéro de Maillot", 9, getattr(player, 'jersey_number', ''))
 
-        Utils.create_button(form_window, "Modifier" if joueur else "Ajouter", submit, 10, 0, 2)
+        # Bouton pour soumettre le formulaire
+        Button(form_window, text="Modifier" if player else "Ajouter", command=submit).grid(row=10, column=0, columnspan=2)
 
-    def add_joueur(self):
-        """
-        Ouvre la fenêtre de formulaire pour ajouter un nouveau joueur.
-        """
-        self.open_joueur_form()
 
-    def modify_joueur(self):
-        """
-        Ouvre la fenêtre de formulaire pour modifier le joueur sélectionné dans le Treeview des joueurs.
-        """
-        selected_item = self.gui_manager.tree_joueurs.selection()
+    def add_player(self):
+        self.open_form_widget()
+
+    def modify_player(self):
+        """modifie les données du joueur. on choisit un joueur puis on recupere ses données"""
+        selected_item = self.gui_manager.tree_players.selection()
         if selected_item:
-            item = self.gui_manager.tree_joueurs.item(selected_item)
+            item = self.gui_manager.tree_players.item(selected_item)
             values = item['values']
-            person_ID = values[0]
-            joueur = next((j for j in self.gui_manager.joueurs if j.person_ID == person_ID), None)
-            if joueur:
-                self.open_joueur_form(joueur)
-            else:
-                messagebox.showerror("Erreur", "Joueur non trouvé")
+            person_ID = str(values[0])  # la conversion garantit la comparaison correcte de person_id avec l'objet player
+            player=None
+            for data in self.gui_manager.players:
+                if str(data.person_ID) == person_ID:
+                    player = data
+                    break
+            self.open_form_widget(player)
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
 
-    def delete_joueur(self):
-        """
-        Supprime le joueur sélectionné dans le Treeview des joueurs après confirmation.
-        """
-        selected_item = self.gui_manager.tree_joueurs.selection()
+    def delete_player(self):
+        """Supprime un joueur sélectionné. On choisit un joueur puis on le supprime de la liste."""
+        selected_item = self.gui_manager.tree_players.selection()
         if selected_item:
-            item = self.gui_manager.tree_joueurs.item(selected_item)
+            item = self.gui_manager.tree_players.item(selected_item)
             values = item['values']
-            person_ID = values[0]
-            joueur = next((j for j in self.gui_manager.joueurs if j.person_ID == person_ID), None)
-            if joueur:
-                self.gui_manager.joueurs.remove(joueur)
-                self.gui_manager.update_joueurs_treeview()
-                Player.save_to_file(self.gui_manager.joueurs)
-                messagebox.showinfo("Information", "Joueur supprimé avec succès.")
-            else:
-                messagebox.showerror("Erreur", "Joueur non trouvé")
+            person_ID = str(values[0])  # La conversion garantit la comparaison correcte de person_id avec l'objet player
+            player = None
+            for data in self.gui_manager.players:
+                if str(data.person_ID) == person_ID:
+                    player = data
+                    break
+            
+            if player:
+                # Confirmer la suppression
+                confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer ce joueur ?")
+                if confirmation:
+                    Player.delete(player)  # Ajoute l'ID du joueur à la liste des IDs disponibles
+                    self.gui_manager.players.remove(player)
+                    self.gui_manager.update_players_treeview()
+                    Player.save_to_file(self.gui_manager.players)
+                    messagebox.showinfo("Joueur supprimé", "Le joueur a été supprimé avec succès.")
+            
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
-
-

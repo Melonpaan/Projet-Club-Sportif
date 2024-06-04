@@ -23,7 +23,7 @@ class GUIManager(tk.Tk):
 
         # Charger les données
         self.club = Club.load_from_file()
-        self.joueurs = Player.load_from_file()
+        self.players = Player.load_from_file()
         self.staff_members = Staff.load_from_file()
 
         # Créer un Notebook pour les onglets
@@ -32,21 +32,21 @@ class GUIManager(tk.Tk):
 
         # Créer les frames pour chaque onglet
         self.accueil_frame = tk.Frame(self.notebook)
-        self.joueur_frame = tk.Frame(self.notebook)
+        self.player_frame = tk.Frame(self.notebook)
         self.staff_frame = tk.Frame(self.notebook)
 
         # Ajouter les frames au Notebook
         self.notebook.add(self.accueil_frame, text="Accueil")
-        self.notebook.add(self.joueur_frame, text="Joueurs")
+        self.notebook.add(self.player_frame, text="Joueurs")
         self.notebook.add(self.staff_frame, text="Staff")
 
         # Créer le contenu des frames
         self.create_accueil_frame(self.accueil_frame)
-        self.create_joueur_frame(self.joueur_frame)
+        self.create_player_frame(self.player_frame)
         self.create_staff_frame(self.staff_frame)
 
         # Charger les données initiales dans les Treeviews
-        self.update_joueurs_treeview()
+        self.update_players_treeview()
         self.update_staff_treeview()
 
     def create_accueil_frame(self, frame):
@@ -76,32 +76,32 @@ class GUIManager(tk.Tk):
         Utils.create_button(accueil_frame, "Ajouter Équipe", self.add_team, 5, 0)
         Utils.create_button(accueil_frame, "Supprimer Équipe", self.remove_team, 5, 1)
 
-    def create_joueur_frame(self, frame):
+    def create_player_frame(self, frame):
         """
         Crée la frame pour la gestion des joueurs avec les Treeviews et les boutons pour ajouter, modifier et supprimer des joueurs.
 
         Args:
             frame (tk.Frame): Frame dans laquelle créer les widgets pour les joueurs.
         """
-        joueur_action_frame = tk.Frame(frame)
-        joueur_action_frame.pack(side=tk.BOTTOM, fill=tk.X)
+        player_action_frame = tk.Frame(frame)
+        player_action_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Treeview pour afficher les joueurs
-        self.tree_joueurs = ttk.Treeview(frame, columns=(
+        self.tree_players = ttk.Treeview(frame, columns=(
             "ID", "Nom", "Prénom", "Date de Naissance", "Salaire",
             "Contrat", "Adresse", "Téléphone", "Poste", "Numéro de Maillot"
         ), show='headings')
-        self.tree_joueurs.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.tree_players.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         # Définir les en-têtes des colonnes du Treeview
-        for col in self.tree_joueurs['columns']:
-            self.tree_joueurs.heading(col, text=col)
+        for col in self.tree_players['columns']:
+            self.tree_players.heading(col, text=col)
 
         # Boutons pour gérer les joueurs
         self.player_page = PlayerPage(self)
-        Utils.create_button(joueur_action_frame, "Ajouter Joueur", self.player_page.add_joueur, 0, 0)
-        Utils.create_button(joueur_action_frame, "Modifier Joueur", self.player_page.modify_joueur, 0, 1)
-        Utils.create_button(joueur_action_frame, "Supprimer Joueur", self.player_page.delete_joueur, 0, 2)
+        Utils.create_button(player_action_frame, "Ajouter Joueur", self.player_page.add_player, 0, 0)
+        Utils.create_button(player_action_frame, "Modifier Joueur", self.player_page.modify_player, 0, 1)
+        Utils.create_button(player_action_frame, "Supprimer Joueur", self.player_page.delete_player, 0, 2)
 
     def create_staff_frame(self, frame):
         """
@@ -167,18 +167,18 @@ class GUIManager(tk.Tk):
         for team in self.club.teams:
             self.team_listbox.insert(tk.END, team)
 
-    def update_joueurs_treeview(self):
+    def update_players_treeview(self):
         """
         Met à jour le Treeview des joueurs avec les données actuelles.
         """
-        for item in self.tree_joueurs.get_children():
-            self.tree_joueurs.delete(item)
-        for joueur in self.joueurs:
-            self.tree_joueurs.insert("", "end", values=(
-                joueur.person_ID, joueur.last_name, joueur.first_name,
-                joueur.birth_date, joueur.salary, joueur.contract,
-                joueur.address, joueur.phone_number, joueur.position,
-                joueur.jersey_number
+        for item in self.tree_players.get_children():
+            self.tree_players.delete(item)
+        for player in self.players:
+            self.tree_players.insert("", "end", values=(
+                player.person_ID, player.last_name, player.first_name,
+                player.birth_date, player.salary, player.contract,
+                player.address, player.phone_number, player.position,
+                player.jersey_number
             ))
 
     def update_staff_treeview(self):
