@@ -1,41 +1,38 @@
 from classes.person import Person
+from classes.contract import Contract
 from classes.data_manager import DataManager
 
 class Player(Person):
     last_id = 0
     available_ids = []
 
-    def __init__(self, person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number):
-        super().__init__(int(person_ID), last_name, first_name, birth_date, salary, contract, address, phone_number)
+    def __init__(self, person_ID, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number):
+        super().__init__(int(person_ID), last_name, first_name, birth_date, contract, address, phone_number)
         self.position = position
         self.jersey_number = jersey_number
 
-        # Mettre à jour le dernier ID utilisé
         person_ID = int(person_ID)
         if person_ID > Player.last_id:
             Player.last_id = person_ID
 
     @classmethod
-    def create_new(cls, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number):
+    def create_new(cls, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number):
         if cls.available_ids:
-            new_id = cls.available_ids.pop(0)  # Réutiliser un ID disponible
+            new_id = cls.available_ids.pop(0)
         else:
             cls.last_id += 1
             new_id = cls.last_id
-        return cls(new_id, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
+        return cls(new_id, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
 
     @staticmethod
     def delete(player):
         Player.available_ids.append(player.person_ID)
 
-    def update_details(self, person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number):
-        """Met à jour les détails du joueur."""
-        self.person_ID = int(person_ID)
+    def update_details(self, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number):
         self.last_name = last_name
         self.first_name = first_name
         self.birth_date = birth_date
-        self.salary = salary
-        self.contract = contract
+        self.contract.update(contract.start_date, contract.end_date, contract.salary)
         self.address = address
         self.phone_number = phone_number
         self.position = position
@@ -51,11 +48,11 @@ class Player(Person):
 
     @classmethod
     def from_dict(cls, data):
+        contract = Contract.from_dict(data['contract'])
         return cls(
             int(data['person_ID']), data['last_name'], data['first_name'],
-            data['birth_date'], data['salary'], data['contract'],
-            data['address'], data['phone_number'], data['position'],
-            data['jersey_number']
+            data['birth_date'], contract, data['address'], data['phone_number'],
+            data['position'], data['jersey_number']
         )
 
     @staticmethod
@@ -67,7 +64,6 @@ class Player(Person):
         players_data = DataManager.load_from_file('data/players.json')
         players = [Player.from_dict(data) for data in players_data]
         
-        # Mettre à jour le compteur d'ID pour correspondre au plus grand ID existant
         if players:
             Player.last_id = max(player.person_ID for player in players)
         

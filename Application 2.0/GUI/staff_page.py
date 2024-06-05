@@ -1,5 +1,6 @@
-from tkinter import Toplevel, Label, Entry, Button, messagebox
+from tkinter import Toplevel, Label, Entry, Button, messagebox, ttk
 from classes.staff import Staff
+from classes.contract import Contract
 from datetime import datetime
 
 class StaffPage:
@@ -25,7 +26,8 @@ class StaffPage:
             first_name = entry_first_name.get()
             birth_date = entry_birth_date.get()
             salary = entry_salary.get()
-            contract = entry_contract.get()
+            contract_start = entry_contract_start.get()
+            contract_end = entry_contract_end.get()
             address = entry_address.get()
             phone_number = entry_phone_number.get()
             role = entry_role.get()
@@ -50,12 +52,14 @@ class StaffPage:
                 messagebox.showerror("Erreur", "Le numéro de téléphone doit contenir uniquement des chiffres.")
                 return
 
+            contract = Contract(contract_start, contract_end, salary)
+
             # Crée ou met à jour l'objet staff
             if staff is None:
-                new_staff = Staff.create_new(last_name, first_name, birth_date, salary, contract, address, phone_number, role)
+                new_staff = Staff.create_new(last_name, first_name, birth_date, contract, address, phone_number, role)
                 self.gui_manager.staff_members.append(new_staff)
             else:
-                staff.update_details(staff.person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, role)
+                staff.update_details(last_name, first_name, birth_date, contract, address, phone_number, role)
 
             # Mettre à jour l'interface avec les infos et enregistrer les modifications
             self.gui_manager.update_staff_treeview()
@@ -71,14 +75,32 @@ class StaffPage:
         entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(staff, 'last_name', ''))
         entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(staff, 'first_name', ''))
         entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(staff, 'birth_date', ''))
-        entry_salary = self.create_form_widget(form_window, "Salaire", 4, getattr(staff, 'salary', ''))
-        entry_contract = self.create_form_widget(form_window, "Contrat (JJ-MM-AAAA)", 5, getattr(staff, 'contract', ''))
-        entry_address = self.create_form_widget(form_window, "Adresse", 6, getattr(staff, 'address', ''))
-        entry_phone_number = self.create_form_widget(form_window, "Téléphone", 7, getattr(staff, 'phone_number', ''))
-        entry_role = self.create_form_widget(form_window, "Rôle", 8, getattr(staff, 'role', ''))
+        
+        if staff:
+            salary = staff.contract.salary
+            contract_start = staff.contract.start_date
+            contract_end = staff.contract.end_date
+        else:
+            salary = ''
+            contract_start = ''
+            contract_end = ''
+
+        entry_salary = self.create_form_widget(form_window, "Salaire", 4, salary)
+        entry_contract_start = self.create_form_widget(form_window, "Début du Contrat (JJ-MM-AAAA)", 5, contract_start)
+        entry_contract_end = self.create_form_widget(form_window, "Fin du Contrat (JJ-MM-AAAA)", 6, contract_end)
+
+        entry_address = self.create_form_widget(form_window, "Adresse", 7, getattr(staff, 'address', ''))
+        entry_phone_number = self.create_form_widget(form_window, "Téléphone", 8, getattr(staff, 'phone_number', ''))
+
+        # Utiliser un Combobox pour le champ "Rôle"
+        Label(form_window, text="Rôle").grid(row=9, column=0)
+        entry_role = ttk.Combobox(form_window, values=["Médecin", "Entraîneur"])
+        entry_role.grid(row=9, column=1)
+        if staff:
+            entry_role.set(staff.role)
 
         # Bouton pour soumettre le formulaire
-        Button(form_window, text="Modifier" if staff else "Ajouter", command=submit).grid(row=9, column=0, columnspan=2)
+        Button(form_window, text="Modifier" if staff else "Ajouter", command=submit).grid(row=10, column=0, columnspan=2)
 
     def add_staff(self):
         self.open_form_widget()
@@ -121,6 +143,7 @@ class StaffPage:
                     self.gui_manager.update_staff_treeview()
                     Staff.save_to_file(self.gui_manager.staff_members)
                     messagebox.showinfo("Membre du staff supprimé", "Le membre du staff a été supprimé avec succès.")
+            else:
+                messagebox.showerror("Erreur", "Membre du staff non trouvé")
         else:
             messagebox.showerror("Erreur", "Aucun membre du staff sélectionné")
-

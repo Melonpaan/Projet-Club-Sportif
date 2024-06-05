@@ -1,5 +1,6 @@
-from tkinter import Toplevel, Label, Entry, Button, messagebox
+from tkinter import Toplevel, Label, Entry, Button, messagebox, ttk
 from classes.player import Player
+from classes.contract import Contract
 from datetime import datetime
 
 class PlayerPage:
@@ -25,7 +26,8 @@ class PlayerPage:
             first_name = entry_first_name.get()
             birth_date = entry_birth_date.get()
             salary = entry_salary.get()
-            contract = entry_contract.get()
+            contract_start = entry_contract_start.get()
+            contract_end = entry_contract_end.get()
             address = entry_address.get()
             phone_number = entry_phone_number.get()
             position = entry_position.get()
@@ -54,12 +56,14 @@ class PlayerPage:
                 messagebox.showerror("Erreur", "Le numéro de maillot doit être un nombre.")
                 return
 
+            contract = Contract(contract_start, contract_end, salary)
+
             # Crée ou met à jour l'objet player
             if player is None:
-                new_player = Player.create_new(last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
+                new_player = Player.create_new(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
                 self.gui_manager.players.append(new_player)
             else:
-                player.update_details(player.person_ID, last_name, first_name, birth_date, salary, contract, address, phone_number, position, jersey_number)
+                player.update_details(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
 
             # Mettre à jour l'interface avec les infos et enregistrer les modifications
             self.gui_manager.update_players_treeview()
@@ -75,28 +79,46 @@ class PlayerPage:
         entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(player, 'last_name', ''))
         entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(player, 'first_name', ''))
         entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(player, 'birth_date', ''))
-        entry_salary = self.create_form_widget(form_window, "Salaire", 4, getattr(player, 'salary', ''))
-        entry_contract = self.create_form_widget(form_window, "Contrat (JJ-MM-AAAA)", 5, getattr(player, 'contract', ''))
-        entry_address = self.create_form_widget(form_window, "Adresse", 6, getattr(player, 'address', ''))
-        entry_phone_number = self.create_form_widget(form_window, "Téléphone", 7, getattr(player, 'phone_number', ''))
-        entry_position = self.create_form_widget(form_window, "Poste", 8, getattr(player, 'position', ''))
-        entry_jersey_number = self.create_form_widget(form_window, "Numéro de Maillot", 9, getattr(player, 'jersey_number', ''))
+        
+        if player:
+            salary = player.contract.salary
+            contract_start = player.contract.start_date
+            contract_end = player.contract.end_date
+        else:
+            salary = ''
+            contract_start = ''
+            contract_end = ''
+
+        entry_salary = self.create_form_widget(form_window, "Salaire", 4, salary)
+        entry_contract_start = self.create_form_widget(form_window, "Début du Contrat (JJ-MM-AAAA)", 5, contract_start)
+        entry_contract_end = self.create_form_widget(form_window, "Fin du Contrat (JJ-MM-AAAA)", 6, contract_end)
+        
+        entry_address = self.create_form_widget(form_window, "Adresse", 7, getattr(player, 'address', ''))
+        entry_phone_number = self.create_form_widget(form_window, "Téléphone", 8, getattr(player, 'phone_number', ''))
+
+        # Utiliser un Combobox pour le champ "Poste"
+        Label(form_window, text="Poste").grid(row=9, column=0)
+        entry_position = ttk.Combobox(form_window, values=["Attaquant", "Milieu", "Défenseur", "Gardien"])
+        entry_position.grid(row=9, column=1)
+        if player:
+            entry_position.set(player.position)
+
+        entry_jersey_number = self.create_form_widget(form_window, "Numéro de Maillot", 10, getattr(player, 'jersey_number', ''))
 
         # Bouton pour soumettre le formulaire
-        Button(form_window, text="Modifier" if player else "Ajouter", command=submit).grid(row=10, column=0, columnspan=2)
-
+        Button(form_window, text="Modifier" if player else "Ajouter", command=submit).grid(row=11, column=0, columnspan=2)
 
     def add_player(self):
         self.open_form_widget()
 
     def modify_player(self):
-        """modifie les données du joueur. on choisit un joueur puis on recupere ses données"""
+        """Modifie les données d'un joueur. On choisit un joueur puis on récupère ses données"""
         selected_item = self.gui_manager.tree_players.selection()
         if selected_item:
             item = self.gui_manager.tree_players.item(selected_item)
             values = item['values']
-            person_ID = str(values[0])  # la conversion garantit la comparaison correcte de person_id avec l'objet player
-            player=None
+            person_ID = str(values[0])  # La conversion garantit la comparaison correcte de person_id avec l'objet player
+            player = None
             for data in self.gui_manager.players:
                 if str(data.person_ID) == person_ID:
                     player = data
@@ -117,7 +139,7 @@ class PlayerPage:
                 if str(data.person_ID) == person_ID:
                     player = data
                     break
-            
+
             if player:
                 # Confirmer la suppression
                 confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer ce joueur ?")
@@ -127,6 +149,7 @@ class PlayerPage:
                     self.gui_manager.update_players_treeview()
                     Player.save_to_file(self.gui_manager.players)
                     messagebox.showinfo("Joueur supprimé", "Le joueur a été supprimé avec succès.")
-            
+            else:
+                messagebox.showerror("Erreur", "Joueur non trouvé")
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
