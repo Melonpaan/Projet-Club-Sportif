@@ -2,7 +2,7 @@
 
 import os
 from tkinter import simpledialog, messagebox, filedialog
-from utils import Utils
+from tools import Tools
 from classes.data_manager import DataManager
 from classes.club import Club
 from classes.player import Player

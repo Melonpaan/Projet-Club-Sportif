@@ -1,6 +1,6 @@
 import tkinter as tk
 
-class Utils:
+class Tools:
     @staticmethod
     def create_button(parent, text, command, row, col, col_span=1):
         """

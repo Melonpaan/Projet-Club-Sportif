@@ -6,7 +6,7 @@ from classes.club import Club
 from GUI.player_page import PlayerPage
 from GUI.staff_page import StaffPage
 from GUI.season_page import SeasonPage
-from utils import Utils
+from tools import Tools
 from classes.data_manager import DataManager
 import os
 
@@ -27,7 +27,7 @@ class GUIManager(tk.Tk):
         self.geometry("800x600")
 
         # Définir le dossier de données relatif au script principal
-        self.data_folder = os.path.join(os.path.dirname(__file__), 'data')
+        self.data_folder = os.path.join(os.path.dirname(__file__), 'Application 2.0/data')
 
         # Charger les données
         self.load_initial_data()  # Charger les données initiales depuis le dossier data
@@ -96,15 +96,15 @@ class GUIManager(tk.Tk):
         accueil_frame.pack(expand=True)
 
         # Labels et entrées pour les informations du club
-        self.entry_club_name = Utils.create_label_and_entry(
+        self.entry_club_name = Tools.create_label_and_entry(
             accueil_frame, "Nom du Club:", 0, self.club.name)
-        self.entry_club_address = Utils.create_label_and_entry(
+        self.entry_club_address = Tools.create_label_and_entry(
             accueil_frame, "Adresse du Club:", 1, self.club.address)
-        self.entry_club_president = Utils.create_label_and_entry(
+        self.entry_club_president = Tools.create_label_and_entry(
             accueil_frame, "Président du Club:", 2, self.club.president)
 
         # Bouton pour sauvegarder les informations du club
-        Utils.create_button(accueil_frame, "Sauvegarder",
+        Tools.create_button(accueil_frame, "Sauvegarder",
                             self.save_club_info, 3, 0, 2)
 
         # Listbox pour afficher les équipes
@@ -114,9 +114,9 @@ class GUIManager(tk.Tk):
         self.update_team_listbox()
 
         # Boutons pour ajouter et supprimer des équipes
-        Utils.create_button(accueil_frame, "Ajouter Équipe",
+        Tools.create_button(accueil_frame, "Ajouter Équipe",
                             self.add_team, 5, 0)
-        Utils.create_button(
+        Tools.create_button(
             accueil_frame, "Supprimer Équipe", self.remove_team, 5, 1)
 
     def create_player_frame(self, frame):
@@ -142,11 +142,11 @@ class GUIManager(tk.Tk):
 
         # Boutons pour gérer les joueurs
         self.player_page = PlayerPage(self)
-        Utils.create_button(player_action_frame, "Ajouter Joueur",
+        Tools.create_button(player_action_frame, "Ajouter Joueur",
                             self.player_page.add_player, 0, 0)
-        Utils.create_button(player_action_frame, "Modifier Joueur",
+        Tools.create_button(player_action_frame, "Modifier Joueur",
                             self.player_page.modify_player, 0, 1)
-        Utils.create_button(player_action_frame, "Supprimer Joueur",
+        Tools.create_button(player_action_frame, "Supprimer Joueur",
                             self.player_page.delete_player, 0, 2)
 
     def create_staff_frame(self, frame):
@@ -172,11 +172,11 @@ class GUIManager(tk.Tk):
 
         # Boutons pour gérer le staff
         self.staff_page = StaffPage(self)
-        Utils.create_button(staff_action_frame, "Ajouter Staff",
+        Tools.create_button(staff_action_frame, "Ajouter Staff",
                             self.staff_page.add_staff, 0, 0)
-        Utils.create_button(staff_action_frame, "Modifier Staff",
+        Tools.create_button(staff_action_frame, "Modifier Staff",
                             self.staff_page.modify_staff, 0, 1)
-        Utils.create_button(staff_action_frame, "Supprimer Staff",
+        Tools.create_button(staff_action_frame, "Supprimer Staff",
                             self.staff_page.delete_staff, 0, 2)
 
     def save_club_info(self):
@@ -277,8 +277,8 @@ class GUIManager(tk.Tk):
         self.season_page = SeasonPage(self)
 
         # Bouton pour archiver la saison
-        Utils.create_button(saison_frame, "Archiver la Saison",
+        Tools.create_button(saison_frame, "Archiver la Saison",
                             self.season_page.archive_season, 0, 0)
         # Bouton pour charger une saison archivée
-        Utils.create_button(saison_frame, "Charger une Saison",
+        Tools.create_button(saison_frame, "Charger une Saison",
                             self.season_page.load_season, 1, 0)
