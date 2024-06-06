@@ -4,6 +4,9 @@ import os
 from tkinter import simpledialog, messagebox, filedialog
 from utils import Utils
 from classes.data_manager import DataManager
+from classes.club import Club
+from classes.player import Player
+from classes.staff import Staff
 
 class SeasonPage:
     def __init__(self, gui_manager):
@@ -45,15 +48,18 @@ class SeasonPage:
             try:
                 # Charger les données du club à partir du dossier sélectionné
                 club_data = DataManager.load_from_file(f"{archive_folder}/club.json")
-                self.gui_manager.club = Club.from_dict(club_data)
+                print(f"Club data loaded: {club_data}")  # Débogage
+                self.gui_manager.club = Club.from_dict(club_data)  # Charger les données du club
 
                 # Charger les données des joueurs à partir du dossier sélectionné
                 players_data = DataManager.load_from_file(f"{archive_folder}/players.json")
-                self.gui_manager.players = [Player.from_dict(data) for data in players_data]
+                print(f"Players data loaded: {players_data}")  # Débogage
+                self.gui_manager.players = [Player.from_dict(data) for data in players_data]  # Charger les données des joueurs
 
                 # Charger les données du staff à partir du dossier sélectionné
                 staff_data = DataManager.load_from_file(f"{archive_folder}/staff.json")
-                self.gui_manager.staff_members = [Staff.from_dict(data) for data in staff_data]
+                print(f"Staff data loaded: {staff_data}")  # Débogage
+                self.gui_manager.staff_members = [Staff.from_dict(data) for data in staff_data]  # Charger les données du staff
 
                 # Mettre à jour l'interface utilisateur avec les nouvelles données
                 self.gui_manager.update_players_treeview()
@@ -62,3 +68,4 @@ class SeasonPage:
                 messagebox.showinfo("Succès", f"La saison a été chargée avec succès depuis {archive_folder}.")
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur lors du chargement de la saison : {e}")
+                print(f"Erreur lors du chargement de la saison : {e}")  # Débogage

@@ -39,3 +39,5 @@ class DataManager:
                 return json.load(f)
         except FileNotFoundError:
             return []
+        except json.JSONDecodeError:
+            raise ValueError(f"Le fichier {filename} n'est pas un fichier JSON valide.")
