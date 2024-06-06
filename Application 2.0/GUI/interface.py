@@ -5,13 +5,16 @@ from classes.staff import Staff
 from classes.club import Club
 from GUI.player_page import PlayerPage
 from GUI.staff_page import StaffPage
+from GUI.season_page import SeasonPage
 from utils import Utils
+
 
 class GUIManager(tk.Tk):
     """
     Classe principale pour gérer l'interface utilisateur de l'application de gestion du club.
     Hérite de tk.Tk pour créer une fenêtre principale Tkinter.
     """
+
     def __init__(self):
         """
         Initialise la fenêtre principale et crée les frames pour l'interface du club et les autres sections.
@@ -34,16 +37,19 @@ class GUIManager(tk.Tk):
         self.accueil_frame = tk.Frame(self.notebook)
         self.player_frame = tk.Frame(self.notebook)
         self.staff_frame = tk.Frame(self.notebook)
+        self.saison_frame = tk.Frame(self.notebook)
 
         # Ajouter les frames au Notebook
         self.notebook.add(self.accueil_frame, text="Accueil")
         self.notebook.add(self.player_frame, text="Joueurs")
         self.notebook.add(self.staff_frame, text="Staff")
+        self.notebook.add(self.saison_frame, text="Saison")
 
         # Créer le contenu des frames
         self.create_accueil_frame(self.accueil_frame)
         self.create_player_frame(self.player_frame)
         self.create_staff_frame(self.staff_frame)
+        self.create_saison_frame(self.saison_frame)
 
         # Charger les données initiales dans les Treeviews
         self.update_players_treeview()
@@ -60,21 +66,28 @@ class GUIManager(tk.Tk):
         accueil_frame.pack(expand=True)
 
         # Labels et entrées pour les informations du club
-        self.entry_club_name = Utils.create_label_and_entry(accueil_frame, "Nom du Club:", 0, self.club.name)
-        self.entry_club_address = Utils.create_label_and_entry(accueil_frame, "Adresse du Club:", 1, self.club.address)
-        self.entry_club_president = Utils.create_label_and_entry(accueil_frame, "Président du Club:", 2, self.club.president)
+        self.entry_club_name = Utils.create_label_and_entry(
+            accueil_frame, "Nom du Club:", 0, self.club.name)
+        self.entry_club_address = Utils.create_label_and_entry(
+            accueil_frame, "Adresse du Club:", 1, self.club.address)
+        self.entry_club_president = Utils.create_label_and_entry(
+            accueil_frame, "Président du Club:", 2, self.club.president)
 
         # Bouton pour sauvegarder les informations du club
-        Utils.create_button(accueil_frame, "Sauvegarder", self.save_club_info, 3, 0, 2)
+        Utils.create_button(accueil_frame, "Sauvegarder",
+                            self.save_club_info, 3, 0, 2)
 
         # Listbox pour afficher les équipes
         self.team_listbox = tk.Listbox(accueil_frame, height=10, width=50)
-        self.team_listbox.grid(row=4, column=0, columnspan=2, pady=10, sticky=tk.W + tk.E)
+        self.team_listbox.grid(
+            row=4, column=0, columnspan=2, pady=10, sticky=tk.W + tk.E)
         self.update_team_listbox()
 
         # Boutons pour ajouter et supprimer des équipes
-        Utils.create_button(accueil_frame, "Ajouter Équipe", self.add_team, 5, 0)
-        Utils.create_button(accueil_frame, "Supprimer Équipe", self.remove_team, 5, 1)
+        Utils.create_button(accueil_frame, "Ajouter Équipe",
+                            self.add_team, 5, 0)
+        Utils.create_button(
+            accueil_frame, "Supprimer Équipe", self.remove_team, 5, 1)
 
     def create_player_frame(self, frame):
         """
@@ -88,7 +101,7 @@ class GUIManager(tk.Tk):
 
         # Treeview pour afficher les joueurs
         self.tree_players = ttk.Treeview(frame, columns=(
-            "ID", "Nom", "Prénom","Poste", "Date de Naissance", "Salaire",
+            "ID", "Nom", "Prénom", "Poste", "Date de Naissance", "Salaire",
             "Début Contrat", "Fin Contrat", "Adresse", "Téléphone", "Numéro de Maillot"
         ), show='headings')
         self.tree_players.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -99,9 +112,12 @@ class GUIManager(tk.Tk):
 
         # Boutons pour gérer les joueurs
         self.player_page = PlayerPage(self)
-        Utils.create_button(player_action_frame, "Ajouter Joueur", self.player_page.add_player, 0, 0)
-        Utils.create_button(player_action_frame, "Modifier Joueur", self.player_page.modify_player, 0, 1)
-        Utils.create_button(player_action_frame, "Supprimer Joueur", self.player_page.delete_player, 0, 2)
+        Utils.create_button(player_action_frame, "Ajouter Joueur",
+                            self.player_page.add_player, 0, 0)
+        Utils.create_button(player_action_frame, "Modifier Joueur",
+                            self.player_page.modify_player, 0, 1)
+        Utils.create_button(player_action_frame, "Supprimer Joueur",
+                            self.player_page.delete_player, 0, 2)
 
     def create_staff_frame(self, frame):
         """
@@ -126,9 +142,12 @@ class GUIManager(tk.Tk):
 
         # Boutons pour gérer le staff
         self.staff_page = StaffPage(self)
-        Utils.create_button(staff_action_frame, "Ajouter Staff", self.staff_page.add_staff, 0, 0)
-        Utils.create_button(staff_action_frame, "Modifier Staff", self.staff_page.modify_staff, 0, 1)
-        Utils.create_button(staff_action_frame, "Supprimer Staff", self.staff_page.delete_staff, 0, 2)
+        Utils.create_button(staff_action_frame, "Ajouter Staff",
+                            self.staff_page.add_staff, 0, 0)
+        Utils.create_button(staff_action_frame, "Modifier Staff",
+                            self.staff_page.modify_staff, 0, 1)
+        Utils.create_button(staff_action_frame, "Supprimer Staff",
+                            self.staff_page.delete_staff, 0, 2)
 
     def save_club_info(self):
         """
@@ -138,17 +157,20 @@ class GUIManager(tk.Tk):
         self.club.address = self.entry_club_address.get()
         self.club.president = self.entry_club_president.get()
         self.club.save_to_file()
-        messagebox.showinfo("Information", "Informations du club sauvegardées.")
+        messagebox.showinfo(
+            "Information", "Informations du club sauvegardées.")
 
     def add_team(self):
         """
         Ajoute une nouvelle équipe au club et met à jour la listbox.
         """
-        team_name = simpledialog.askstring("Ajouter Équipe", "Nom de l'équipe:")
+        team_name = simpledialog.askstring(
+            "Ajouter Équipe", "Nom de l'équipe:")
         if team_name:
             self.club.add_team(team_name)
             self.update_team_listbox()
-            messagebox.showinfo("Information", f"Équipe '{team_name}' ajoutée.")
+            messagebox.showinfo("Information", f"Équipe '{
+                                team_name}' ajoutée.")
 
     def remove_team(self):
         """
@@ -158,7 +180,8 @@ class GUIManager(tk.Tk):
         if selected_team:
             self.club.remove_team(selected_team)
             self.update_team_listbox()
-            messagebox.showinfo("Information", f"Équipe '{selected_team}' supprimée.")
+            messagebox.showinfo("Information", f"Équipe '{
+                                selected_team}' supprimée.")
         else:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée.")
 
@@ -178,8 +201,8 @@ class GUIManager(tk.Tk):
             self.tree_players.delete(item)
         for player in self.players:
             self.tree_players.insert("", "end", values=(
-                player.person_ID, player.last_name, player.first_name,player.position,
-                player.birth_date, player.contract.salary, 
+                player.person_ID, player.last_name, player.first_name, player.position,
+                player.birth_date, player.contract.salary,
                 player.contract.start_date, player.contract.end_date,
                 player.address, player.phone_number, player.jersey_number
             ))
@@ -193,7 +216,27 @@ class GUIManager(tk.Tk):
         for staff in self.staff_members:
             self.tree_staff.insert("", "end", values=(
                 staff.person_ID, staff.last_name, staff.first_name,
-                staff.birth_date, staff.contract.salary, 
+                staff.birth_date, staff.contract.salary,
                 staff.contract.start_date, staff.contract.end_date,
                 staff.address, staff.phone_number, staff.role
             ))
+
+    def create_saison_frame(self, frame):
+        """
+        Crée la frame pour l'onglet Saison avec les boutons pour archiver et charger des saisons.
+
+        Args:
+            frame (tk.Frame): Frame dans laquelle créer les widgets de l'onglet Saison.
+        """
+        saison_frame = tk.Frame(frame)
+        saison_frame.pack(expand=True)
+
+        # Initialiser la gestion de la page Saison
+        self.season_page = SeasonPage(self)
+
+        # Bouton pour archiver la saison
+        Utils.create_button(saison_frame, "Archiver la Saison",
+                            self.season_page.archive_season, 0, 0)
+        # Bouton pour charger une saison archivée
+        Utils.create_button(saison_frame, "Charger une Saison",
+                            self.season_page.load_season, 1, 0)
