@@ -20,6 +20,13 @@ class StaffPage:
 
     def open_form_widget(self, staff=None):
         """Méthode qui permet d'ajouter ou de modifier un membre du staff suivant si staff est donné"""
+        def staff_exists(last_name, first_name, birth_date):
+            """Check if a staff member with the same name and birth date already exists."""
+            for s in self.gui_manager.staff_members:
+                if s.last_name == last_name and s.first_name == first_name and s.birth_date == birth_date:
+                    return True
+            return False
+
         def submit():
             """Méthode permettant de soumettre les données entrées"""
             last_name = entry_last_name.get()
@@ -52,14 +59,20 @@ class StaffPage:
                 messagebox.showerror("Erreur", "Le numéro de téléphone doit contenir uniquement des chiffres.")
                 return
 
+            if staff is None and staff_exists(last_name, first_name, birth_date):
+                messagebox.showerror("Erreur", "Un membre du staff avec le même nom et date de naissance existe déjà.")
+                return
+
             contract = Contract(contract_start, contract_end, salary)
 
             # Crée ou met à jour l'objet staff
             if staff is None:
                 new_staff = Staff.create_new(last_name, first_name, birth_date, contract, address, phone_number, role)
                 self.gui_manager.staff_members.append(new_staff)
+                messagebox.showinfo("Information", f"Membre du staff ajouté avec l'ID {new_staff.person_ID}")
             else:
                 staff.update_details(last_name, first_name, birth_date, contract, address, phone_number, role)
+                messagebox.showinfo("Information", f"Membre du staff modifié avec l'ID {staff.person_ID}")
 
             # Mettre à jour l'interface avec les infos et enregistrer les modifications
             self.gui_manager.update_staff_treeview()
@@ -144,6 +157,4 @@ class StaffPage:
                     Staff.save_to_file(self.gui_manager.staff_members)
                     messagebox.showinfo("Membre du staff supprimé", "Le membre du staff a été supprimé avec succès.")
             else:
-                messagebox.showerror("Erreur", "Membre du staff non trouvé")
-        else:
-            messagebox.showerror("Erreur", "Aucun membre du staff sélectionné")
+                messagebox.showerror("Erreur", "Aucun membre du staff sélectionné")

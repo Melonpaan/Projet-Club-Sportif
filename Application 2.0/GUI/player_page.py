@@ -20,6 +20,13 @@ class PlayerPage:
 
     def open_form_widget(self, player=None):
         """Méthode qui permet d'ajouter ou de modifier un joueur suivant si player est donné"""
+        def player_exists(last_name, first_name, birth_date):
+            """Check if a player with the same name and birth date already exists."""
+            for p in self.gui_manager.players:
+                if p.last_name == last_name and p.first_name == first_name and p.birth_date == birth_date:
+                    return True
+            return False
+
         def submit():
             """Méthode permettant de soumettre les données entrées"""
             last_name = entry_last_name.get()
@@ -56,14 +63,20 @@ class PlayerPage:
                 messagebox.showerror("Erreur", "Le numéro de maillot doit être un nombre.")
                 return
 
+            if player is None and player_exists(last_name, first_name, birth_date):
+                messagebox.showerror("Erreur", "Un joueur avec le même nom et date de naissance existe déjà.")
+                return
+
             contract = Contract(contract_start, contract_end, salary)
 
             # Crée ou met à jour l'objet player
             if player is None:
                 new_player = Player.create_new(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
                 self.gui_manager.players.append(new_player)
+                messagebox.showinfo("Information", f"Joueur ajouté avec l'ID {new_player.person_ID}")
             else:
                 player.update_details(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
+                messagebox.showinfo("Information", f"Joueur modifié avec l'ID {player.person_ID}")
 
             # Mettre à jour l'interface avec les infos et enregistrer les modifications
             self.gui_manager.update_players_treeview()
@@ -149,7 +162,5 @@ class PlayerPage:
                     self.gui_manager.update_players_treeview()
                     Player.save_to_file(self.gui_manager.players)
                     messagebox.showinfo("Joueur supprimé", "Le joueur a été supprimé avec succès.")
-            else:
-                messagebox.showerror("Erreur", "Joueur non trouvé")
         else:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
