@@ -7,6 +7,7 @@ from GUI.player_page import PlayerPage
 from GUI.staff_page import StaffPage
 from GUI.season_page import SeasonPage
 from utils import Utils
+from classes.data_manager import DataManager
 
 
 class GUIManager(tk.Tk):
@@ -25,9 +26,8 @@ class GUIManager(tk.Tk):
         self.geometry("800x600")
 
         # Charger les données
-        self.club = Club.load_from_file()
-        self.players = Player.load_from_file()
-        self.staff_members = Staff.load_from_file()
+        self.load_initial_data()  # Charger les données initiales depuis le dossier data
+
 
         # Créer un Notebook pour les onglets
         self.notebook = ttk.Notebook(self)
@@ -54,7 +54,30 @@ class GUIManager(tk.Tk):
         # Charger les données initiales dans les Treeviews
         self.update_players_treeview()
         self.update_staff_treeview()
+        self.update_club_info()
 
+    def load_initial_data(self):
+        """
+        Charge les données initiales depuis le dossier data.
+        """
+        club_data = DataManager.load_from_file('data/club.json')
+        if club_data is not None:
+            self.club = Club.from_dict(club_data)
+        else:
+            self.club = Club("Nom du Club", "Adresse du Club", "Président du Club")
+
+        players_data = DataManager.load_from_file('data/players.json')
+        if players_data is not None:
+            self.players = [Player.from_dict(data) for data in players_data]
+        else:
+            self.players = []
+
+        staff_data = DataManager.load_from_file('data/staff.json')
+        if staff_data is not None:
+            self.staff_members = [Staff.from_dict(data) for data in staff_data]
+        else:
+            self.staff_members = []
+    
     def create_accueil_frame(self, frame):
         """
         Crée la frame pour l'accueil du club avec les informations du club et les boutons pour ajouter et supprimer des équipes.

@@ -35,9 +35,11 @@ class DataManager:
             any: Les données chargées à partir du fichier JSON. Retourne une liste vide si le fichier n'existe pas.
         """
         try:
-            with open(filename, 'r') as f:
-                return json.load(f)
+            if os.path.exists(filename):
+                with open(filename, 'r') as f:
+                    return json.load(f)
+            else:
+                return None
         except FileNotFoundError:
-            return []
-        except json.JSONDecodeError:
-            raise ValueError(f"Le fichier {filename} n'est pas un fichier JSON valide.")
+            return None
+
