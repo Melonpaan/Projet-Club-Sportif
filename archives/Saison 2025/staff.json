@@ -1,0 +1,16 @@
+[
+    {
+        "person_ID": 1,
+        "last_name": "oufkir",
+        "first_name": "yassir",
+        "birth_date": "22-06-1998",
+        "contract": {
+            "start_date": "21-03-2013",
+            "end_date": "24-04-2024",
+            "salary": "3000"
+        },
+        "address": "rue des prunes",
+        "phone_number": "0897232323",
+        "role": "M\u00e9decin"
+    }
+]

@@ -221,6 +221,18 @@ class GUIManager(tk.Tk):
                 staff.address, staff.phone_number, staff.role
             ))
 
+    def update_club_info(self):
+        """
+        Met à jour les informations du club dans l'interface utilisateur avec les données actuelles.
+        """
+        self.entry_club_name.delete(0, tk.END)
+        self.entry_club_name.insert(0, self.club.name)
+        self.entry_club_address.delete(0, tk.END)
+        self.entry_club_address.insert(0, self.club.address)
+        self.entry_club_president.delete(0, tk.END)
+        self.entry_club_president.insert(0, self.club.president)
+        self.update_team_listbox()  # Mettre à jour la listbox des équipes
+
     def create_saison_frame(self, frame):
         """
         Crée la frame pour l'onglet Saison avec les boutons pour archiver et charger des saisons.

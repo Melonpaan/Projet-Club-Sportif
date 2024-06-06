@@ -25,14 +25,22 @@ class SeasonPage:
         # Demander à l'utilisateur de nommer le dossier de la saison
         season_name = simpledialog.askstring("Nom de la saison", "Entrez le nom de la saison (par ex. Saison 2023):")
         if season_name:
-            archive_folder = f"archives/{season_name}"
+            archive_folder = os.path.join("archives", season_name)
             if not os.path.exists(archive_folder):
                 os.makedirs(archive_folder)
 
-                # Copier les fichiers JSON existants dans le nouveau dossier de la saison
-                DataManager.save_to_file(self.gui_manager.club.to_dict(), f"{archive_folder}/club.json")
-                DataManager.save_to_file([player.to_dict() for player in self.gui_manager.players], f"{archive_folder}/players.json")
-                DataManager.save_to_file([staff.to_dict() for staff in self.gui_manager.staff_members], f"{archive_folder}/staff.json")
+                # Définir les chemins des fichiers source
+                source_club_file = os.path.join('data', 'club.json')
+                source_players_file = os.path.join('data', 'players.json')
+                source_staff_file = os.path.join('data', 'staff.json')
+
+                # Archiver les fichiers existants dans le dossier de la saison
+                if os.path.exists(source_club_file):
+                    DataManager.save_to_file(self.gui_manager.club.to_dict(), os.path.join(archive_folder, 'club.json'))
+                if os.path.exists(source_players_file):
+                    DataManager.save_to_file([player.to_dict() for player in self.gui_manager.players], os.path.join(archive_folder, 'players.json'))
+                if os.path.exists(source_staff_file):
+                    DataManager.save_to_file([staff.to_dict() for staff in self.gui_manager.staff_members], os.path.join(archive_folder, 'staff.json'))
 
                 messagebox.showinfo("Succès", f"La saison {season_name} a été archivée avec succès.")
             else:
@@ -47,19 +55,26 @@ class SeasonPage:
         if archive_folder:
             try:
                 # Charger les données du club à partir du dossier sélectionné
-                club_data = DataManager.load_from_file(f"{archive_folder}/club.json")
-                print(f"Club data loaded: {club_data}")  # Débogage
-                self.gui_manager.club = Club.from_dict(club_data)  # Charger les données du club
+                club_file = os.path.join(archive_folder, 'club.json')
+                if os.path.exists(club_file):
+                    club_data = DataManager.load_from_file(club_file)
+                    print(f"Club data loaded: {club_data}")  # Débogage
+                    self.gui_manager.club = Club.from_dict(club_data)  # Charger les données du club
+                    self.gui_manager.update_club_info()  # Mettre à jour les informations du club dans l'interface
 
                 # Charger les données des joueurs à partir du dossier sélectionné
-                players_data = DataManager.load_from_file(f"{archive_folder}/players.json")
-                print(f"Players data loaded: {players_data}")  # Débogage
-                self.gui_manager.players = [Player.from_dict(data) for data in players_data]  # Charger les données des joueurs
+                players_file = os.path.join(archive_folder, 'players.json')
+                if os.path.exists(players_file):
+                    players_data = DataManager.load_from_file(players_file)
+                    print(f"Players data loaded: {players_data}")  # Débogage
+                    self.gui_manager.players = [Player.from_dict(data) for data in players_data]  # Charger les données des joueurs
 
                 # Charger les données du staff à partir du dossier sélectionné
-                staff_data = DataManager.load_from_file(f"{archive_folder}/staff.json")
-                print(f"Staff data loaded: {staff_data}")  # Débogage
-                self.gui_manager.staff_members = [Staff.from_dict(data) for data in staff_data]  # Charger les données du staff
+                staff_file = os.path.join(archive_folder, 'staff.json')
+                if os.path.exists(staff_file):
+                    staff_data = DataManager.load_from_file(staff_file)
+                    print(f"Staff data loaded: {staff_data}")  # Débogage
+                    self.gui_manager.staff_members = [Staff.from_dict(data) for data in staff_data]  # Charger les données du staff
 
                 # Mettre à jour l'interface utilisateur avec les nouvelles données
                 self.gui_manager.update_players_treeview()
@@ -69,3 +84,4 @@ class SeasonPage:
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur lors du chargement de la saison : {e}")
                 print(f"Erreur lors du chargement de la saison : {e}")  # Débogage
+
