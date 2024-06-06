@@ -1,0 +1,17 @@
+[
+    {
+        "person_ID": 1,
+        "last_name": "lolo",
+        "first_name": "lolo",
+        "birth_date": "23-03-1993",
+        "contract": {
+            "start_date": "12-01-2015",
+            "end_date": "13-02-2025",
+            "salary": "2000"
+        },
+        "address": "rue des rues",
+        "phone_number": "0899121212",
+        "position": "Milieu",
+        "jersey_number": "4"
+    }
+]

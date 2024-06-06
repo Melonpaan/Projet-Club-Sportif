@@ -1,0 +1,16 @@
+[
+    {
+        "person_ID": 1,
+        "last_name": "dala",
+        "first_name": "lala",
+        "birth_date": "12-02-1998",
+        "contract": {
+            "start_date": "23-06-2013",
+            "end_date": "22-01-2023",
+            "salary": "3000"
+        },
+        "address": "rue des olives",
+        "phone_number": "0789121212",
+        "role": "Entra\u00eeneur"
+    }
+]

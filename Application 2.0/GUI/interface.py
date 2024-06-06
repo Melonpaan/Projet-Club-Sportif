@@ -10,7 +10,6 @@ from tools import Tools
 from classes.data_manager import DataManager
 import os
 
-
 class GUIManager(tk.Tk):
     """
     Classe principale pour gérer l'interface utilisateur de l'application de gestion du club.
@@ -26,8 +25,16 @@ class GUIManager(tk.Tk):
         self.title("Gestion du club")
         self.geometry("800x600")
 
-        # Définir le dossier de données relatif au script principal
-        self.data_folder = os.path.join(os.path.dirname(__file__), 'Application 2.0/data')
+        # Définir le dossier de données et d'archives relatif au script principal
+        self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        self.data_folder = os.path.join(self.base_dir, 'data')
+        self.archives_folder = os.path.join(self.base_dir, 'archives')
+
+        # Créer les dossiers s'ils n'existent pas
+        if not os.path.exists(self.data_folder):
+            os.makedirs(self.data_folder)
+        if not os.path.exists(self.archives_folder):
+            os.makedirs(self.archives_folder)
 
         # Charger les données
         self.load_initial_data()  # Charger les données initiales depuis le dossier data
@@ -186,7 +193,7 @@ class GUIManager(tk.Tk):
         self.club.name = self.entry_club_name.get()
         self.club.address = self.entry_club_address.get()
         self.club.president = self.entry_club_president.get()
-        self.club.save_to_file()
+        self.club.save_to_file(os.path.join(self.data_folder, 'club.json'))
         messagebox.showinfo(
             "Information", "Informations du club sauvegardées.")
 
@@ -199,8 +206,7 @@ class GUIManager(tk.Tk):
         if team_name:
             self.club.add_team(team_name)
             self.update_team_listbox()
-            messagebox.showinfo("Information", f"Équipe '{
-                                team_name}' ajoutée.")
+            messagebox.showinfo("Information", f"Équipe '{team_name}' ajoutée.")
 
     def remove_team(self):
         """
@@ -210,8 +216,7 @@ class GUIManager(tk.Tk):
         if selected_team:
             self.club.remove_team(selected_team)
             self.update_team_listbox()
-            messagebox.showinfo("Information", f"Équipe '{
-                                selected_team}' supprimée.")
+            messagebox.showinfo("Information", f"Équipe '{selected_team}' supprimée.")
         else:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée.")
 
@@ -282,3 +287,4 @@ class GUIManager(tk.Tk):
         # Bouton pour charger une saison archivée
         Tools.create_button(saison_frame, "Charger une Saison",
                             self.season_page.load_season, 1, 0)
+
