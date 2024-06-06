@@ -8,6 +8,7 @@ from GUI.staff_page import StaffPage
 from GUI.season_page import SeasonPage
 from utils import Utils
 from classes.data_manager import DataManager
+import os
 
 
 class GUIManager(tk.Tk):
@@ -25,9 +26,11 @@ class GUIManager(tk.Tk):
         self.title("Gestion du club")
         self.geometry("800x600")
 
+        # Définir le dossier de données relatif au script principal
+        self.data_folder = os.path.join(os.path.dirname(__file__), 'data')
+
         # Charger les données
         self.load_initial_data()  # Charger les données initiales depuis le dossier data
-
 
         # Créer un Notebook pour les onglets
         self.notebook = ttk.Notebook(self)
@@ -60,24 +63,28 @@ class GUIManager(tk.Tk):
         """
         Charge les données initiales depuis le dossier data.
         """
-        club_data = DataManager.load_from_file('data/club.json')
+        club_data = DataManager.load_from_file(
+            os.path.join(self.data_folder, 'club.json'))
         if club_data is not None:
             self.club = Club.from_dict(club_data)
         else:
-            self.club = Club("Nom du Club", "Adresse du Club", "Président du Club")
+            self.club = Club("Nom du Club", "Adresse du Club",
+                             "Président du Club")
 
-        players_data = DataManager.load_from_file('data/players.json')
+        players_data = DataManager.load_from_file(
+            os.path.join(self.data_folder, 'players.json'))
         if players_data is not None:
             self.players = [Player.from_dict(data) for data in players_data]
         else:
             self.players = []
 
-        staff_data = DataManager.load_from_file('data/staff.json')
+        staff_data = DataManager.load_from_file(
+            os.path.join(self.data_folder, 'staff.json'))
         if staff_data is not None:
             self.staff_members = [Staff.from_dict(data) for data in staff_data]
         else:
             self.staff_members = []
-    
+
     def create_accueil_frame(self, frame):
         """
         Crée la frame pour l'accueil du club avec les informations du club et les boutons pour ajouter et supprimer des équipes.
