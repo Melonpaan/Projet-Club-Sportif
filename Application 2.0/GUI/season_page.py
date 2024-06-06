@@ -34,3 +34,31 @@ class SeasonPage:
                 messagebox.showinfo("Succès", f"La saison {season_name} a été archivée avec succès.")
             else:
                 messagebox.showerror("Erreur", f"Le dossier {season_name} existe déjà.")
+
+    def load_season(self):
+        """
+        Charge les données d'une saison archivée à partir d'un dossier sélectionné par l'utilisateur.
+        """
+        # Demander à l'utilisateur de sélectionner un dossier de saison
+        archive_folder = filedialog.askdirectory(title="Sélectionnez le dossier de la saison à charger", initialdir="archives")
+        if archive_folder:
+            try:
+                # Charger les données du club à partir du dossier sélectionné
+                club_data = DataManager.load_from_file(f"{archive_folder}/club.json")
+                self.gui_manager.club = Club.from_dict(club_data)
+
+                # Charger les données des joueurs à partir du dossier sélectionné
+                players_data = DataManager.load_from_file(f"{archive_folder}/players.json")
+                self.gui_manager.players = [Player.from_dict(data) for data in players_data]
+
+                # Charger les données du staff à partir du dossier sélectionné
+                staff_data = DataManager.load_from_file(f"{archive_folder}/staff.json")
+                self.gui_manager.staff_members = [Staff.from_dict(data) for data in staff_data]
+
+                # Mettre à jour l'interface utilisateur avec les nouvelles données
+                self.gui_manager.update_players_treeview()
+                self.gui_manager.update_staff_treeview()
+
+                messagebox.showinfo("Succès", f"La saison a été chargée avec succès depuis {archive_folder}.")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors du chargement de la saison : {e}")
