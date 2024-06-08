@@ -194,9 +194,8 @@ class GUIManager(tk.Tk):
         self.club.save_to_file(os.path.join(self.data_folder, 'club.json'))
         messagebox.showinfo(
             "Information", "Informations du club sauvegardées.")
-        
-
-    
+        # Mettre à jour les informations de l'accueil après la sauvegarde
+        self.update_accueil_info()
 
     def update_players_treeview(self):
         """
@@ -211,6 +210,8 @@ class GUIManager(tk.Tk):
                 player.contract.start_date, player.contract.end_date,
                 player.address, player.phone_number, player.jersey_number
             ))
+        # Mettre à jour les informations de l'accueil après la mise à jour des joueurs
+        self.update_accueil_info()
 
     def update_staff_treeview(self):
         """
@@ -225,6 +226,8 @@ class GUIManager(tk.Tk):
                 staff.contract.start_date, staff.contract.end_date,
                 staff.address, staff.phone_number, staff.role
             ))
+        # Mettre à jour les informations de l'accueil après la mise à jour du staff
+        self.update_accueil_info()
 
     def update_club_info(self):
         """
@@ -236,7 +239,20 @@ class GUIManager(tk.Tk):
         self.entry_club_address.insert(0, self.club.address)
         self.entry_club_president.delete(0, tk.END)
         self.entry_club_president.insert(0, self.club.president)
-        self.update_team_listbox()
+        # Mettre à jour les informations de l'accueil après la mise à jour du club
+        self.update_accueil_info()
+
+    def update_accueil_info(self):
+        """
+        Met à jour les informations de l'accueil (nombre de joueurs, nombre d'équipes, nombre de matchs).
+        """
+        self.label_num_players.config(text=f"Nombre de joueurs: {len(
+            self.players)}")  # Mettre à jour le nombre de joueurs
+        # Mettre à jour le nombre d'équipes
+        self.label_num_teams.config(text=f"Nombre d'équipes: {
+                                    len(self.club.teams)}")
+        # Mettre à jour le nombre de matchs (initialement 0)
+        self.label_num_matches.config(text=f"Nombre de matchs: 0")
 
     def create_saison_frame(self, frame):
         """
