@@ -23,7 +23,7 @@ class GUIManager(tk.Tk):
         Charge les données du club, des joueurs et du staff à partir de fichiers.
         """
         super().__init__()
-        self.title("Gestion du club")
+        self.title("Gestion de club de foot")
         self.geometry("800x600")
 
         # Définir le dossier de données et d'archives relatif au script principal
@@ -125,6 +125,8 @@ class GUIManager(tk.Tk):
             accueil_frame, f"Nombre d'équipes: 0", 6, 0)  # Initialement 0
         self.label_num_matches = Tools.create_label(
             accueil_frame, f"Nombre de matchs: 0", 7, 0)  # Initialement 0
+        self.label_num_trainings = Tools.create_label(
+            accueil_frame, f"Nombre d'entraînements: 0", 8, 0)  # Initialement 0
 
     def create_player_frame(self, frame):
         """
@@ -258,6 +260,8 @@ class GUIManager(tk.Tk):
         self.label_num_teams.config(text=f"Nombre d'équipes: 0")
         # Mettre à jour le nombre de matchs (initialement 0)
         self.label_num_matches.config(text=f"Nombre de matchs: 0")
+        # Mettre à jour le nombre d'entraînements (initialement 0)
+        self.label_num_trainings.config(text=f"Nombre d'entraînements: 0")
 
     def create_saison_frame(self, frame):
         """
