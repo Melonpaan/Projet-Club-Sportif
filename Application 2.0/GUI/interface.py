@@ -119,10 +119,12 @@ class GUIManager(tk.Tk):
         # Labels pour afficher les informations clés
         self.label_num_players = Tools.create_label(
             accueil_frame, f"Nombre de joueurs: {len(self.players)}", 4, 0)
+        self.label_num_staff = Tools.create_label(
+            accueil_frame, f"Nombre de staff: {len(self.staff_members)}", 5, 0)
         self.label_num_teams = Tools.create_label(
-            accueil_frame, f"Nombre d'équipes: {len(self.club.teams)}", 5, 0)
+            accueil_frame, f"Nombre d'équipes: 0", 6, 0)  # Initialement 0
         self.label_num_matches = Tools.create_label(
-            accueil_frame, f"Nombre de matchs: 0", 6, 0)  # Initialement 0
+            accueil_frame, f"Nombre de matchs: 0", 7, 0)  # Initialement 0
 
     def create_player_frame(self, frame):
         """
@@ -244,13 +246,16 @@ class GUIManager(tk.Tk):
 
     def update_accueil_info(self):
         """
-        Met à jour les informations de l'accueil (nombre de joueurs, nombre d'équipes, nombre de matchs).
+        Met à jour les informations de l'accueil (nombre de joueurs, nombre de staff, nombre d'équipes, nombre de matchs).
         """
+        # Mettre à jour le nombre de joueurs
         self.label_num_players.config(text=f"Nombre de joueurs: {len(
-            self.players)}")  # Mettre à jour le nombre de joueurs
-        # Mettre à jour le nombre d'équipes
-        self.label_num_teams.config(text=f"Nombre d'équipes: {
-                                    len(self.club.teams)}")
+            self.players)}")
+        # Mettre à jour le nombre de staff
+        self.label_num_staff.config(text=f"Nombre de staff: {
+                                    len(self.staff_members)}")
+        # Mettre à jour le nombre d'équipes (initialement 0)
+        self.label_num_teams.config(text=f"Nombre d'équipes: 0")
         # Mettre à jour le nombre de matchs (initialement 0)
         self.label_num_matches.config(text=f"Nombre de matchs: 0")
 
