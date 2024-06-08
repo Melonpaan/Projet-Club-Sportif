@@ -14,3 +14,11 @@ class TeamPage:
         if disabled:
             entry.config(state='disabled')
         return entry
+    
+    def create_combobox(self, parent, label_text, row, values, default_value=None):
+        Label(parent, text=label_text).grid(row=row, column=0)
+        combobox = ttk.Combobox(parent, values=values)
+        combobox.grid(row=row, column=1)
+        if default_value:
+            combobox.set(default_value)
+        return combobox
