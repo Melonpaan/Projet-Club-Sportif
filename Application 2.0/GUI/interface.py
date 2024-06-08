@@ -10,6 +10,7 @@ from tools import Tools
 from classes.data_manager import DataManager
 import os
 
+
 class GUIManager(tk.Tk):
     """
     Classe principale pour gérer l'interface utilisateur de l'application de gestion du club.
@@ -26,7 +27,8 @@ class GUIManager(tk.Tk):
         self.geometry("800x600")
 
         # Définir le dossier de données et d'archives relatif au script principal
-        self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        self.base_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..'))
         self.data_folder = os.path.join(self.base_dir, 'data')
         self.archives_folder = os.path.join(self.base_dir, 'archives')
 
@@ -114,17 +116,13 @@ class GUIManager(tk.Tk):
         Tools.create_button(accueil_frame, "Sauvegarder",
                             self.save_club_info, 3, 0, 2)
 
-        # Listbox pour afficher les équipes
-        self.team_listbox = tk.Listbox(accueil_frame, height=10, width=50)
-        self.team_listbox.grid(
-            row=4, column=0, columnspan=2, pady=10, sticky=tk.W + tk.E)
-        self.update_team_listbox()
-
-        # Boutons pour ajouter et supprimer des équipes
-        Tools.create_button(accueil_frame, "Ajouter Équipe",
-                            self.add_team, 5, 0)
-        Tools.create_button(
-            accueil_frame, "Supprimer Équipe", self.remove_team, 5, 1)
+        # Labels pour afficher les informations clés
+        self.label_num_players = Tools.create_label(
+            accueil_frame, f"Nombre de joueurs: {len(self.players)}", 4, 0)
+        self.label_num_teams = Tools.create_label(
+            accueil_frame, f"Nombre d'équipes: {len(self.club.teams)}", 5, 0)
+        self.label_num_matches = Tools.create_label(
+            accueil_frame, f"Nombre de matchs: 0", 6, 0)  # Initialement 0
 
     def create_player_frame(self, frame):
         """
@@ -196,37 +194,9 @@ class GUIManager(tk.Tk):
         self.club.save_to_file(os.path.join(self.data_folder, 'club.json'))
         messagebox.showinfo(
             "Information", "Informations du club sauvegardées.")
+        
 
-    def add_team(self):
-        """
-        Ajoute une nouvelle équipe au club et met à jour la listbox.
-        """
-        team_name = simpledialog.askstring(
-            "Ajouter Équipe", "Nom de l'équipe:")
-        if team_name:
-            self.club.add_team(team_name)
-            self.update_team_listbox()
-            messagebox.showinfo("Information", f"Équipe '{team_name}' ajoutée.")
-
-    def remove_team(self):
-        """
-        Supprime l'équipe sélectionnée de la listbox et du club.
-        """
-        selected_team = self.team_listbox.get(tk.ACTIVE)
-        if selected_team:
-            self.club.remove_team(selected_team)
-            self.update_team_listbox()
-            messagebox.showinfo("Information", f"Équipe '{selected_team}' supprimée.")
-        else:
-            messagebox.showerror("Erreur", "Aucune équipe sélectionnée.")
-
-    def update_team_listbox(self):
-        """
-        Met à jour la listbox avec les équipes actuelles du club.
-        """
-        self.team_listbox.delete(0, tk.END)
-        for team in self.club.teams:
-            self.team_listbox.insert(tk.END, team)
+    
 
     def update_players_treeview(self):
         """
@@ -266,7 +236,7 @@ class GUIManager(tk.Tk):
         self.entry_club_address.insert(0, self.club.address)
         self.entry_club_president.delete(0, tk.END)
         self.entry_club_president.insert(0, self.club.president)
-        self.update_team_listbox()  # Mettre à jour la listbox des équipes
+        self.update_team_listbox()
 
     def create_saison_frame(self, frame):
         """
@@ -287,4 +257,3 @@ class GUIManager(tk.Tk):
         # Bouton pour charger une saison archivée
         Tools.create_button(saison_frame, "Charger une Saison",
                             self.season_page.load_season, 1, 0)
-
