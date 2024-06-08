@@ -53,3 +53,36 @@ class TeamPage:
         entry_categorie = self.create_combobox(form_window, "Catégorie", 3,["Division 1","Division 2","Division 3","Division 4"], getattr(team, 'categorie', 'division'))
 
         Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=4, column=0, columnspan=2)
+
+    def add_team(self):
+        self.open_form_widget()
+
+    def modify_team(self):
+        selected_item = self.gui_manager.tree_teams.selection()
+        if selected_item:
+            item = self.gui_manager.tree_teams.item(selected_item)
+            values = item['values']
+            team_id = int(values[0])
+            team = next((team for team in self.gui_manager.teams if team.team_id == team_id), None)
+            self.open_form_widget(team)
+        else:
+            messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
+
+    def delete_team(self):
+        selected_item = self.gui_manager.tree_teams.selection()
+        if selected_item:
+            item = self.gui_manager.tree_teams.item(selected_item)
+            values = item['values']
+            team_id = int(values[0])
+            team = next((team for team in self.gui_manager.teams if team.team_id == team_id), None)
+
+            if team:
+                confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer cette équipe ?")
+                if confirmation:
+                    Team.delete(team)
+                    self.gui_manager.teams.remove(team)
+                    self.gui_manager.update_teams_treeview()
+                    Team.save_to_file(self.gui_manager.teams)
+                    messagebox.showinfo("Équipe supprimée", "L'équipe a été supprimée avec succès.")
+        else:
+            messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
