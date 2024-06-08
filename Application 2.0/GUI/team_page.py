@@ -22,3 +22,34 @@ class TeamPage:
         if default_value:
             combobox.set(default_value)
         return combobox
+    
+     def open_form_widget(self, team=None):
+        def submit():
+            name = entry_name.get()
+            genre = entry_genre.get()
+            categorie = entry_categorie.get()
+
+            if not name:
+                messagebox.showerror("Erreur", "Le nom de l'équipe ne peut pas être vide.")
+                return
+
+            if team is None:
+                new_team = Team.create_new(name, genre, categorie)
+                self.gui_manager.teams.append(new_team)
+                messagebox.showinfo("Information", f"Équipe ajoutée avec l'ID {new_team.team_id}")
+            else:
+                team.update_details(name, genre, categorie)
+                messagebox.showinfo("Information", f"Équipe modifiée avec l'ID {team.team_id}")
+
+            self.gui_manager.update_teams_treeview()
+            Team.save_to_file(self.gui_manager.teams)
+            form_window.destroy()
+
+        form_window = Toplevel(self.gui_manager)
+        form_window.title("Modifier une équipe" if team else "Ajouter une équipe")
+
+        entry_name = self.create_form_widget(form_window, "Nom de l'équipe", 1, getattr(team, 'name', ''))
+        entry_genre = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', 'Genre'))
+        entry_categorie = self.create_combobox(form_window, "Catégorie", 3,["Division 1","Division 2","Division 3","Division 4"], getattr(team, 'categorie', 'division'))
+
+        Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=4, column=0, columnspan=2)
