@@ -4,11 +4,12 @@ class Team:
     last_id = 0
     available_ids = []
 
-    def __init__(self, team_id, name, genre, categorie):
+    def __init__(self, team_id, name, genre, categorie, players=None):
         self.team_id = team_id
         self.name = name
         self.genre = genre
         self.categorie = categorie
+        self.players = players if players is not None else []
 
         if team_id > Team.last_id:
             Team.last_id = team_id
@@ -31,18 +32,27 @@ class Team:
         self.genre = genre
         self.categorie = categorie
 
+    def add_player(self, player_id):
+        if player_id not in self.players:
+            self.players.append(player_id)
+
+    def remove_player(self, player_id):
+        if player_id in self.players:
+            self.players.remove(player_id)
+
     def to_dict(self):
         return {
             'team_id': self.team_id,
             'name': self.name,
             'genre': self.genre,
-            'categorie': self.categorie
+            'categorie': self.categorie,
+            'players': self.players
         }
 
     @classmethod
     def from_dict(cls, data):
         return cls(
-            data['team_id'], data['name'], data['genre'], data['categorie']
+            data['team_id'], data['name'], data['genre'], data['categorie'], data.get('players', [])
         )
 
     @staticmethod
