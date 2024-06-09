@@ -4,6 +4,23 @@
         "name": "D1-femme",
         "genre": "F\u00e9minin",
         "categorie": "Division 1",
-        "players": []
+        "players": [
+            23,
+            24,
+            25,
+            26,
+            28,
+            29,
+            30
+        ]
+    },
+    {
+        "team_id": 2,
+        "name": "D1-homme",
+        "genre": "Masculin",
+        "categorie": "Division 1",
+        "players": [
+            1
+        ]
     }
 ]

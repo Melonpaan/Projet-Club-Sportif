@@ -1,4 +1,5 @@
-from tkinter import Toplevel, Label, Entry, Button, messagebox, ttk
+import tkinter as tk
+from tkinter import Toplevel, Label, Button, Entry, ttk, messagebox
 from classes.team import Team
 
 class TeamPage:
@@ -49,8 +50,8 @@ class TeamPage:
         form_window.title("Modifier une équipe" if team else "Ajouter une équipe")
 
         entry_name = self.create_form_widget(form_window, "Nom de l'équipe", 1, getattr(team, 'name', ''))
-        entry_genre = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', 'Genre'))
-        entry_categorie = self.create_combobox(form_window, "Catégorie", 3,["Division 1","Division 2","Division 3","Division 4"], getattr(team, 'categorie', 'division'))
+        entry_genre = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', ''))
+        entry_categorie = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'categorie', ''))
 
         Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=4, column=0, columnspan=2)
 
@@ -94,3 +95,138 @@ class TeamPage:
                     messagebox.showinfo("Équipe supprimée", "L'équipe a été supprimée avec succès.")
         else:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
+
+    def add_players_to_team(self):
+        """
+        Ouvre une fenêtre pour sélectionner et ajouter des joueurs à l'équipe sélectionnée.
+        """
+        selected_item = self.gui_manager.tree_teams.selection()
+        if selected_item:
+            item = self.gui_manager.tree_teams.item(selected_item)
+            team_id = item['values'][0]
+            team = None
+            for data in self.gui_manager.teams:
+                if data.team_id == team_id:
+                    team = data
+                    break
+
+            if team:
+                self.open_add_players_window(team)
+            else:
+                messagebox.showerror("Erreur", "Équipe non trouvée")
+        else:
+            messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
+
+    def open_add_players_window(self, team):
+        """
+        Ouvre une fenêtre pour sélectionner et ajouter des joueurs à une équipe.
+        """
+        add_players_window = Toplevel(self.gui_manager)
+        add_players_window.title(f"Ajouter des joueurs à l'équipe {team.name}")
+
+        players_tree = ttk.Treeview(add_players_window, columns=("Nom", "Prénom", "Poste", "Équipe"), selectmode='extended')
+        players_tree.heading("#0", text="ID")
+        players_tree.heading("Nom", text="Nom")
+        players_tree.heading("Prénom", text="Prénom")
+        players_tree.heading("Poste", text="Poste")
+        players_tree.heading("Équipe", text="Équipe")
+        players_tree.pack(fill=tk.BOTH, expand=True)
+
+        for player in self.gui_manager.players:
+            team_name = self.get_player_team(player.person_ID)
+            display_text = f"{player.first_name} {player.last_name}, Poste: {player.position}"
+            if team_name:
+                display_text += f" (Dans l'équipe: {team_name})"
+            players_tree.insert("", "end", text=player.person_ID, values=(player.last_name, player.first_name, player.position, team_name or ""))
+
+        def add_selected_players():
+            selected_items = players_tree.selection()
+            for item in selected_items:
+                player_id = int(players_tree.item(item, "text"))
+                current_team_name = self.get_player_team(player_id)
+                if current_team_name != team.name:
+                    confirmation = messagebox.askyesno("Confirmation",f"Le joueur est déja dans l'équipe {current_team_name}. Voulez-vous le déplacer dans l'équipe {team.name} ?")
+                    if confirmation:
+                        for _ in self.gui_manager.teams:
+                            if player_id in _.players:
+                                _.players.remove(player_id)
+                    team.add_player(player_id)
+
+            self.gui_manager.update_teams_treeview()
+            Team.save_to_file(self.gui_manager.teams)
+            add_players_window.destroy()
+
+        add_button = Button(add_players_window, text="Ajouter", command=add_selected_players)
+        add_button.pack()
+
+    def view_team_players(self):
+        """
+        Ouvre une fenêtre pour afficher les joueurs d'une équipe sélectionnée.
+        """
+        selected_item = self.gui_manager.tree_teams.selection()
+        if selected_item:
+            item = self.gui_manager.tree_teams.item(selected_item)
+            team_id = item['values'][0]
+            team = None
+            for data in self.gui_manager.teams:
+                if data.team_id == team_id:
+                    team = data
+                    break
+
+            if team:
+                self.open_view_team_players_window(team)
+            else:
+                messagebox.showerror("Erreur", "Équipe non trouvée")
+        else:
+            messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
+
+    def open_view_team_players_window(self, team):
+        """
+        Ouvre une fenêtre pour afficher les joueurs d'une équipe.
+        """
+        view_players_window = Toplevel(self.gui_manager)
+        view_players_window.title(f"Joueurs de l'équipe {team.name}")
+
+        players_tree = ttk.Treeview(view_players_window, columns=("Nom", "Prénom", "Poste"))
+        players_tree.heading("#0", text="ID")
+        players_tree.heading("Nom", text="Nom")
+        players_tree.heading("Prénom", text="Prénom")
+        players_tree.heading("Poste", text="Poste")
+        players_tree.pack(fill=tk.BOTH, expand=True)
+
+        for player_id in team.players:
+            player = None
+            for p in self.gui_manager.players:
+                if p.person_ID == player_id:
+                    player = p
+                    break
+            if player:
+                players_tree.insert("", "end", text=player.person_ID, values=(player.last_name, player.first_name, player.position))
+
+        def remove_selected_player():
+            selected_item = players_tree.selection()
+            if selected_item:
+                player_id = int(players_tree.item(selected_item, "text"))
+                confirmation = messagebox.askyesno("Confirmation", f"Voulez-vous vraiment supprimer ce joueur de l'équipe {team.name} ?")
+                if confirmation:
+                    team.players.remove(player_id)
+                    self.gui_manager.update_teams_treeview()
+                    Team.save_to_file(self.gui_manager.teams)
+                    players_tree.delete(selected_item)
+                    messagebox.showinfo("Succès", "Le joueur a été supprimé de l'équipe avec succès.")
+            else:
+                messagebox.showerror("Erreur", "Aucun joueur sélectionné")
+
+        remove_button = Button(view_players_window, text="Supprimer Joueur", command=remove_selected_player)
+        remove_button.pack()
+
+        close_button = Button(view_players_window, text="Fermer", command=view_players_window.destroy)
+        close_button.pack()
+    def get_player_team(self, player_id):
+        """
+        Retourne le nom de l'équipe à laquelle appartient le joueur.
+        """
+        for team in self.gui_manager.teams:
+            if player_id in team.players:
+                return team.name
+        return None
