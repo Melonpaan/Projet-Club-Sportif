@@ -14,7 +14,7 @@ class TeamPage:
         if disabled:
             entry.config(state='disabled')
         return entry
-    
+
     def create_combobox(self, parent, label_text, row, values, default_value=None):
         Label(parent, text=label_text).grid(row=row, column=0)
         combobox = ttk.Combobox(parent, values=values)
@@ -22,8 +22,8 @@ class TeamPage:
         if default_value:
             combobox.set(default_value)
         return combobox
-    
-     def open_form_widget(self, team=None):
+
+    def open_form_widget(self, team=None):
         def submit():
             name = entry_name.get()
             genre = entry_genre.get()
@@ -62,8 +62,12 @@ class TeamPage:
         if selected_item:
             item = self.gui_manager.tree_teams.item(selected_item)
             values = item['values']
-            team_id = int(values[0])
-            team = next((team for team in self.gui_manager.teams if team.team_id == team_id), None)
+            team_id = str(values[0])
+            team = None
+            for data in self.gui_manager.teams:
+                if str(data.team_id) == team_id:
+                    team = data
+                    break
             self.open_form_widget(team)
         else:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
@@ -73,8 +77,12 @@ class TeamPage:
         if selected_item:
             item = self.gui_manager.tree_teams.item(selected_item)
             values = item['values']
-            team_id = int(values[0])
-            team = next((team for team in self.gui_manager.teams if team.team_id == team_id), None)
+            team_id = str(values[0])
+            team = None
+            for data in self.gui_manager.teams:
+                if str(data.team_id) == team_id:
+                    team = data
+                    break
 
             if team:
                 confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer cette équipe ?")
