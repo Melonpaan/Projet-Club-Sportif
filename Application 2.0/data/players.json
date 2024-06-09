@@ -13,5 +13,20 @@
         "phone_number": "0899121212",
         "position": "Milieu",
         "jersey_number": "4"
+    },
+    {
+        "person_ID": 2,
+        "last_name": "rajang",
+        "first_name": "monsieur",
+        "birth_date": "11-04-1991",
+        "contract": {
+            "start_date": "12-01-2012",
+            "end_date": "16-03-2025",
+            "salary": "3400"
+        },
+        "address": "rue des palmes",
+        "phone_number": "0123898989",
+        "position": "Milieu",
+        "jersey_number": "6"
     }
 ]
