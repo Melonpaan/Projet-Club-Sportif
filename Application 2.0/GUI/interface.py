@@ -305,7 +305,7 @@ class GUIManager(tk.Tk):
 
         # Treeview pour afficher les équipes
         self.tree_teams = ttk.Treeview(frame, columns=(
-            "ID", "Nom", "Genre", "Catégorie"
+            "ID", "Nom", "Genre", "Catégorie","Médecin", "Entraîneur"
         ), show='headings')
         self.tree_teams.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
@@ -332,8 +332,24 @@ class GUIManager(tk.Tk):
         """
         for item in self.tree_teams.get_children():
             self.tree_teams.delete(item)
+
         for team in self.teams:
+            doctor_name = self.get_staff_name_by_id(team.doctor_id)
+            coach_name = self.get_staff_name_by_id(team.coach_id)
             self.tree_teams.insert("", "end", values=(
-                team.team_id, team.name, team.gender, team.category
+                team.team_id, team.name, team.gender, team.category, doctor_name, coach_name
             ))
         self.update_accueil_info()
+
+    def get_staff_name_by_id(self, staff_id):
+        """
+        Retourne le nom complet du staff à partir de son ID.
+        """
+        if staff_id is None:
+            return ""
+        for staff in self.staff_members:
+            if staff.person_ID == staff_id:
+                return f"{staff.first_name} {staff.last_name}"
+        return ""
+
+

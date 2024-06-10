@@ -24,22 +24,25 @@ class TeamPage:
             combobox.set(default_value)
         return combobox
 
+
     def open_form_widget(self, team=None):
         def submit():
             name = entry_name.get()
+            gender = entry_gender.get()
             category = entry_category.get()
-            category = entry_category.get()
+            doctor_id = int(entry_doctor.get().split()[-1][:-1]) if entry_doctor.get() else None
+            coach_id = int(entry_coach.get().split()[-1][:-1]) if entry_coach.get() else None
 
             if not name:
                 messagebox.showerror("Erreur", "Le nom de l'équipe ne peut pas être vide.")
                 return
 
             if team is None:
-                new_team = Team.create_new(name, category, category)
+                new_team = Team.create_new(name, gender, category, doctor_id, coach_id)
                 self.gui_manager.teams.append(new_team)
                 messagebox.showinfo("Information", f"Équipe ajoutée avec l'ID {new_team.team_id}")
             else:
-                team.update_details(name, category, category)
+                team.update_details(name, gender, category, doctor_id, coach_id)
                 messagebox.showinfo("Information", f"Équipe modifiée avec l'ID {team.team_id}")
 
             self.gui_manager.update_teams_treeview()
@@ -50,10 +53,16 @@ class TeamPage:
         form_window.title("Modifier une équipe" if team else "Ajouter une équipe")
 
         entry_name = self.create_form_widget(form_window, "Nom de l'équipe", 1, getattr(team, 'name', ''))
-        entry_category = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', ''))
+        entry_gender = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', ''))
         entry_category = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'categorie', ''))
+        
+        # Combobox pour le médecin et l'entraîneur
+        doctor_values = [f"{staff.first_name} {staff.last_name} (ID: {staff.person_ID})" for staff in self.gui_manager.staff_members if staff.role == "Médecin"]
+        coach_values = [f"{staff.first_name} {staff.last_name} (ID: {staff.person_ID})" for staff in self.gui_manager.staff_members if staff.role == "Entraîneur"]
+        entry_doctor = self.create_combobox(form_window, "Médecin", 4, doctor_values, getattr(team, 'doctor_id', None))
+        entry_coach = self.create_combobox(form_window, "Entraîneur", 5, coach_values, getattr(team, 'coach_id', None))
 
-        Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=4, column=0, columnspan=2)
+        Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=6, column=0, columnspan=2)
 
     def add_team(self):
         self.open_form_widget()
@@ -142,7 +151,7 @@ class TeamPage:
             for item in selected_items:
                 player_id = int(players_tree.item(item, "text"))
                 current_team_name = self.get_player_team(player_id)
-                if current_team_name != team.name:
+                if current_team_name and current_team_name != team.name:
                     confirmation = messagebox.askyesno("Confirmation",f"Le joueur est déja dans l'équipe {current_team_name}. Voulez-vous le déplacer dans l'équipe {team.name} ?")
                     if confirmation:
                         for _ in self.gui_manager.teams:

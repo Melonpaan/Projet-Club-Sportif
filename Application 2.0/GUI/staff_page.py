@@ -120,7 +120,7 @@ class StaffPage:
             entry_gender.set(staff.gender)
 
         # Bouton pour soumettre le formulaire
-        Button(form_window, text="Modifier" if staff else "Ajouter", command=submit).grid(row=10, column=0, columnspan=2)
+        Button(form_window, text="Modifier" if staff else "Ajouter", command=submit).grid(row=11, column=0, columnspan=2)
 
     def add_staff(self):
         self.open_form_widget()

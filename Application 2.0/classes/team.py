@@ -4,33 +4,37 @@ class Team:
     last_id = 0
     available_ids = []
 
-    def __init__(self, team_id, name, gender, category, players=None):
+    def __init__(self, team_id, name, gender, category, players=None, doctor_id=None, coach_id=None):
         self.team_id = team_id
         self.name = name
         self.gender = gender
         self.category = category
         self.players = players if players is not None else []
+        self.doctor_id= doctor_id
+        self.coach_id = coach_id
 
         if team_id > Team.last_id:
             Team.last_id = team_id
 
     @classmethod
-    def create_new(cls, name, gender, category):
+    def create_new(cls, name, gender, category, doctor_id=None, coach_id= None):
         if cls.available_ids:
             new_id = cls.available_ids.pop(0)
         else:
             cls.last_id += 1
             new_id = cls.last_id
-        return cls(new_id, name, gender, category)
+        return cls(new_id, name, gender, category, doctor_id=None, coach_id= None)
 
     @staticmethod
     def delete(team):
         Team.available_ids.append(team.team_id)
 
-    def update_details(self, name, gender, category):
+    def update_details(self, name, gender, category, doctor_id=None, coach_id= None):
         self.name = name
         self.gender = gender
         self.category = category
+        self.doctor_id = doctor_id
+        self.coach_id = coach_id
 
     def add_player(self, player_id):
         if player_id not in self.players:
@@ -46,13 +50,16 @@ class Team:
             'name': self.name,
             'gender': self.gender,
             'category': self.category,
-            'players': self.players
+            'players': self.players,
+            'doctor_id': self.doctor_id,
+            'coach_id': self.coach_id
         }
 
     @classmethod
     def from_dict(cls, data):
         return cls(
-            data['team_id'], data['name'], data['gender'], data['category'], data.get('players', [])
+            data['team_id'], data['name'], data['gender'], data['category'], data.get('players', []),
+            data.get('doctor_id'), data.get('coach_id')
         )
 
     @staticmethod

@@ -11,16 +11,42 @@
             26,
             28,
             29,
-            30
-        ]
+            30,
+            16,
+            17,
+            18,
+            20
+        ],
+        "doctor_id": "ada re (ID: 2)",
+        "coach_id": "lala dala (ID: 1)"
     },
     {
         "team_id": 2,
         "name": "D1-homme",
         "gender": "Masculin",
         "category": "Division 1",
+        "players": [],
+        "doctor_id": "ada re (ID: 2)",
+        "coach_id": "lala dala (ID: 1)"
+    },
+    {
+        "team_id": 3,
+        "name": "D2-homme",
+        "gender": "Masculin",
+        "category": "Division 2",
+        "players": [],
+        "doctor_id": "",
+        "coach_id": ""
+    },
+    {
+        "team_id": 5,
+        "name": "D3-Homme",
+        "gender": "Masculin",
+        "category": "Division 3",
         "players": [
-            1
-        ]
+            5
+        ],
+        "doctor_id": "ada re (ID: 2)",
+        "coach_id": "lala dala (ID: 1)"
     }
 ]

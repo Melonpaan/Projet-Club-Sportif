@@ -11,7 +11,22 @@
         },
         "address": "rue des olives",
         "phone_number": "0789121212",
-        "role": "Entra\u00eeneur",
-        "gender": "Masculin"
+        "gender": "Masculin",
+        "role": "Entra\u00eeneur"
+    },
+    {
+        "person_ID": 2,
+        "last_name": "re",
+        "first_name": "ada",
+        "birth_date": "07-10-2000",
+        "contract": {
+            "start_date": "07-10-2000",
+            "end_date": "07-10-2000",
+            "salary": "22222"
+        },
+        "address": "EEZEEE",
+        "phone_number": "222",
+        "gender": "Masculin",
+        "role": "M\u00e9decin"
     }
 ]
