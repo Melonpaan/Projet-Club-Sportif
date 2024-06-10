@@ -8,7 +8,6 @@ class PlayerPage:
         self.gui_manager = gui_manager
 
     def create_form_widget(self, parent, label_text, row, default_value=None, disabled=False):
-        """Create and configure a form field (label + entry) in a Tkinter GUI."""
         Label(parent, text=label_text).grid(row=row, column=0)
         entry = Entry(parent)
         entry.grid(row=row, column=1)
@@ -18,8 +17,18 @@ class PlayerPage:
             entry.config(state='disabled')
         return entry
 
+    def create_combobox(self, parent, label_text, row, values, default_value=None):
+        Label(parent, text=label_text).grid(row=row, column=0)
+        combobox = ttk.Combobox(parent, values=values)
+        combobox.grid(row=row, column=1)
+        if default_value:
+            combobox.set(default_value)
+        return combobox
+
     def open_form_widget(self, player=None):
-        """Méthode qui permet d'ajouter ou de modifier un joueur suivant si player est donné"""
+        """
+        Méthode pour ajouter ou modifier un joueur suivant si player est donné.
+        """
         def player_exists(last_name, first_name, birth_date):
             """Check if a player with the same name and birth date already exists."""
             for p in self.gui_manager.players:
@@ -39,6 +48,7 @@ class PlayerPage:
             phone_number = entry_phone_number.get()
             position = entry_position.get()
             jersey_number = entry_jersey_number.get()
+            gender = entry_gender.get()
 
             if not last_name.isalpha():
                 messagebox.showerror("Erreur", "Le nom de famille doit être composé uniquement de lettres.")
@@ -71,11 +81,11 @@ class PlayerPage:
 
             # Crée ou met à jour l'objet player
             if player is None:
-                new_player = Player.create_new(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
+                new_player = Player.create_new(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number, gender)
                 self.gui_manager.players.append(new_player)
                 messagebox.showinfo("Information", f"Joueur ajouté avec l'ID {new_player.person_ID}")
             else:
-                player.update_details(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
+                player.update_details(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number, gender)
                 messagebox.showinfo("Information", f"Joueur modifié avec l'ID {player.person_ID}")
 
             # Mettre à jour l'interface avec les infos et enregistrer les modifications
@@ -87,12 +97,11 @@ class PlayerPage:
         form_window = Toplevel(self.gui_manager)
         form_window.title("Modifier un joueur" if player else "Ajouter un joueur")
 
-        # Création des entrées pour le formulaire vide ou rempli suivant si l'objet player est donné. getattr permet d'accéder à un attribut d'un objet (objet, 'nom_attribut', valeur_attribut)
-        entry_id = self.create_form_widget(form_window, "ID", 0, getattr(player, 'person_ID', ''), disabled=True)
+        # Création des entrées pour le formulaire vide ou rempli suivant si l'objet player est donné.
         entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(player, 'last_name', ''))
         entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(player, 'first_name', ''))
         entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(player, 'birth_date', ''))
-        
+
         if player:
             salary = player.contract.salary
             contract_start = player.contract.start_date
@@ -105,7 +114,7 @@ class PlayerPage:
         entry_salary = self.create_form_widget(form_window, "Salaire", 4, salary)
         entry_contract_start = self.create_form_widget(form_window, "Début du Contrat (JJ-MM-AAAA)", 5, contract_start)
         entry_contract_end = self.create_form_widget(form_window, "Fin du Contrat (JJ-MM-AAAA)", 6, contract_end)
-        
+
         entry_address = self.create_form_widget(form_window, "Adresse", 7, getattr(player, 'address', ''))
         entry_phone_number = self.create_form_widget(form_window, "Téléphone", 8, getattr(player, 'phone_number', ''))
 
@@ -118,8 +127,15 @@ class PlayerPage:
 
         entry_jersey_number = self.create_form_widget(form_window, "Numéro de Maillot", 10, getattr(player, 'jersey_number', ''))
 
+        # Utiliser un Combobox pour le champ "Genre"
+        Label(form_window, text="Genre").grid(row=11, column=0)
+        entry_gender = ttk.Combobox(form_window, values=["Masculin", "Féminin"])
+        entry_gender.grid(row=11, column=1)
+        if player:
+            entry_gender.set(player.gender)
+
         # Bouton pour soumettre le formulaire
-        Button(form_window, text="Modifier" if player else "Ajouter", command=submit).grid(row=11, column=0, columnspan=2)
+        Button(form_window, text="Modifier" if player else "Ajouter", command=submit).grid(row=12, column=0, columnspan=2)
 
     def add_player(self):
         self.open_form_widget()

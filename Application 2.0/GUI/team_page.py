@@ -27,19 +27,19 @@ class TeamPage:
     def open_form_widget(self, team=None):
         def submit():
             name = entry_name.get()
-            genre = entry_genre.get()
-            categorie = entry_categorie.get()
+            category = entry_category.get()
+            category = entry_category.get()
 
             if not name:
                 messagebox.showerror("Erreur", "Le nom de l'équipe ne peut pas être vide.")
                 return
 
             if team is None:
-                new_team = Team.create_new(name, genre, categorie)
+                new_team = Team.create_new(name, category, category)
                 self.gui_manager.teams.append(new_team)
                 messagebox.showinfo("Information", f"Équipe ajoutée avec l'ID {new_team.team_id}")
             else:
-                team.update_details(name, genre, categorie)
+                team.update_details(name, category, category)
                 messagebox.showinfo("Information", f"Équipe modifiée avec l'ID {team.team_id}")
 
             self.gui_manager.update_teams_treeview()
@@ -50,8 +50,8 @@ class TeamPage:
         form_window.title("Modifier une équipe" if team else "Ajouter une équipe")
 
         entry_name = self.create_form_widget(form_window, "Nom de l'équipe", 1, getattr(team, 'name', ''))
-        entry_genre = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', ''))
-        entry_categorie = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'categorie', ''))
+        entry_category = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', ''))
+        entry_category = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'categorie', ''))
 
         Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=4, column=0, columnspan=2)
 
@@ -133,11 +133,9 @@ class TeamPage:
         players_tree.pack(fill=tk.BOTH, expand=True)
 
         for player in self.gui_manager.players:
-            team_name = self.get_player_team(player.person_ID)
-            display_text = f"{player.first_name} {player.last_name}, Poste: {player.position}"
-            if team_name:
-                display_text += f" (Dans l'équipe: {team_name})"
-            players_tree.insert("", "end", text=player.person_ID, values=(player.last_name, player.first_name, player.position, team_name or ""))
+            if player.gender == team.gender:
+                team_name = self.get_player_team(player.person_ID)
+                players_tree.insert("", "end", text=player.person_ID, values=(player.last_name, player.first_name, player.position, team_name or ""))
 
         def add_selected_players():
             selected_items = players_tree.selection()

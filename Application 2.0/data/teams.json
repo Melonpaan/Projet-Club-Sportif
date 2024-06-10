@@ -2,8 +2,8 @@
     {
         "team_id": 1,
         "name": "D1-femme",
-        "genre": "F\u00e9minin",
-        "categorie": "Division 1",
+        "gender": "F\u00e9minin",
+        "category": "Division 1",
         "players": [
             23,
             24,
@@ -17,8 +17,8 @@
     {
         "team_id": 2,
         "name": "D1-homme",
-        "genre": "Masculin",
-        "categorie": "Division 1",
+        "gender": "Masculin",
+        "category": "Division 1",
         "players": [
             1
         ]

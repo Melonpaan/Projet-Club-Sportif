@@ -38,6 +38,7 @@ class StaffPage:
             address = entry_address.get()
             phone_number = entry_phone_number.get()
             role = entry_role.get()
+            gender = entry_gender.get()
 
             if not last_name.isalpha():
                 messagebox.showerror("Erreur", "Le nom de famille doit être composé uniquement de lettres.")
@@ -67,11 +68,11 @@ class StaffPage:
 
             # Crée ou met à jour l'objet staff
             if staff is None:
-                new_staff = Staff.create_new(last_name, first_name, birth_date, contract, address, phone_number, role)
+                new_staff = Staff.create_new(last_name, first_name, birth_date, contract, address, phone_number, role, gender)
                 self.gui_manager.staff_members.append(new_staff)
                 messagebox.showinfo("Information", f"Membre du staff ajouté avec l'ID {new_staff.person_ID}")
             else:
-                staff.update_details(last_name, first_name, birth_date, contract, address, phone_number, role)
+                staff.update_details(last_name, first_name, birth_date, contract, address, phone_number, role, gender)
                 messagebox.showinfo("Information", f"Membre du staff modifié avec l'ID {staff.person_ID}")
 
             # Mettre à jour l'interface avec les infos et enregistrer les modifications
@@ -84,7 +85,6 @@ class StaffPage:
         form_window.title("Modifier un membre du staff" if staff else "Ajouter un membre du staff")
 
         # Création des entrées pour le formulaire vide ou rempli suivant si l'objet staff est donné. getattr permet d'accéder à un attribut d'un objet (objet, 'nom_attribut', valeur_attribut)
-        entry_id = self.create_form_widget(form_window, "ID", 0, getattr(staff, 'person_ID', ''), disabled=True)
         entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(staff, 'last_name', ''))
         entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(staff, 'first_name', ''))
         entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(staff, 'birth_date', ''))
@@ -111,6 +111,13 @@ class StaffPage:
         entry_role.grid(row=9, column=1)
         if staff:
             entry_role.set(staff.role)
+        
+        # Utiliser un Combobox pour le champ "gender"
+        Label(form_window, text="Genre").grid(row=10, column=0)
+        entry_gender = ttk.Combobox(form_window, values=["Masculin", "Féminin"])
+        entry_gender.grid(row=10, column=1)
+        if staff:
+            entry_gender.set(staff.gender)
 
         # Bouton pour soumettre le formulaire
         Button(form_window, text="Modifier" if staff else "Ajouter", command=submit).grid(row=10, column=0, columnspan=2)

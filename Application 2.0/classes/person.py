@@ -1,7 +1,7 @@
 from classes.contract import Contract
 
 class Person:
-    def __init__(self, person_ID, last_name, first_name, birth_date, contract, address, phone_number):
+    def __init__(self, person_ID, last_name, first_name, birth_date, contract, address, phone_number, gender):
         self.person_ID = person_ID
         self.last_name = last_name
         self.first_name = first_name
@@ -9,6 +9,7 @@ class Person:
         self.contract = contract  # Attribut contract
         self.address = address
         self.phone_number = phone_number
+        self.gender = gender
 
     def to_dict(self):
         return {
@@ -18,7 +19,8 @@ class Person:
             'birth_date': self.birth_date,
             'contract': self.contract.to_dict(),  # Convertir le contrat en dict
             'address': self.address,
-            'phone_number': self.phone_number 
+            'phone_number': self.phone_number,
+            'gender': self.gender
         }
 
     @classmethod
@@ -31,5 +33,6 @@ class Person:
             data['birth_date'],
             contract,  # Passer l'objet Contract
             data['address'],
-            data['phone_number']
+            data['phone_number'],
+            data['gender']
         )

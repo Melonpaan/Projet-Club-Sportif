@@ -4,33 +4,33 @@ class Team:
     last_id = 0
     available_ids = []
 
-    def __init__(self, team_id, name, genre, categorie, players=None):
+    def __init__(self, team_id, name, gender, category, players=None):
         self.team_id = team_id
         self.name = name
-        self.genre = genre
-        self.categorie = categorie
+        self.gender = gender
+        self.category = category
         self.players = players if players is not None else []
 
         if team_id > Team.last_id:
             Team.last_id = team_id
 
     @classmethod
-    def create_new(cls, name, genre, categorie):
+    def create_new(cls, name, gender, category):
         if cls.available_ids:
             new_id = cls.available_ids.pop(0)
         else:
             cls.last_id += 1
             new_id = cls.last_id
-        return cls(new_id, name, genre, categorie)
+        return cls(new_id, name, gender, category)
 
     @staticmethod
     def delete(team):
         Team.available_ids.append(team.team_id)
 
-    def update_details(self, name, genre, categorie):
+    def update_details(self, name, gender, category):
         self.name = name
-        self.genre = genre
-        self.categorie = categorie
+        self.gender = gender
+        self.category = category
 
     def add_player(self, player_id):
         if player_id not in self.players:
@@ -44,15 +44,15 @@ class Team:
         return {
             'team_id': self.team_id,
             'name': self.name,
-            'genre': self.genre,
-            'categorie': self.categorie,
+            'gender': self.gender,
+            'category': self.category,
             'players': self.players
         }
 
     @classmethod
     def from_dict(cls, data):
         return cls(
-            data['team_id'], data['name'], data['genre'], data['categorie'], data.get('players', [])
+            data['team_id'], data['name'], data['gender'], data['category'], data.get('players', [])
         )
 
     @staticmethod

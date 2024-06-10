@@ -155,7 +155,7 @@ class GUIManager(tk.Tk):
         # Treeview pour afficher les joueurs
         self.tree_players = ttk.Treeview(frame, columns=(
             "ID", "Nom", "Prénom", "Poste", "Date de Naissance", "Salaire",
-            "Début Contrat", "Fin Contrat", "Adresse", "Téléphone", "Numéro de Maillot"
+            "Début Contrat", "Fin Contrat", "Adresse", "Téléphone", "Numéro de Maillot", "Genre"
         ), show='headings')
         self.tree_players.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
@@ -185,7 +185,7 @@ class GUIManager(tk.Tk):
         # Treeview pour afficher le staff
         self.tree_staff = ttk.Treeview(frame, columns=(
             "ID", "Nom", "Prénom", "Date de Naissance", "Salaire",
-            "Début Contrat", "Fin Contrat", "Adresse", "Téléphone", "Rôle"
+            "Début Contrat", "Fin Contrat", "Adresse", "Téléphone", "Rôle", "Genre"
         ), show='headings')
         self.tree_staff.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
@@ -226,7 +226,7 @@ class GUIManager(tk.Tk):
                 player.person_ID, player.last_name, player.first_name, player.position,
                 player.birth_date, player.contract.salary,
                 player.contract.start_date, player.contract.end_date,
-                player.address, player.phone_number, player.jersey_number
+                player.address, player.phone_number, player.jersey_number, player.gender
             ))
         # Mettre à jour les informations de l'accueil après la mise à jour des joueurs
         self.update_accueil_info()
@@ -242,7 +242,7 @@ class GUIManager(tk.Tk):
                 staff.person_ID, staff.last_name, staff.first_name,
                 staff.birth_date, staff.contract.salary,
                 staff.contract.start_date, staff.contract.end_date,
-                staff.address, staff.phone_number, staff.role
+                staff.address, staff.phone_number, staff.role, staff.gender
             ))
         # Mettre à jour les informations de l'accueil après la mise à jour du staff
         self.update_accueil_info()
@@ -334,6 +334,6 @@ class GUIManager(tk.Tk):
             self.tree_teams.delete(item)
         for team in self.teams:
             self.tree_teams.insert("", "end", values=(
-                team.team_id, team.name, team.genre, team.categorie
+                team.team_id, team.name, team.gender, team.category
             ))
         self.update_accueil_info()

@@ -6,8 +6,8 @@ class Player(Person):
     last_id = 0
     available_ids = []
 
-    def __init__(self, person_ID, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number):
-        super().__init__(int(person_ID), last_name, first_name, birth_date, contract, address, phone_number)
+    def __init__(self, person_ID, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number,gender):
+        super().__init__(int(person_ID), last_name, first_name, birth_date, contract, address, phone_number, gender)
         self.position = position
         self.jersey_number = jersey_number
 
@@ -16,19 +16,19 @@ class Player(Person):
             Player.last_id = person_ID
 
     @classmethod
-    def create_new(cls, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number):
+    def create_new(cls, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number, gender):
         if cls.available_ids:
             new_id = cls.available_ids.pop(0)
         else:
             cls.last_id += 1
             new_id = cls.last_id
-        return cls(new_id, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number)
+        return cls(new_id, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number,gender)
 
     @staticmethod
     def delete(player):
         Player.available_ids.append(player.person_ID)
 
-    def update_details(self, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number):
+    def update_details(self, last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number,gender):
         self.last_name = last_name
         self.first_name = first_name
         self.birth_date = birth_date
@@ -37,6 +37,7 @@ class Player(Person):
         self.phone_number = phone_number
         self.position = position
         self.jersey_number = jersey_number
+        self.gender = gender 
 
     def to_dict(self):
         data = super().to_dict()
@@ -52,7 +53,7 @@ class Player(Person):
         return cls(
             int(data['person_ID']), data['last_name'], data['first_name'],
             data['birth_date'], contract, data['address'], data['phone_number'],
-            data['position'], data['jersey_number']
+            data['position'], data['jersey_number'], data['gender']
         )
 
     @staticmethod
