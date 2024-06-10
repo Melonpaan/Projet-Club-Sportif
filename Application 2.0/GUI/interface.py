@@ -8,6 +8,9 @@ from GUI.player_page import PlayerPage
 from GUI.staff_page import StaffPage
 from GUI.season_page import SeasonPage
 from GUI.team_page import TeamPage
+from GUI.Match_page import MatchPage
+from GUI.Statistics_page import StatisticsPage
+from GUI.Training_page import TrainingPage
 from tools import Tools
 from classes.data_manager import DataManager
 import os
@@ -53,13 +56,16 @@ class GUIManager(tk.Tk):
         self.staff_frame = tk.Frame(self.notebook)
         self.saison_frame = tk.Frame(self.notebook)
         self.team_frame = tk.Frame(self.notebook)
+        self.events_frame = tk.Frame(self.notebook)
 
-        # Ajouter les frames au Notebook
+
+    # Ajouter les frames au Notebook
         self.notebook.add(self.accueil_frame, text="Accueil")
         self.notebook.add(self.player_frame, text="Joueurs")
         self.notebook.add(self.staff_frame, text="Staff")
         self.notebook.add(self.team_frame, text="Equipe")
         self.notebook.add(self.saison_frame, text="Saison")
+        self.notebook.add(self.events_frame, text="Evenements")
 
 
         # Créer le contenu des frames
@@ -68,6 +74,7 @@ class GUIManager(tk.Tk):
         self.create_staff_frame(self.staff_frame)
         self.create_team_frame(self.team_frame)
         self.create_saison_frame(self.saison_frame)
+        self.create_events_frame(self.events_frame)
 
         # Charger les données initiales dans les Treeviews
         self.update_players_treeview()
@@ -265,8 +272,7 @@ class GUIManager(tk.Tk):
         Met à jour les informations de l'accueil (nombre de joueurs, nombre de staff, nombre d'équipes, nombre de matchs).
         """
         # Mettre à jour le nombre de joueurs
-        self.label_num_players.config(text=f"Nombre de joueurs: {len(
-            self.players)}")
+        self.label_num_players.config(text=f"Nombre de joueurs: {len(self.players)}")
         # Mettre à jour le nombre de staff
         self.label_num_staff.config(text=f"Nombre de staff: {len(self.staff_members)}")
         # Mettre à jour le nombre d'équipes (initialement 0)
@@ -353,3 +359,54 @@ class GUIManager(tk.Tk):
         return ""
 
 
+
+
+
+    def create_events_frame(self, frame):
+        """
+        Crée la frame pour l'onglet Événements avec les sous-boutons Matchs et Entraînement.
+
+        Args:
+            frame (tk.Frame): Frame dans laquelle créer les widgets de l'onglet Événements.
+        """
+        events_frame = tk.Frame(frame)
+        events_frame.pack(expand=True, fill=tk.BOTH)
+
+        # Container for centering buttons
+        button_container = tk.Frame(events_frame)
+        button_container.pack(expand=True)
+
+        # Boutons pour accéder aux pages Matchs et Entraînement
+        match_button = tk.Button(button_container, text="Matchs", command=self.open_match_page)
+        match_button.pack(pady=10)
+
+        training_button = tk.Button(button_container, text="Entraînement", command=self.open_training_page)
+        training_button.pack(pady=10)
+
+    def open_match_page(self):
+        """
+        Ouvre la page de gestion des matchs avec un sous-bouton pour les statistiques du match.
+        """
+        match_page = tk.Toplevel(self)
+        match_page.title("Matchs")
+        match_frame = MatchPage(match_page)
+        match_frame.pack(fill=tk.BOTH, expand=True)
+
+
+    def open_training_page(self):
+        """
+        Ouvre la page de gestion des entraînements.
+        """
+        training_page = tk.Toplevel(self)
+        training_page.title("Entraînements")
+        training_frame = TrainingPage(training_page)
+        training_frame.pack(fill=tk.BOTH, expand=True)
+
+    def open_statistics_page(self):
+        """
+        Ouvre la page de gestion des statistiques du match.
+        """
+        statistics_page = tk.Toplevel(self)
+        statistics_page.title("Statistique du match")
+        statistics_frame = StatisticsPage(statistics_page)
+        statistics_frame.pack(fill=tk.BOTH, expand=True)
