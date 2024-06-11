@@ -285,7 +285,8 @@
         "phone_number": "2345678901",
         "position": "Attaquant",
         "jersey_number": "18",
-        "gender": "F\u00e9minin"
+        "gender": "F\u00e9minin",
+        "goals": 2
     },
     {
         "person_ID": 19,
@@ -397,7 +398,8 @@
         "phone_number": "9012345678",
         "position": "D\u00e9fenseur",
         "jersey_number": "25",
-        "gender": "F\u00e9minin"
+        "gender": "F\u00e9minin",
+        "assists": 1
     },
     {
         "person_ID": 26,
