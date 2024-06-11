@@ -64,8 +64,8 @@ class GUIManager(tk.Tk):
         self.notebook.add(self.player_frame, text="Joueurs")
         self.notebook.add(self.staff_frame, text="Staff")
         self.notebook.add(self.team_frame, text="Equipe")
-        self.notebook.add(self.saison_frame, text="Saison")
         self.notebook.add(self.events_frame, text="Evenements")
+        self.notebook.add(self.saison_frame, text="Saison")
 
 
         # Créer le contenu des frames
