@@ -1,9 +1,11 @@
-from tkinter import Frame, Label, Button, Toplevel, Listbox, messagebox
+from tkinter import Frame, Label, Button, Toplevel, Listbox, messagebox, StringVar, Entry
+from tkinter.ttk import Combobox
 import re
 from tools import Tools
 from classes.Match import Match
 from classes.data_manager import DataManager
 from classes.player import Player
+from classes.team import Team
 
 class MatchPage(Frame):
     """
@@ -41,25 +43,53 @@ class MatchPage(Frame):
         self.add_match_window.title("Ajouter un match")
 
         self.entry_date = Tools.create_label_and_entry(self.add_match_window, "Date (DD-MM-YYYY):", 0)
-        self.entry_my_team = Tools.create_label_and_entry(self.add_match_window, "Mon équipe:", 1)
+
+        Label(self.add_match_window, text="Mon équipe:").grid(row=1, column=0, padx=10, pady=10)
+        self.team_var = StringVar()
+        self.team_dropdown = Combobox(self.add_match_window, textvariable=self.team_var, values=self.get_team_names(), state='readonly')
+        self.team_dropdown.grid(row=1, column=1, padx=10, pady=10)
+        self.team_dropdown.bind("<<ComboboxSelected>>", lambda event: self.update_players_listbox(self.team_var.get()))
+
         self.entry_opponent = Tools.create_label_and_entry(self.add_match_window, "Adversaire:", 2)
 
         Label(self.add_match_window, text="Joueurs:").grid(row=3, column=0, padx=10, pady=10)
         self.players_listbox = Listbox(self.add_match_window, selectmode="multiple")
         self.players_listbox.grid(row=3, column=1, padx=10, pady=10)
-        self.populate_players_listbox()
 
-        Button(self.add_match_window, text="Soumettre", command=self.add_match).grid(row=4, column=0, columnspan=2, pady=10)
+        submit_button = Button(self.add_match_window, text="Soumettre", command=self.add_match, bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"))
+        submit_button.grid(row=4, column=0, columnspan=2, pady=10)
 
-    def populate_players_listbox(self):
+    def get_team_names(self):
         """
-        Remplit la listbox des joueurs avec les données actuelles des joueurs.
+        Retourne une liste des noms d'équipes disponibles.
+
+        Returns:
+            list: Une liste des noms d'équipes.
         """
+        teams_data = DataManager.load_from_file('data/teams.json')
+        if teams_data:
+            return [team['name'] for team in teams_data]
+        return []
+
+    def update_players_listbox(self, selected_team):
+        """
+        Met à jour la listbox des joueurs en fonction de l'équipe sélectionnée.
+
+        Args:
+            selected_team (str): Le nom de l'équipe sélectionnée.
+        """
+        self.players_listbox.delete(0, "end")
+        teams_data = DataManager.load_from_file('data/teams.json')
         players_data = DataManager.load_from_file('data/players.json')
-        if players_data is not None:
-            for player_data in players_data:
-                player = Player.from_dict(player_data)
-                self.players_listbox.insert("end", f"{player.first_name} {player.last_name}")
+
+        if teams_data and players_data:
+            for team in teams_data:
+                if team['name'] == selected_team:
+                    player_ids = team['players']
+                    for player_data in players_data:
+                        if player_data['person_ID'] in player_ids:
+                            player = Player.from_dict(player_data)
+                            self.players_listbox.insert("end", f"{player.first_name} {player.last_name}")
 
     def validate_date(self, date_text):
         """
@@ -83,7 +113,7 @@ class MatchPage(Frame):
         Ajoute un nouveau match aux données des matchs après validation des champs et de la date.
         """
         date = self.entry_date.get()
-        my_team = self.entry_my_team.get()
+        my_team = self.team_var.get()
         opponent = self.entry_opponent.get()
         selected_players = [self.players_listbox.get(i) for i in self.players_listbox.curselection()]
 
@@ -104,11 +134,111 @@ class MatchPage(Frame):
         }
 
         try:
-            # Ajout du match aux données de matches
+
             new_match.add_match(match_data)
             self.add_match_window.destroy()
+            self.open_score_input_window(new_match)
         except FileNotFoundError as e:
             messagebox.showerror("Erreur", str(e))
+
+    def open_score_input_window(self, match):
+        """
+        Ouvre une fenêtre pour saisir le score du match et les joueurs ayant marqué et fait des passes décisives.
+
+        Args:
+            match (Match): L'objet Match pour lequel les informations sont saisies.
+        """
+        self.score_input_window = Toplevel(self.master)
+        self.score_input_window.title("Saisir le score du match")
+
+        self.entry_score = Tools.create_label_and_entry(self.score_input_window, "Score (ex: 2-1):", 0)
+
+        Button(self.score_input_window, text="Suivant", command=lambda: self.open_goal_scorer_window(match), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=1, column=0, columnspan=2, pady=10)
+
+    def open_goal_scorer_window(self, match):
+        """
+        Ouvre une fenêtre pour saisir les buteurs et les passeurs décisifs après avoir entré le score.
+
+        Args:
+            match (Match): L'objet Match pour lequel les informations sont saisies.
+        """
+        score_text = self.entry_score.get()
+        self.score_input_window.destroy()
+
+        try:
+            my_team_score, opponent_score = map(int, score_text.split('-'))
+            total_goals = my_team_score + opponent_score
+        except ValueError:
+            messagebox.showerror("Erreur", "Le score doit être au format 'X-Y'.")
+            return
+
+        self.goal_scorer_window = Toplevel(self.master)
+        self.goal_scorer_window.title("Saisir les buteurs et passeurs décisifs")
+
+        self.goal_scorer_entries = []
+        self.assist_provider_entries = []
+        self.minute_entries = []
+
+        for i in range(my_team_score):
+            Label(self.goal_scorer_window, text="Buteur:").grid(row=i, column=0, padx=10, pady=5)
+            scorer_var = StringVar()
+            scorer_dropdown = Combobox(self.goal_scorer_window, textvariable=scorer_var, values=match.players, state='readonly')
+            scorer_dropdown.grid(row=i, column=1, padx=10, pady=5)
+            self.goal_scorer_entries.append(scorer_var)
+
+            Label(self.goal_scorer_window, text="Passeur décisif:").grid(row=i, column=2, padx=10, pady=5)
+            assist_var = StringVar()
+            assist_dropdown = Combobox(self.goal_scorer_window, textvariable=assist_var, values=match.players, state='readonly')
+            assist_dropdown.grid(row=i, column=3, padx=10, pady=5)
+            self.assist_provider_entries.append(assist_var)
+
+            Label(self.goal_scorer_window, text="Minute:").grid(row=i, column=4, padx=10, pady=5)
+            minute_entry = Entry(self.goal_scorer_window)
+            minute_entry.grid(row=i, column=5, padx=10, pady=5)
+            self.minute_entries.append(minute_entry)
+
+        Button(self.goal_scorer_window, text="Soumettre", command=lambda: self.submit_match_statistics(match), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=total_goals, column=0, columnspan=6, pady=10)
+
+    def submit_match_statistics(self, match):
+        """
+        Soumet les statistiques du match et met à jour les données des joueurs dans le fichier JSON.
+
+        Args:
+            match (Match): L'objet Match pour lequel les informations sont soumises.
+        """
+        goal_scorers = [entry.get() for entry in self.goal_scorer_entries]
+        assist_providers = [entry.get() for entry in self.assist_provider_entries]
+        goal_minutes = [entry.get() for entry in self.minute_entries]
+
+        players_data = DataManager.load_from_file('data/players.json')
+
+        if players_data is None:
+            messagebox.showerror("Erreur", "Les données des joueurs n'ont pas pu être chargées.")
+            return
+
+        for player_data in players_data:
+            player_name = f"{player_data['first_name']} {player_data['last_name']}"
+
+            #  compteur buts
+            goals = sum(1 for scorer in goal_scorers if scorer == player_name)
+            if goals > 0:
+                if 'goals' not in player_data:
+                    player_data['goals'] = 0
+                player_data['goals'] += goals
+
+            # compteur passe dé
+            assists = sum(1 for assister in assist_providers if assister == player_name)
+            if assists > 0:
+                if 'assists' not in player_data:
+                    player_data['assists'] = 0
+                player_data['assists'] += assists
+
+
+        DataManager.save_to_file(players_data, 'data/players.json')
+
+        messagebox.showinfo("Information", "Les statistiques du match ont été soumises avec succès.")
+        self.goal_scorer_window.destroy()
+
 
     def view_matches(self):
         """
