@@ -28,5 +28,28 @@
         "players": [],
         "doctor_id": "",
         "coach_id": ""
+<<<<<<< Updated upstream
+=======
+    },
+    {
+        "team_id": 3,
+        "name": "D3-Homme",
+        "gender": "Masculin",
+        "category": "Division 3",
+        "players": [
+            5
+        ],
+        "doctor_id": "",
+        "coach_id": ""
+    },
+    {
+        "team_id": 4,
+        "name": "D2-Homme",
+        "gender": "Masculin",
+        "category": "Division 2",
+        "players": [],
+        "doctor_id": null,
+        "coach_id": null
+>>>>>>> Stashed changes
     }
 ]
