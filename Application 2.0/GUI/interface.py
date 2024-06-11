@@ -148,6 +148,29 @@ class GUIManager(tk.Tk):
             accueil_frame, f"Nombre de matchs: 0", 7, 0)  # Initialement 0
         self.label_num_trainings = Tools.create_label(
             accueil_frame, f"Nombre d'entraînements: 0", 8, 0)  # Initialement 0
+        self.label_total_player_salary = Tools.create_label(
+            accueil_frame, f"Total salaire des joueurs: {self.calculate_total_salary(self.players)} €", 9, 0)
+        self.label_total_staff_salary = Tools.create_label(
+            accueil_frame, f"Total salaire du staff: {self.calculate_total_salary(self.staff_members)} €", 10, 0)
+
+    
+    def calculate_total_salary(self, members):
+        """
+        Calcule le total des salaires des membres donnés.
+
+        Args:
+            members (list): Liste des membres (joueurs ou staff).
+
+        Returns:
+            int: Total des salaires.
+        """
+        total_salary = 0
+        for member in members:
+            try:
+                total_salary += int(member.contract.salary)
+            except (ValueError, TypeError):
+                continue
+        return total_salary
 
     def create_player_frame(self, frame):
         """
@@ -281,6 +304,10 @@ class GUIManager(tk.Tk):
         self.label_num_matches.config(text=f"Nombre de matchs: 0")
         # Mettre à jour le nombre d'entraînements (initialement 0)
         self.label_num_trainings.config(text=f"Nombre d'entraînements: 0")
+        # Mettre à jour le total des salaires des joueurs
+        self.label_total_player_salary.config(text=f"Total salaire des joueurs: {self.calculate_total_salary(self.players)} €")
+        # Mettre à jour le total des salaires du staff
+        self.label_total_staff_salary.config(text=f"Total salaire du staff: {self.calculate_total_salary(self.staff_members)} €")
 
     def create_saison_frame(self, frame):
         """
