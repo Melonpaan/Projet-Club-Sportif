@@ -114,6 +114,18 @@ class GUIManager(tk.Tk):
             self.teams = [Team.from_dict(data)for data in teams_data]
         else:
             self.teams = []
+        
+        matches_data = DataManager.load_from_file(os.path.join(self.data_folder, 'matches.json'))
+        if matches_data is not None:
+            self.matches = matches_data
+        else:
+            self.matches = [] 
+        
+        trainings_data = DataManager.load_from_file(os.path.join(self.data_folder, 'trainings.json'))
+        if trainings_data is not None:
+            self.trainings = trainings_data
+        else:
+            self.trainings = []   
 
     def create_accueil_frame(self, frame):
         """
@@ -143,11 +155,11 @@ class GUIManager(tk.Tk):
         self.label_num_staff = Tools.create_label(
             accueil_frame, f"Nombre de staff: {len(self.staff_members)}", 5, 0)
         self.label_num_teams = Tools.create_label(
-            accueil_frame, f"Nombre d'équipes: 0", 6, 0)  # Initialement 0
+        accueil_frame, f"Nombre d'équipes: {len(self.teams)}", 6, 0)  
         self.label_num_matches = Tools.create_label(
-            accueil_frame, f"Nombre de matchs: 0", 7, 0)  # Initialement 0
+        accueil_frame, f"Nombre de matchs: {len(self.matches)}", 7, 0)  
         self.label_num_trainings = Tools.create_label(
-            accueil_frame, f"Nombre d'entraînements: 0", 8, 0)  # Initialement 0
+        accueil_frame, f"Nombre d'entraînements: {len(self.trainings)}", 8, 0)  
         self.label_total_player_salary = Tools.create_label(
             accueil_frame, f"Total salaire des joueurs: {self.calculate_total_salary(self.players)} €", 9, 0)
         self.label_total_staff_salary = Tools.create_label(
@@ -299,11 +311,11 @@ class GUIManager(tk.Tk):
         # Mettre à jour le nombre de staff
         self.label_num_staff.config(text=f"Nombre de staff: {len(self.staff_members)}")
         # Mettre à jour le nombre d'équipes (initialement 0)
-        self.label_num_teams.config(text=f"Nombre d'équipes: 0")
+        self.label_num_teams.config(text=f"Nombre d'équipes: {len(self.teams)}")
         # Mettre à jour le nombre de matchs (initialement 0)
-        self.label_num_matches.config(text=f"Nombre de matchs: 0")
+        self.label_num_matches.config(text=f"Nombre de matchs: {len(self.matches)}")
         # Mettre à jour le nombre d'entraînements (initialement 0)
-        self.label_num_trainings.config(text=f"Nombre d'entraînements: 0")
+        self.label_num_trainings.config(text=f"Nombre d'entraînements: {len(self.trainings)}")
         # Mettre à jour le total des salaires des joueurs
         self.label_total_player_salary.config(text=f"Total salaire des joueurs: {self.calculate_total_salary(self.players)} €")
         # Mettre à jour le total des salaires du staff
