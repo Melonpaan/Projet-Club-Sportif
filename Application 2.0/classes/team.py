@@ -23,7 +23,7 @@ class Team:
         else:
             cls.last_id += 1
             new_id = cls.last_id
-        return cls(new_id, name, gender, category, doctor_id=None, coach_id= None)
+        return cls(new_id, name, gender, category, doctor_id, coach_id)
 
     @staticmethod
     def delete(team):

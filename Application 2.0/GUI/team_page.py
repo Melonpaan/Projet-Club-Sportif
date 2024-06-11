@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Toplevel, Label, Button, Entry, ttk, messagebox
 from classes.team import Team
 
+
 class TeamPage:
     def __init__(self, gui_manager):
         self.gui_manager = gui_manager
@@ -53,14 +54,14 @@ class TeamPage:
         form_window.title("Modifier une équipe" if team else "Ajouter une équipe")
 
         entry_name = self.create_form_widget(form_window, "Nom de l'équipe", 1, getattr(team, 'name', ''))
-        entry_gender = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'genre', ''))
-        entry_category = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'categorie', ''))
+        entry_gender = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'gender', ''))
+        entry_category = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'category', ''))
         
         # Combobox pour le médecin et l'entraîneur
         doctor_values = [f"{staff.first_name} {staff.last_name} (ID: {staff.person_ID})" for staff in self.gui_manager.staff_members if staff.role == "Médecin"]
         coach_values = [f"{staff.first_name} {staff.last_name} (ID: {staff.person_ID})" for staff in self.gui_manager.staff_members if staff.role == "Entraîneur"]
-        entry_doctor = self.create_combobox(form_window, "Médecin", 4, doctor_values, getattr(team, 'doctor_id', None))
-        entry_coach = self.create_combobox(form_window, "Entraîneur", 5, coach_values, getattr(team, 'coach_id', None))
+        entry_doctor = self.create_combobox(form_window, "Médecin", 4, doctor_values, self.gui_manager.get_staff_name_by_id(getattr(team, 'doctor_id', None)))
+        entry_coach = self.create_combobox(form_window, "Entraîneur", 5, coach_values, self.gui_manager.get_staff_name_by_id(getattr(team, 'coach_id', None)))
 
         Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=6, column=0, columnspan=2)
 
@@ -237,3 +238,5 @@ class TeamPage:
             if player_id in team.players:
                 return team.name
         return None
+
+    

@@ -17,8 +17,8 @@
             18,
             20
         ],
-        "doctor_id": "ada re (ID: 2)",
-        "coach_id": "lala dala (ID: 1)"
+        "doctor_id": 2,
+        "coach_id": 1
     },
     {
         "team_id": 2,
@@ -26,8 +26,8 @@
         "gender": "Masculin",
         "category": "Division 1",
         "players": [],
-        "doctor_id": "ada re (ID: 2)",
-        "coach_id": "lala dala (ID: 1)"
+        "doctor_id": "",
+        "coach_id": ""
     },
     {
         "team_id": 3,
@@ -46,7 +46,7 @@
         "players": [
             5
         ],
-        "doctor_id": "ada re (ID: 2)",
-        "coach_id": "lala dala (ID: 1)"
+        "doctor_id": "",
+        "coach_id": ""
     }
 ]
