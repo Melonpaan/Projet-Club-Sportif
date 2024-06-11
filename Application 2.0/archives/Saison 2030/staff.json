@@ -1,0 +1,47 @@
+[
+    {
+        "person_ID": 1,
+        "last_name": "dala",
+        "first_name": "lala",
+        "birth_date": "12-02-1998",
+        "contract": {
+            "start_date": "23-06-2013",
+            "end_date": "22-01-2023",
+            "salary": "3000"
+        },
+        "address": "rue des olives",
+        "phone_number": "0789121212",
+        "gender": "Masculin",
+        "role": "Entra\u00eeneur"
+    },
+    {
+        "person_ID": 2,
+        "last_name": "re",
+        "first_name": "ada",
+        "birth_date": "07-10-2000",
+        "contract": {
+            "start_date": "07-10-2000",
+            "end_date": "07-10-2000",
+            "salary": "22222"
+        },
+        "address": "EEZEEE",
+        "phone_number": "222",
+        "gender": "Masculin",
+        "role": "M\u00e9decin"
+    },
+    {
+        "person_ID": 3,
+        "last_name": "dalil",
+        "first_name": "khalid",
+        "birth_date": "17-03-1997",
+        "contract": {
+            "start_date": "22-05-2018",
+            "end_date": "23-06-2028",
+            "salary": "4500"
+        },
+        "address": "rue des cerisiers",
+        "phone_number": "0789121314",
+        "gender": "Masculin",
+        "role": "M\u00e9decin"
+    }
+]
