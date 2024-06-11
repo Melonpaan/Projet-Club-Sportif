@@ -28,8 +28,6 @@
         "players": [],
         "doctor_id": "",
         "coach_id": ""
-<<<<<<< Updated upstream
-=======
     },
     {
         "team_id": 3,
@@ -50,6 +48,5 @@
         "players": [],
         "doctor_id": null,
         "coach_id": null
->>>>>>> Stashed changes
     }
 ]
