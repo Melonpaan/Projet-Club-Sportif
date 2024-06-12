@@ -1,36 +1,38 @@
 from classes.data_manager import DataManager
-
 class Match:
-    """
-    Classe pour représenter un match de football.
-    """
-
-    def __init__(self, match_id, date, my_team, opponent, players=None):
-        """
-        Initialise un objet Match avec les informations fournies.
-
-        Args:
-            match_id (int): L'ID du match.
-            date (str): La date du match.
-            my_team (str): Le nom de mon équipe.
-            opponent (str): Le nom de l'équipe adverse.
-            players (list, optionnel): La liste des joueurs participant au match. Par défaut, une liste vide.
-        """
+    def __init__(self, match_id, date, my_team, opponent, players, score=None, statistics=None):
         self.match_id = match_id
         self.date = date
         self.my_team = my_team
         self.opponent = opponent
-        self.players = players if players else []
+        self.players = players
+        self.score = score
+        self.statistics = statistics if statistics is not None else []
 
-    def add_match(self, match_data, filename='data/matches.json'):
-        """
-        Ajoute un nouveau match aux données des matchs et sauvegarde dans un fichier JSON.
+    def to_dict(self):
+        return {
+            "match_id": self.match_id,
+            "date": self.date,
+            "my_team": self.my_team,
+            "opponent": self.opponent,
+            "players": self.players,
+            "score": self.score,
+            "statistics": self.statistics
+        }
 
-        Args:
-            match_data (dict): Un dictionnaire contenant les données du match à ajouter.
-            filename (str, optionnel): Le chemin du fichier JSON où les données des matchs sont sauvegardées. Par défaut, 'data/matches.json'.
-        """
-        matches = DataManager.load_from_file(filename) or []
-        matches.append(match_data)
-        DataManager.save_to_file(matches, filename)
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            match_id=data["match_id"],
+            date=data["date"],
+            my_team=data["my_team"],
+            opponent=data["opponent"],
+            players=data["players"],
+            score=data.get("score"),
+            statistics=data.get("statistics", [])
+        )
 
+    def add_match(self, match_data):
+        matches_data = DataManager.load_from_file('data/matches.json') or []
+        matches_data.append(match_data)
+        DataManager.save_to_file(matches_data, 'data/matches.json')
