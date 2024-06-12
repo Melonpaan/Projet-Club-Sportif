@@ -125,8 +125,10 @@ class MatchPage(Frame):
             messagebox.showerror("Erreur", "La date doit être au format DD-MM-YYYY.")
             return
 
-        new_match = Match(date, my_team, opponent, selected_players)
+        match_id = self.generate_match_id()  # Générer un ID unique pour le match
+        new_match = Match(match_id, date, my_team, opponent, selected_players)
         match_data = {
+            "match_id": match_id,
             "date": date,
             "my_team": my_team,
             "opponent": opponent,
@@ -134,12 +136,24 @@ class MatchPage(Frame):
         }
 
         try:
-
             new_match.add_match(match_data)
             self.add_match_window.destroy()
             self.open_score_input_window(new_match)
         except FileNotFoundError as e:
             messagebox.showerror("Erreur", str(e))
+
+    def generate_match_id(self):
+        """
+        Génère un ID unique pour un match.
+
+        Returns:
+            int: Un ID unique pour le match.
+        """
+        matches_data = DataManager.load_from_file('data/matches.json') or []
+        match_ids = [match["match_id"] for match in matches_data if "match_id" in match]
+        if not match_ids:
+            return 1
+        return max(match_ids) + 1
 
     def open_score_input_window(self, match):
         """
@@ -197,14 +211,15 @@ class MatchPage(Frame):
             minute_entry.grid(row=i, column=5, padx=10, pady=5)
             self.minute_entries.append(minute_entry)
 
-        Button(self.goal_scorer_window, text="Soumettre", command=lambda: self.submit_match_statistics(match), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=total_goals, column=0, columnspan=6, pady=10)
+        Button(self.goal_scorer_window, text="Soumettre", command=lambda: self.submit_match_statistics(match, score_text), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=total_goals, column=0, columnspan=6, pady=10)
 
-    def submit_match_statistics(self, match):
+    def submit_match_statistics(self, match, score):
         """
-        Soumet les statistiques du match et met à jour les données des joueurs dans le fichier JSON.
+        Soumet les statistiques du match et met à jour les données des joueurs et du match dans le fichier JSON.
 
         Args:
             match (Match): L'objet Match pour lequel les informations sont soumises.
+            score (str): Le score du match.
         """
         goal_scorers = [entry.get() for entry in self.goal_scorer_entries]
         assist_providers = [entry.get() for entry in self.assist_provider_entries]
@@ -233,12 +248,24 @@ class MatchPage(Frame):
                     player_data['assists'] = 0
                 player_data['assists'] += assists
 
-
         DataManager.save_to_file(players_data, 'data/players.json')
+
+        # Mettre à jour les statistiques du match dans matches.json
+        matches_data = DataManager.load_from_file('data/matches.json')
+
+        for match_data in matches_data:
+            if match_data.get('match_id') == match.match_id:
+                match_data['score'] = score
+                match_data['statistics'] = [
+                    {"scorer": scorer, "assister": assister, "minute": minute}
+                    for scorer, assister, minute in zip(goal_scorers, assist_providers, goal_minutes)
+                ]
+                break
+
+        DataManager.save_to_file(matches_data, 'data/matches.json')
 
         messagebox.showinfo("Information", "Les statistiques du match ont été soumises avec succès.")
         self.goal_scorer_window.destroy()
-
 
     def view_matches(self):
         """
@@ -267,8 +294,9 @@ class MatchPage(Frame):
         Label(details_window, text=f"Mon équipe: {match['my_team']}").pack(padx=10, pady=5)
         Label(details_window, text=f"Adversaire: {match['opponent']}").pack(padx=10, pady=5)
         Label(details_window, text=f"Joueurs: {', '.join(match['players'])}").pack(padx=10, pady=5)
-        Label(details_window, text=f"Score: 0").pack(padx=10, pady=5)
-        Label(details_window, text=f"Buteur: | 0").pack(padx=10, pady=5)
-        Label(details_window, text=f"Passeur décisif: | 0").pack(padx=10, pady=5)
+        Label(details_window, text=f"Score: {match.get('score', 'N/A')}").pack(padx=10, pady=5)
+        if 'statistics' in match:
+            for stat in match['statistics']:
+                Label(details_window, text=f"Buteur: {stat['scorer']}, Passeur: {stat['assister']}, Minute: {stat['minute']}").pack(padx=10, pady=5)
         Label(details_window, text=f"Cartons jaunes: | 0").pack(padx=10, pady=5)
         Label(details_window, text=f"Cartons rouges: | 0").pack(padx=10, pady=5)
