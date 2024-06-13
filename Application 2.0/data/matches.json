@@ -1,37 +1,38 @@
 [
     {
-        "date": "08-06-2024",
-        "my_team": "Marcinelle",
-        "opponent": "Anderlecht",
+        "match_id": 1,
+        "date": "12-12-2022",
+        "my_team": "D1-homme",
+        "opponent": "Les fous ",
         "players": [
-            "Jeff Jones",
-            "Jordan Miller",
-            "Jake Wilson",
-            "Jamie Anderson",
-            "Jane Doe",
-            "Jill Smith",
-            "Jesse Jones",
-            "Joyce Davis"
-        ]
-    },
-    {
-        "date": "24-10-2024",
-        "my_team": "ez",
-        "opponent": "ez",
-        "players": [
-            "Jerry Williams",
-            "Justin Davis"
-        ]
-    },
-    {
-        "date": "11-06-2024",
-        "my_team": "D1-femme",
-        "opponent": "test",
-        "players": [
-            "Jill Smith",
-            "Jasmine Brown",
-            "Joanna Moore",
-            "Josephine Thomas"
+            "Jean Dupont",
+            "Pierre Martin",
+            "Luc Bernard",
+            "Julien Robert",
+            "Antoine Dubois",
+            "Vincent Moreau",
+            "Louis Leroy",
+            "Henri Roux",
+            "Claude Simon",
+            "Paul Michel"
+        ],
+        "score": "3-1",
+        "statistics": [
+            {
+                "scorer": "Pierre Martin",
+                "assister": "",
+                "minute": "12"
+            },
+            {
+                "scorer": "Pierre Martin",
+                "assister": "",
+                "minute": "24"
+            },
+            {
+                "scorer": "Jean Dupont",
+                "assister": "Pierre Martin",
+                "minute": "36"
+            }
         ]
     }
 ]

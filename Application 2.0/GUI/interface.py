@@ -416,10 +416,12 @@ class GUIManager(tk.Tk):
         button_container.pack(expand=True)
 
         # Boutons pour accéder aux pages Matchs et Entraînement
-        match_button = tk.Button(button_container, text="Matchs", command=self.open_match_page)
+        match_button = tk.Button(button_container, text="Matchs", command=self.open_match_page,
+                                 bg="#4CAF50", fg="white", font=("Helvetica", 16), width=20, height=2)
         match_button.pack(pady=10)
 
-        training_button = tk.Button(button_container, text="Entraînement", command=self.open_training_page)
+        training_button = tk.Button(button_container, text="Entraînement", command=self.open_training_page,
+                                    bg="#4CAF50", fg="white", font=("Helvetica", 16), width=20, height=2)
         training_button.pack(pady=10)
 
     def open_match_page(self):
@@ -430,7 +432,6 @@ class GUIManager(tk.Tk):
         match_page.title("Matchs")
         match_frame = MatchPage(match_page)
         match_frame.pack(fill=tk.BOTH, expand=True)
-
 
     def open_training_page(self):
         """
