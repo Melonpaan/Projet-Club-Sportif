@@ -1,4 +1,4 @@
-# Nom du Projet
+# Application de gestion de club
 
 ## Description
 
