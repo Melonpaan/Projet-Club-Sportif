@@ -1,22 +1,17 @@
 [
     {
         "match_id": 1,
-        "date": "12-12-2022",
+        "date": "24-12-2024",
         "my_team": "D1-homme",
-        "opponent": "Les fous ",
+        "opponent": "Les m\u00e9chants",
         "players": [
             "Jean Dupont",
             "Pierre Martin",
             "Luc Bernard",
             "Julien Robert",
-            "Antoine Dubois",
-            "Vincent Moreau",
-            "Louis Leroy",
-            "Henri Roux",
-            "Claude Simon",
-            "Paul Michel"
+            "Antoine Dubois"
         ],
-        "score": "3-1",
+        "score": "2-1",
         "statistics": [
             {
                 "scorer": "Pierre Martin",
@@ -24,15 +19,14 @@
                 "minute": "12"
             },
             {
-                "scorer": "Pierre Martin",
-                "assister": "",
-                "minute": "24"
-            },
-            {
                 "scorer": "Jean Dupont",
-                "assister": "Pierre Martin",
-                "minute": "36"
+                "assister": "Luc Bernard",
+                "minute": "24"
             }
-        ]
+        ],
+        "yellow_cards": [
+            "Pierre Martin"
+        ],
+        "red_cards": []
     }
 ]

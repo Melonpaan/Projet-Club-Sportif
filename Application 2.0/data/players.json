@@ -32,8 +32,9 @@
         "position": "D\u00c3\u00a9fenseur",
         "jersey_number": "5",
         "gender": "Masculin",
-        "goals": 2,
-        "assists": 1
+        "goals": 1,
+        "assists": 0,
+        "yellow_cards": 1
     },
     {
         "person_ID": 3,
@@ -50,7 +51,8 @@
         "position": "Milieu",
         "jersey_number": "8",
         "gender": "Masculin",
-        "goals": 0
+        "goals": 0,
+        "assists": 1
     },
     {
         "person_ID": 4,
@@ -67,7 +69,8 @@
         "position": "Gardien",
         "jersey_number": "1",
         "gender": "Masculin",
-        "goals": 0
+        "goals": 0,
+        "assists": 0
     },
     {
         "person_ID": 5,
@@ -136,7 +139,8 @@
         "position": "Attaquant",
         "jersey_number": "7",
         "gender": "Masculin",
-        "goals": 0
+        "goals": 0,
+        "yellow_cards": 0
     },
     {
         "person_ID": 9,

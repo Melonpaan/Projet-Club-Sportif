@@ -79,6 +79,10 @@ class MatchPage(Frame):
                     player_data['goals'] -= sum(1 for stat in match.statistics if stat['scorer'] == player_name)
                 if 'assists' in player_data:
                     player_data['assists'] -= sum(1 for stat in match.statistics if stat['assister'] == player_name)
+                if 'yellow_cards' in player_data:
+                    player_data['yellow_cards'] -= 1 if player_name in match.yellow_cards else 0
+                if 'red_cards' in player_data:
+                    player_data['red_cards'] -= 1 if player_name in match.red_cards else 0
             DataManager.save_to_file(players_data, 'data/players.json')
 
         messagebox.showinfo("Information", "Le match a été supprimé avec succès.")
@@ -388,6 +392,87 @@ class MatchPage(Frame):
 
         messagebox.showinfo("Information", "Les statistiques du match ont été soumises avec succès.")
         self.goal_scorer_window.destroy()
+        self.open_card_input_window(match, edit)
+
+    def open_card_input_window(self, match, edit=False):
+        """
+        Ouvre une fenêtre pour saisir les cartons jaunes et rouges après avoir entré les buteurs et passeurs.
+
+        Args:
+            match (Match): Le match pour lequel les informations sont saisies.
+            edit (bool): Indique si la fenêtre est ouverte pour modification.
+        """
+        self.card_input_window = Toplevel(self.master)
+        self.card_input_window.title("Saisir les cartons")
+
+        Label(self.card_input_window, text="Cartons jaunes").grid(row=0, column=1, padx=10, pady=5)
+        Label(self.card_input_window, text="Cartons rouges").grid(row=0, column=2, padx=10, pady=5)
+
+        self.yellow_card_entries = []
+        self.red_card_entries = []
+
+        for i, player in enumerate(match.players):
+            Label(self.card_input_window, text=player).grid(row=i+1, column=0, padx=10, pady=5)
+            yellow_var = StringVar(value="Yes" if player in match.yellow_cards else "No")
+            red_var = StringVar(value="Yes" if player in match.red_cards else "No")
+
+            yellow_dropdown = Combobox(self.card_input_window, textvariable=yellow_var, values=["Yes", "No"], state='readonly')
+            yellow_dropdown.grid(row=i+1, column=1, padx=10, pady=5)
+            self.yellow_card_entries.append((player, yellow_var))
+
+            red_dropdown = Combobox(self.card_input_window, textvariable=red_var, values=["Yes", "No"], state='readonly')
+            red_dropdown.grid(row=i+1, column=2, padx=10, pady=5)
+            self.red_card_entries.append((player, red_var))
+
+        Button(self.card_input_window, text="Soumettre", command=lambda: self.submit_card_statistics(match, edit), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=len(match.players)+1, column=0, columnspan=3, pady=10)
+
+    def submit_card_statistics(self, match, edit=False):
+        """
+        Soumet les statistiques des cartons et met à jour les données des joueurs dans le fichier JSON.
+
+        Args:
+            match (Match): Le match pour lequel les informations sont soumises.
+            edit (bool): Indique si les statistiques sont soumises pour une modification.
+        """
+        yellow_cards = [player for player, var in self.yellow_card_entries if var.get() == "Yes"]
+        red_cards = [player for player, var in self.red_card_entries if var.get() == "Yes"]
+
+        players_data = DataManager.load_from_file('data/players.json')
+
+        if players_data is None:
+            messagebox.showerror("Erreur", "Les données des joueurs n'ont pas pu être chargées.")
+            return
+
+        if edit:
+            # Revert old card statistics
+            for player_data in players_data:
+                player_name = f"{player_data['first_name']} {player_data['last_name']}"
+                if player_name in match.yellow_cards:
+                    player_data['yellow_cards'] = player_data.get('yellow_cards', 0) - 1
+                if player_name in match.red_cards:
+                    player_data['red_cards'] = player_data.get('red_cards', 0) - 1
+
+        for player_data in players_data:
+            player_name = f"{player_data['first_name']} {player_data['last_name']}"
+            if player_name in yellow_cards:
+                player_data['yellow_cards'] = player_data.get('yellow_cards', 0) + 1
+            if player_name in red_cards:
+                player_data['red_cards'] = player_data.get('red_cards', 0) + 1
+
+        DataManager.save_to_file(players_data, 'data/players.json')
+
+        # Charger les données actuelles des matchs
+        matches_data = DataManager.load_from_file('data/matches.json')
+        if matches_data is not None:
+            for i, m in enumerate(matches_data):
+                if m['match_id'] == match.match_id:
+                    matches_data[i]['yellow_cards'] = yellow_cards
+                    matches_data[i]['red_cards'] = red_cards
+                    break
+            DataManager.save_to_file(matches_data, 'data/matches.json')
+
+        messagebox.showinfo("Information", "Les statistiques des cartons ont été soumises avec succès.")
+        self.card_input_window.destroy()
 
     def view_matches(self):
         """
@@ -422,5 +507,5 @@ class MatchPage(Frame):
         Label(details_window, text=f"Score: {match.score if match.score else 'N/A'}").pack(padx=10, pady=5)
         for stat in match.statistics:
             Label(details_window, text=f"Buteur: {stat['scorer']}, Passeur: {stat['assister']}, Minute: {stat['minute']}").pack(padx=10, pady=5)
-        Label(details_window, text=f"Cartons jaunes: | 0").pack(padx=10, pady=5)
-        Label(details_window, text=f"Cartons rouges: | 0").pack(padx=10, pady=5)
+        Label(details_window, text=f"Cartons jaunes: {', '.join(match.yellow_cards)}").pack(padx=10, pady=5)
+        Label(details_window, text=f"Cartons rouges: {', '.join(match.red_cards)}").pack(padx=10, pady=5)
