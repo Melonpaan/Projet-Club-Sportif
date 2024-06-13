@@ -56,7 +56,7 @@ class MatchPage(Frame):
         self.players_listbox = Listbox(self.add_match_window, selectmode="multiple")
         self.players_listbox.grid(row=3, column=1, padx=10, pady=10)
 
-        submit_button = Button(self.add_match_window, text="Soumettre", command=self.add_match, bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"))
+        submit_button = Button(self.add_match_window, text="Soumettre", command=self.add_match)
         submit_button.grid(row=4, column=0, columnspan=2, pady=10)
 
     def delete_match(self, match):
@@ -123,7 +123,7 @@ class MatchPage(Frame):
         self.entry_score.insert(0, match.score if match.score else '')
         self.entry_score.grid(row=4, column=1, padx=10, pady=10)
 
-        Button(self.edit_match_window, text="Suivant", command=lambda: self.open_goal_scorer_window(match, edit=True), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=5, column=0, columnspan=2, pady=10)
+        Button(self.edit_match_window, text="Suivant", command=lambda: self.open_goal_scorer_window(match, edit=True),).grid(row=5, column=0, columnspan=2, pady=10)
 
     def edit_match(self, match):
         """
@@ -269,7 +269,7 @@ class MatchPage(Frame):
 
         self.entry_score = Tools.create_label_and_entry(self.score_input_window, "Score (ex: 2-1):", 0)
 
-        Button(self.score_input_window, text="Suivant", command=lambda: self.open_goal_scorer_window(match), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=1, column=0, columnspan=2, pady=10)
+        Button(self.score_input_window, text="Suivant", command=lambda: self.open_goal_scorer_window(match)).grid(row=1, column=0, columnspan=2, pady=10)
 
     def open_goal_scorer_window(self, match, edit=False):
         """
@@ -325,7 +325,7 @@ class MatchPage(Frame):
             minute_entry.grid(row=i, column=5, padx=10, pady=5)
             self.minute_entries.append(minute_var)
 
-        Button(self.goal_scorer_window, text="Soumettre", command=lambda: self.submit_match_statistics(match, score_text, edit), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=my_team_score, column=0, columnspan=6, pady=10)
+        Button(self.goal_scorer_window, text="Soumettre", command=lambda: self.submit_match_statistics(match, score_text, edit)).grid(row=my_team_score, column=0, columnspan=6, pady=10)
 
     def submit_match_statistics(self, match, score_text, edit=False):
         """
@@ -424,7 +424,7 @@ class MatchPage(Frame):
             red_dropdown.grid(row=i+1, column=2, padx=10, pady=5)
             self.red_card_entries.append((player, red_var))
 
-        Button(self.card_input_window, text="Soumettre", command=lambda: self.submit_card_statistics(match, edit), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=len(match.players)+1, column=0, columnspan=3, pady=10)
+        Button(self.card_input_window, text="Soumettre", command=lambda: self.submit_card_statistics(match, edit)).grid(row=len(match.players)+1, column=0, columnspan=3, pady=10)
 
     def submit_card_statistics(self, match, edit=False):
         """
