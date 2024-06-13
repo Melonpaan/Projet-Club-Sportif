@@ -1,62 +1,31 @@
 [
     {
         "training_id": 1,
-        "date": "12-06-2024",
+        "date": "13-06-2024",
         "my_team": "D1-homme",
-        "location": "Stade Baudouin",
+        "location": "Stade labas la",
         "training_type": "Entrainement aux passes",
         "players": [
             "Jean Dupont (Attaquant)",
             "Pierre Martin (D\u00c3\u00a9fenseur)",
-            "Luc Bernard (Milieu)",
             "Julien Robert (Gardien)",
             "Vincent Moreau (D\u00c3\u00a9fenseur)",
-            "Henri Roux (Attaquant)",
-            "Paul Michel (Milieu)",
-            "Emmanuel Garcia (Attaquant)",
-            "Charles Fournier (Milieu)"
-        ],
-        "ratings": {
-            "Jean Dupont (Attaquant)": 3,
-            "Pierre Martin (D\u00c3\u00a9fenseur)": 1,
-            "Luc Bernard (Milieu)": 4,
-            "Julien Robert (Gardien)": 4,
-            "Vincent Moreau (D\u00c3\u00a9fenseur)": 2,
-            "Henri Roux (Attaquant)": 3,
-            "Paul Michel (Milieu)": 5,
-            "Emmanuel Garcia (Attaquant)": 5,
-            "Charles Fournier (Milieu)": 5
-        }
-    },
-    {
-        "training_id": 2,
-        "date": "18-06-2024",
-        "my_team": "D1-homme",
-        "location": "Stade baudouin",
-        "training_type": "Entrainement cardio",
-        "players": [
-            "Jean Dupont (Attaquant)",
-            "Luc Bernard (Milieu)",
-            "Julien Robert (Gardien)",
             "Louis Leroy (Milieu)",
+            "Henri Roux (Attaquant)",
             "Claude Simon (D\u00c3\u00a9fenseur)",
             "Paul Michel (Milieu)",
-            "Jacques Lopez (D\u00c3\u00a9fenseur)",
-            "Charles Fournier (Milieu)",
-            "Jacques Girard (Attaquant)",
-            "David Renaud (Milieu)"
+            "Jacques Girard (Attaquant)"
         ],
         "ratings": {
             "Jean Dupont (Attaquant)": 3,
-            "Luc Bernard (Milieu)": 5,
-            "Julien Robert (Gardien)": 2,
-            "Louis Leroy (Milieu)": 1,
-            "Claude Simon (D\u00c3\u00a9fenseur)": 4,
+            "Pierre Martin (D\u00c3\u00a9fenseur)": 2,
+            "Julien Robert (Gardien)": 3,
+            "Vincent Moreau (D\u00c3\u00a9fenseur)": 5,
+            "Louis Leroy (Milieu)": 2,
+            "Henri Roux (Attaquant)": 1,
+            "Claude Simon (D\u00c3\u00a9fenseur)": 2,
             "Paul Michel (Milieu)": 2,
-            "Jacques Lopez (D\u00c3\u00a9fenseur)": 4,
-            "Charles Fournier (Milieu)": 5,
-            "Jacques Girard (Attaquant)": 2,
-            "David Renaud (Milieu)": 3
+            "Jacques Girard (Attaquant)": 4
         }
     }
 ]

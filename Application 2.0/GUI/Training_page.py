@@ -65,6 +65,102 @@ class TrainingPage(Frame):
         submit_button = Button(self.add_training_window, text="Soumettre", command=self.add_training, bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold"))
         submit_button.grid(row=5, column=0, columnspan=2, pady=10)
 
+    def delete_training(self, training):
+        """
+        Supprime un entraînement et met à jour les fichiers JSON correspondants.
+
+        Args:
+            training (Training): L'entraînement à supprimer.
+        """
+        trainings_data = DataManager.load_from_file('data/trainings.json')
+        if trainings_data is not None:
+            trainings_data = [t for t in trainings_data if t['training_id'] != training.training_id]
+            DataManager.save_to_file(trainings_data, 'data/trainings.json')
+
+        messagebox.showinfo("Information", "L'entraînement a été supprimé avec succès.")
+        self.view_trainings_window.destroy()
+        self.view_trainings()
+
+    def open_edit_training_form(self, training):
+        """
+        Ouvre une fenêtre pour modifier un entraînement existant.
+
+        Args:
+            training (Training): L'entraînement à modifier.
+        """
+        self.edit_training_window = Toplevel(self.master)
+        self.edit_training_window.title("Modifier l'entraînement")
+
+        self.entry_date = Tools.create_label_and_entry(self.edit_training_window, "Date (DD-MM-YYYY):", 0, training.date)
+
+        Label(self.edit_training_window, text="Mon équipe:").grid(row=1, column=0, padx=10, pady=10)
+        self.team_var = StringVar(value=training.my_team)
+        self.team_dropdown = Combobox(self.edit_training_window, textvariable=self.team_var, values=self.get_team_names(), state='readonly')
+        self.team_dropdown.grid(row=1, column=1, padx=10, pady=10)
+        self.team_dropdown.bind("<<ComboboxSelected>>", lambda event: self.update_players_listbox(self.team_var.get()))
+
+        self.entry_location = Tools.create_label_and_entry(self.edit_training_window, "Lieu:", 2, training.location)
+
+        Label(self.edit_training_window, text="Type d'entraînement:").grid(row=3, column=0, padx=10, pady=10)
+        self.training_type_var = StringVar(value=training.training_type)
+        self.training_type_dropdown = Combobox(self.edit_training_window, textvariable=self.training_type_var, values=[
+            "Entrainement aux tirs", "Entrainement aux passes", "Entrainements défensif", "Entrainement cardio", "Entrainement technique", "Entrainement musculaire", "Entrainement complet"
+        ], state='readonly')
+        self.training_type_dropdown.grid(row=3, column=1, padx=10, pady=10)
+
+        Label(self.edit_training_window, text="Joueurs:").grid(row=4, column=0, padx=10, pady=10)
+        self.players_listbox = Listbox(self.edit_training_window, selectmode="multiple")
+        self.players_listbox.grid(row=4, column=1, padx=10, pady=10)
+        self.update_players_listbox(training.my_team)
+
+        for player in training.players:
+            idx = self.players_listbox.get(0, 'end').index(player)
+            self.players_listbox.selection_set(idx)
+
+        Button(self.edit_training_window, text="Suivant", command=lambda: self.open_player_rating_window(training, edit=True), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=5, column=0, columnspan=2, pady=10)
+
+    def edit_training(self, training):
+        """
+        Modifie un entraînement existant et met à jour les fichiers JSON correspondants.
+
+        Args:
+            training (Training): L'entraînement à modifier.
+        """
+        date = self.entry_date.get()
+        my_team = self.team_var.get()
+        location = self.entry_location.get()
+        training_type = self.training_type_var.get()
+        selected_players = [self.players_listbox.get(i) for i in self.players_listbox.curselection()]
+
+        if not date or not my_team or not location or not training_type or not selected_players:
+            messagebox.showerror("Erreur", "Tous les champs doivent être remplis.")
+            return
+
+        if not self.validate_date(date):
+            messagebox.showerror("Erreur", "La date doit être au format DD-MM-YYYY.")
+            return
+
+        training_data = {
+            "training_id": training.training_id,
+            "date": date,
+            "my_team": my_team,
+            "location": location,
+            "training_type": training_type,
+            "players": selected_players
+        }
+
+        trainings_data = DataManager.load_from_file('data/trainings.json')
+        if trainings_data is not None:
+            for i, t in enumerate(trainings_data):
+                if t['training_id'] == training.training_id:
+                    trainings_data[i] = training_data
+                    break
+            DataManager.save_to_file(trainings_data, 'data/trainings.json')
+
+        self.edit_training_window.destroy()
+        self.view_trainings_window.destroy()
+        self.open_player_rating_window(training, edit=True)
+
     def get_team_names(self):
         """
         Retourne une liste des noms d'équipes disponibles.
@@ -134,14 +230,7 @@ class TrainingPage(Frame):
 
         training_id = self.generate_training_id()
         new_training = Training(training_id, date, my_team, location, training_type, selected_players)
-        training_data = {
-            "training_id": training_id,
-            "date": date,
-            "my_team": my_team,
-            "location": location,
-            "training_type": training_type,
-            "players": selected_players
-        }
+        training_data = new_training.to_dict()
 
         try:
             new_training.add_training(training_data)
@@ -163,33 +252,37 @@ class TrainingPage(Frame):
         max_id = max(training.get("training_id", 0) for training in trainings_data)
         return max_id + 1
 
-    def open_player_rating_window(self, training):
+    def open_player_rating_window(self, training, edit=False):
         """
         Ouvre une fenêtre pour donner une note aux joueurs après l'entraînement.
 
         Args:
             training (Training): L'objet Training pour lequel les informations sont saisies.
+            edit (bool): Indique si la fenêtre est ouverte pour modification.
         """
         self.rating_window = Toplevel(self.master)
         self.rating_window.title("Évaluation des joueurs")
 
         self.rating_entries = []
 
+        existing_ratings = training.ratings if edit else {}
+
         for i, player in enumerate(training.players):
             Label(self.rating_window, text=player).grid(row=i, column=0, padx=10, pady=5)
-            rating_var = StringVar()
+            rating_var = StringVar(value=str(existing_ratings.get(player, "")))
             rating_dropdown = Combobox(self.rating_window, textvariable=rating_var, values=[1, 2, 3, 4, 5], state='readonly')
             rating_dropdown.grid(row=i, column=1, padx=10, pady=5)
             self.rating_entries.append((player, rating_var))
 
-        Button(self.rating_window, text="Soumettre", command=lambda: self.submit_player_ratings(training), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=len(training.players), column=0, columnspan=2, pady=10)
+        Button(self.rating_window, text="Soumettre", command=lambda: self.submit_player_ratings(training, edit), bg="#4CAF50", fg="white", font=("Helvetica", 12, "bold")).grid(row=len(training.players), column=0, columnspan=2, pady=10)
 
-    def submit_player_ratings(self, training):
+    def submit_player_ratings(self, training, edit=False):
         """
         Soumet les évaluations des joueurs et met à jour les données des entraînements dans le fichier JSON.
 
         Args:
             training (Training): L'objet Training pour lequel les informations sont soumises.
+            edit (bool): Indique si les évaluations sont soumises pour une modification.
         """
         player_ratings = {}
         for player, rating in self.rating_entries:
@@ -199,10 +292,18 @@ class TrainingPage(Frame):
                 messagebox.showerror("Erreur", "Toutes les notes doivent être des nombres entiers.")
                 return
 
+        if edit:
+            training.ratings = player_ratings
+        else:
+            training.ratings.update(player_ratings)
+
         trainings_data = DataManager.load_from_file('data/trainings.json') or []
-        for training_data in trainings_data:
+        for i, training_data in enumerate(trainings_data):
             if training_data['training_id'] == training.training_id:
-                training_data['ratings'] = player_ratings
+                trainings_data[i] = training.to_dict()
+                break
+        else:
+            trainings_data.append(training.to_dict())
 
         DataManager.save_to_file(trainings_data, 'data/trainings.json')
 
@@ -219,26 +320,28 @@ class TrainingPage(Frame):
         trainings_data = DataManager.load_from_file('data/trainings.json')
         if trainings_data is not None:
             for index, training in enumerate(trainings_data):
+                training_obj = Training.from_dict(training)
                 Label(self.view_trainings_window, text=f"{training['my_team']} - {training['location']} - {training['date']}").grid(row=index, column=0, padx=10, pady=5)
-                Button(self.view_trainings_window, text="Voir plus", command=lambda t=training: self.view_training_details(t)).grid(row=index, column=1, padx=10, pady=5)
+                Button(self.view_trainings_window, text="Voir plus", command=lambda t=training_obj: self.view_training_details(t)).grid(row=index, column=1, padx=10, pady=5)
+                Button(self.view_trainings_window, text="Modifier", command=lambda t=training_obj: self.open_edit_training_form(t)).grid(row=index, column=2, padx=10, pady=5)
+                Button(self.view_trainings_window, text="Supprimer", command=lambda t=training_obj: self.delete_training(t)).grid(row=index, column=3, padx=10, pady=5)
 
     def view_training_details(self, training):
         """
         Ouvre une nouvelle fenêtre pour afficher les détails d'un entraînement spécifique.
 
         Args:
-            training (dict): Les données de l'entraînement à afficher.
+            training (Training): Les données de l'entraînement à afficher.
         """
         details_window = Toplevel(self.master)
         details_window.title("Détails de l'entraînement")
 
-        Label(details_window, text=f"Date: {training['date']}").pack(padx=10, pady=5)
-        Label(details_window, text=f"Mon équipe: {training['my_team']}").pack(padx=10, pady=5)
-        Label(details_window, text=f"Lieu: {training['location']}").pack(padx=10, pady=5)
-        Label(details_window, text=f"Type d'entraînement: {training.get('training_type', 'Non spécifié')}").pack(padx=10, pady=5)
+        Label(details_window, text=f"Date: {training.date}").pack(padx=10, pady=5)
+        Label(details_window, text=f"Mon équipe: {training.my_team}").pack(padx=10, pady=5)
+        Label(details_window, text=f"Lieu: {training.location}").pack(padx=10, pady=5)
+        Label(details_window, text=f"Type d'entraînement: {training.training_type}").pack(padx=10, pady=5)
 
-
-        if 'ratings' in training:
+        if training.ratings:
             Label(details_window, text="Évaluations:").pack(padx=10, pady=5)
-            for player, rating in training['ratings'].items():
+            for player, rating in training.ratings.items():
                 Label(details_window, text=f"{player}: {rating}").pack(padx=10, pady=5)
