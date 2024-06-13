@@ -1,4 +1,4 @@
-from tkinter import Frame, Label, Button, Toplevel, Listbox, messagebox, StringVar, Entry
+from tkinter import Frame, Label, Button, Toplevel, Listbox, messagebox, StringVar
 from tkinter.ttk import Combobox
 import re
 from tools import Tools

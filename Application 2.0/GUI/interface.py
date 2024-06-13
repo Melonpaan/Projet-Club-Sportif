@@ -440,9 +440,10 @@ class GUIManager(tk.Tk):
 
     def create_statistics_frame(self, frame):
         """
-        Crée la frame pour l'onglet Statistiques avec les statistiques des joueurs.
-        Args:
-            frame (tk.Frame): Frame dans laquelle créer les widgets de l'onglet Statistiques.
-        """
+       Crée la frame pour l'onglet Statistiques avec les statistiques des joueurs.
+       Args:
+           frame (tk.Frame): Frame dans laquelle créer les widgets de l'onglet Statistiques.
+       """
         statistics_page = StatisticsPage(frame)
         statistics_page.pack(fill=tk.BOTH, expand=True)
+

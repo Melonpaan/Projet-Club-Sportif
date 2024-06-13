@@ -5,7 +5,6 @@ from tools import Tools
 from classes.Match import Match
 from classes.data_manager import DataManager
 from classes.player import Player
-from classes.team import Team
 
 class MatchPage(Frame):
     """
