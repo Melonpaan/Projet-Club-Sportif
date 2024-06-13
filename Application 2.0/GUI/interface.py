@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import ttk, messagebox
 from classes.player import Player
 from classes.staff import Staff
 from classes.club import Club
@@ -9,12 +9,11 @@ from GUI.staff_page import StaffPage
 from GUI.season_page import SeasonPage
 from GUI.team_page import TeamPage
 from GUI.Match_page import MatchPage
-from GUI.Statistics_page import StatisticsPage
 from GUI.Training_page import TrainingPage
+from GUI.Statistics_page import StatisticsPage
 from tools import Tools
 from classes.data_manager import DataManager
 import os
-
 
 class GUIManager(tk.Tk):
     """
@@ -57,16 +56,16 @@ class GUIManager(tk.Tk):
         self.saison_frame = tk.Frame(self.notebook)
         self.team_frame = tk.Frame(self.notebook)
         self.events_frame = tk.Frame(self.notebook)
+        self.statistics_frame = tk.Frame(self.notebook)  # Ajouter une nouvelle frame pour les statistiques
 
-
-    # Ajouter les frames au Notebook
+        # Ajouter les frames au Notebook
         self.notebook.add(self.accueil_frame, text="Accueil")
         self.notebook.add(self.player_frame, text="Joueurs")
         self.notebook.add(self.staff_frame, text="Staff")
         self.notebook.add(self.team_frame, text="Equipe")
         self.notebook.add(self.events_frame, text="Evenements")
+        self.notebook.add(self.statistics_frame, text="Statistiques")  # Ajouter un nouvel onglet pour les statistiques
         self.notebook.add(self.saison_frame, text="Saison")
-
 
         # Créer le contenu des frames
         self.create_accueil_frame(self.accueil_frame)
@@ -75,6 +74,7 @@ class GUIManager(tk.Tk):
         self.create_team_frame(self.team_frame)
         self.create_saison_frame(self.saison_frame)
         self.create_events_frame(self.events_frame)
+        self.create_statistics_frame(self.statistics_frame)  # Créer le contenu de la page des statistiques
 
         # Charger les données initiales dans les Treeviews
         self.update_players_treeview()
@@ -107,25 +107,25 @@ class GUIManager(tk.Tk):
             self.staff_members = [Staff.from_dict(data) for data in staff_data]
         else:
             self.staff_members = []
-        
+
         teams_data = DataManager.load_from_file(
             os.path.join(self.data_folder,'teams.json'))
         if teams_data is not None:
             self.teams = [Team.from_dict(data)for data in teams_data]
         else:
             self.teams = []
-        
+
         matches_data = DataManager.load_from_file(os.path.join(self.data_folder, 'matches.json'))
         if matches_data is not None:
             self.matches = matches_data
         else:
-            self.matches = [] 
-        
+            self.matches = []
+
         trainings_data = DataManager.load_from_file(os.path.join(self.data_folder, 'trainings.json'))
         if trainings_data is not None:
             self.trainings = trainings_data
         else:
-            self.trainings = []   
+            self.trainings = []
 
     def create_accueil_frame(self, frame):
         """
@@ -155,17 +155,17 @@ class GUIManager(tk.Tk):
         self.label_num_staff = Tools.create_label(
             accueil_frame, f"Nombre de staff: {len(self.staff_members)}", 5, 0)
         self.label_num_teams = Tools.create_label(
-        accueil_frame, f"Nombre d'équipes: {len(self.teams)}", 6, 0)  
+            accueil_frame, f"Nombre d'équipes: {len(self.teams)}", 6, 0)
         self.label_num_matches = Tools.create_label(
-        accueil_frame, f"Nombre de matchs: {len(self.matches)}", 7, 0)  
+            accueil_frame, f"Nombre de matchs: {len(self.matches)}", 7, 0)
         self.label_num_trainings = Tools.create_label(
-        accueil_frame, f"Nombre d'entraînements: {len(self.trainings)}", 8, 0)  
+            accueil_frame, f"Nombre d'entraînements: {len(self.trainings)}", 8, 0)
         self.label_total_player_salary = Tools.create_label(
             accueil_frame, f"Total salaire des joueurs: {self.calculate_total_salary(self.players)} €", 9, 0)
         self.label_total_staff_salary = Tools.create_label(
             accueil_frame, f"Total salaire du staff: {self.calculate_total_salary(self.staff_members)} €", 10, 0)
 
-    
+
     def calculate_total_salary(self, members):
         """
         Calcule le total des salaires des membres donnés.
@@ -340,7 +340,7 @@ class GUIManager(tk.Tk):
         # Bouton pour charger une saison archivée
         Tools.create_button(saison_frame, "Charger une Saison",
                             self.season_page.load_season, 1, 0)
-    
+
     def create_team_frame(self, frame):
         """
         Crée la frame pour la gestion des équipes avec les Treeviews et les boutons pour ajouter, modifier et supprimer des équipes.
@@ -397,10 +397,6 @@ class GUIManager(tk.Tk):
                 return f"{staff.first_name} {staff.last_name}"
         return ""
 
-
-
-
-
     def create_events_frame(self, frame):
         """
         Crée la frame pour l'onglet Événements avec les sous-boutons Matchs et Entraînement.
@@ -421,7 +417,7 @@ class GUIManager(tk.Tk):
         match_button.pack(pady=10)
 
         training_button = tk.Button(button_container, text="Entraînement", command=self.open_training_page,
-                                 width=20, height=2)
+                                    width=20, height=2)
         training_button.pack(pady=10)
 
     def open_match_page(self):
@@ -442,11 +438,11 @@ class GUIManager(tk.Tk):
         training_frame = TrainingPage(training_page)
         training_frame.pack(fill=tk.BOTH, expand=True)
 
-    def open_statistics_page(self):
+    def create_statistics_frame(self, frame):
         """
-        Ouvre la page de gestion des statistiques du match.
+        Crée la frame pour l'onglet Statistiques avec les statistiques des joueurs.
+        Args:
+            frame (tk.Frame): Frame dans laquelle créer les widgets de l'onglet Statistiques.
         """
-        statistics_page = tk.Toplevel(self)
-        statistics_page.title("Statistique du match")
-        statistics_frame = StatisticsPage(statistics_page)
-        statistics_frame.pack(fill=tk.BOTH, expand=True)
+        statistics_page = StatisticsPage(frame)
+        statistics_page.pack(fill=tk.BOTH, expand=True)
