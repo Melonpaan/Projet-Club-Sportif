@@ -158,7 +158,7 @@ class TeamPage:
                         for _ in self.gui_manager.teams:
                             if player_id in _.players:
                                 _.players.remove(player_id)
-                    team.add_player(player_id)
+                team.add_player(player_id)
 
             self.gui_manager.update_teams_treeview()
             Team.save_to_file(self.gui_manager.teams)
