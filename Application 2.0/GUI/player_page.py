@@ -120,7 +120,7 @@ class PlayerPage:
 
         # Utiliser un Combobox pour le champ "Poste"
         Label(form_window, text="Poste").grid(row=9, column=0)
-        entry_position = ttk.Combobox(form_window, values=["Attaquant", "Milieu", "Défenseur", "Gardien"])
+        entry_position = ttk.Combobox(form_window, values=["Attaquant", "Milieu", "Defenseur", "Gardien"])
         entry_position.grid(row=9, column=1)
         if player:
             entry_position.set(player.position)

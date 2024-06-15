@@ -95,14 +95,13 @@ class GUIManager(tk.Tk):
         else:
             self.club = Club("Nom du Club", "Adresse du Club",
                              "Président du Club")
-
-        players_data = DataManager.load_from_file(
-            os.path.join(self.data_folder, 'players.json'))
+    
+        players_data = DataManager.load_from_file(os.path.join(self.data_folder, 'players.json'))
         if players_data is not None:
             self.players = [Player.from_dict(data) for data in players_data]
         else:
             self.players = []
-
+    
         staff_data = DataManager.load_from_file(
             os.path.join(self.data_folder, 'staff.json'))
         if staff_data is not None:

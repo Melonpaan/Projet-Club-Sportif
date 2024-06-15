@@ -37,9 +37,11 @@ class Team:
         self.coach_id = coach_id
 
     def add_player(self, player_id):
+        if not isinstance(self.players, list):
+            self.players = []  
         if player_id not in self.players:
             self.players.append(player_id)
-
+        
     def remove_player(self, player_id):
         if player_id in self.players:
             self.players.remove(player_id)

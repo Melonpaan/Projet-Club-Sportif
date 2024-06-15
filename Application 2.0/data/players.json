@@ -11,11 +11,9 @@
         },
         "address": "123 Rue Principale",
         "phone_number": "0123456789",
-        "position": "Attaquant",
-        "jersey_number": "9",
         "gender": "Masculin",
-        "assists": 0,
-        "goals": 1
+        "position": "Attaquant",
+        "jersey_number": "9"
     },
     {
         "person_ID": 2,
@@ -29,12 +27,9 @@
         },
         "address": "45 Avenue de la R\u00c3\u00a9publique",
         "phone_number": "0987654321",
-        "position": "D\u00c3\u00a9fenseur",
-        "jersey_number": "5",
         "gender": "Masculin",
-        "goals": 1,
-        "assists": 0,
-        "yellow_cards": 1
+        "position": "Defenseur",
+        "jersey_number": "5"
     },
     {
         "person_ID": 3,
@@ -48,11 +43,9 @@
         },
         "address": "78 Boulevard Saint-Germain",
         "phone_number": "0123987654",
-        "position": "Milieu",
-        "jersey_number": "8",
         "gender": "Masculin",
-        "goals": 0,
-        "assists": 1
+        "position": "Milieu",
+        "jersey_number": "8"
     },
     {
         "person_ID": 4,
@@ -66,11 +59,9 @@
         },
         "address": "56 Rue de Rivoli",
         "phone_number": "0234567890",
-        "position": "Gardien",
-        "jersey_number": "1",
         "gender": "Masculin",
-        "goals": 0,
-        "assists": 0
+        "position": "Gardien",
+        "jersey_number": "1"
     },
     {
         "person_ID": 5,
@@ -84,10 +75,9 @@
         },
         "address": "34 Rue des Fleurs",
         "phone_number": "0987653214",
-        "position": "Attaquant",
-        "jersey_number": "11",
         "gender": "Masculin",
-        "goals": 0
+        "position": "Attaquant",
+        "jersey_number": "11"
     },
     {
         "person_ID": 6,
@@ -101,10 +91,9 @@
         },
         "address": "67 Rue de la Paix",
         "phone_number": "0345678921",
-        "position": "D\u00c3\u00a9fenseur",
-        "jersey_number": "4",
         "gender": "Masculin",
-        "goals": 0
+        "position": "Defenseur",
+        "jersey_number": "4"
     },
     {
         "person_ID": 7,
@@ -118,11 +107,9 @@
         },
         "address": "89 Rue des Champs",
         "phone_number": "0123456781",
-        "position": "Milieu",
-        "jersey_number": "6",
         "gender": "Masculin",
-        "goals": 0,
-        "assists": 0
+        "position": "Milieu",
+        "jersey_number": "6"
     },
     {
         "person_ID": 8,
@@ -136,11 +123,9 @@
         },
         "address": "123 Avenue du G\u00c3\u00a9n\u00c3\u00a9ral",
         "phone_number": "0981234567",
-        "position": "Attaquant",
-        "jersey_number": "7",
         "gender": "Masculin",
-        "goals": 0,
-        "yellow_cards": 0
+        "position": "Attaquant",
+        "jersey_number": "7"
     },
     {
         "person_ID": 9,
@@ -154,10 +139,9 @@
         },
         "address": "45 Rue de l'Universit\u00c3\u00a9",
         "phone_number": "0145678932",
-        "position": "D\u00c3\u00a9fenseur",
-        "jersey_number": "3",
         "gender": "Masculin",
-        "goals": 1
+        "position": "Defenseur",
+        "jersey_number": "3"
     },
     {
         "person_ID": 10,
@@ -171,10 +155,9 @@
         },
         "address": "67 Rue du Faubourg",
         "phone_number": "0234567812",
-        "position": "Milieu",
-        "jersey_number": "10",
         "gender": "Masculin",
-        "goals": 1
+        "position": "Milieu",
+        "jersey_number": "10"
     },
     {
         "person_ID": 11,
@@ -188,9 +171,9 @@
         },
         "address": "34 Boulevard Haussmann",
         "phone_number": "0123987650",
+        "gender": "Masculin",
         "position": "Attaquant",
-        "jersey_number": "13",
-        "gender": "Masculin"
+        "jersey_number": "13"
     },
     {
         "person_ID": 12,
@@ -204,9 +187,9 @@
         },
         "address": "78 Rue de la Libert\u00c3\u00a9",
         "phone_number": "0345671234",
-        "position": "D\u00c3\u00a9fenseur",
-        "jersey_number": "2",
-        "gender": "Masculin"
+        "gender": "Masculin",
+        "position": "Defenseur",
+        "jersey_number": "2"
     },
     {
         "person_ID": 13,
@@ -220,25 +203,25 @@
         },
         "address": "89 Avenue Victor Hugo",
         "phone_number": "0123987546",
+        "gender": "Masculin",
         "position": "Milieu",
-        "jersey_number": "15",
-        "gender": "Masculin"
+        "jersey_number": "15"
     },
     {
         "person_ID": 14,
         "last_name": "Mercier",
-        "first_name": "Fran\u00c3\u00a7ois",
+        "first_name": "Francois",
         "birth_date": "21-11-1988",
         "contract": {
             "start_date": "01-01-2023",
             "end_date": "31-12-2023",
             "salary": "5000"
         },
-        "address": "34 Rue du March\u00c3\u00a9",
+        "address": "34 Rue du March\u00e9",
         "phone_number": "0123987543",
+        "gender": "Masculin",
         "position": "Gardien",
-        "jersey_number": "16",
-        "gender": "Masculin"
+        "jersey_number": "16"
     },
     {
         "person_ID": 15,
@@ -252,9 +235,9 @@
         },
         "address": "56 Rue des Peupliers",
         "phone_number": "0123987547",
+        "gender": "Masculin",
         "position": "Attaquant",
-        "jersey_number": "17",
-        "gender": "Masculin"
+        "jersey_number": "17"
     },
     {
         "person_ID": 16,
@@ -268,8 +251,8 @@
         },
         "address": "78 Rue des Rosiers",
         "phone_number": "0123498765",
+        "gender": "F\u00e9minin",
         "position": "Milieu",
-        "jersey_number": "18",
-        "gender": "Masculin"
+        "jersey_number": "18"
     }
 ]

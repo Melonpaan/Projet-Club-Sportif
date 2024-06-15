@@ -135,15 +135,10 @@ class TeamPage:
 
             if team:
                 self.open_add_players_window(team)
-            else:
-                messagebox.showerror("Erreur", "Équipe non trouvée")
         else:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
 
     def open_add_players_window(self, team):
-        """
-        Ouvre une fenêtre pour sélectionner et ajouter des joueurs à une équipe.
-        """
         add_players_window = Toplevel(self.gui_manager)
         add_players_window.title(f"Ajouter des joueurs à l'équipe {team.name}")
 
@@ -179,6 +174,7 @@ class TeamPage:
 
         add_button = Button(add_players_window, text="Ajouter", command=add_selected_players)
         add_button.pack()
+
 
     def view_team_players(self):
         """
@@ -248,7 +244,7 @@ class TeamPage:
         Retourne le nom de l'équipe à laquelle appartient le joueur.
         """
         for team in self.gui_manager.teams:
-            if player_id in team.players:
+            if isinstance(team.players, list) and player_id in team.players:
                 return team.name
         return None
 

@@ -7,5 +7,25 @@
         "players": [],
         "doctor_id": 3,
         "coach_id": 4
+    },
+    {
+        "team_id": 2,
+        "name": "D1-Homme",
+        "gender": "Masculin",
+        "category": "Division 1",
+        "players": [
+            2
+        ],
+        "doctor_id": 3,
+        "coach_id": null
+    },
+    {
+        "team_id": 3,
+        "name": "D2-Homme",
+        "gender": "Masculin",
+        "category": "Division 2",
+        "players": [],
+        "doctor_id": null,
+        "coach_id": null
     }
 ]
