@@ -1,13 +1,14 @@
 import os
 from tkinter import simpledialog, messagebox, filedialog
-from tools import Tools
 from classes.data_manager import DataManager
 from classes.club import Club
 from classes.player import Player
 from classes.staff import Staff
 from classes.team import Team
+'''
 from classes.Match import Match
 from classes.Training import Training
+'''
 
 class SeasonPage:
     def __init__(self, gui_manager):
@@ -31,26 +32,38 @@ class SeasonPage:
                 os.makedirs(archive_folder)
 
                 # Définir les chemins des fichiers source
-                source_club_file = os.path.join(self.gui_manager.data_folder, 'club.json')
-                source_players_file = os.path.join(self.gui_manager.data_folder, 'players.json')
-                source_staff_file = os.path.join(self.gui_manager.data_folder, 'staff.json')
-                source_teams_file = os.path.join(self.gui_manager.data_folder, 'teams.json')
-                source_matches_file = os.path.join(self.gui_manager.data_folder, 'matches.json')
-                source_trainings_file = os.path.join(self.gui_manager.data_folder, 'trainings.json')
+                source_files = {
+                    'club.json': os.path.join(self.gui_manager.data_folder, 'club.json'),
+                    'players.json': os.path.join(self.gui_manager.data_folder, 'players.json'),
+                    'staff.json': os.path.join(self.gui_manager.data_folder, 'staff.json'),
+                    'teams.json': os.path.join(self.gui_manager.data_folder, 'teams.json'),
+                    'matches.json': os.path.join(self.gui_manager.data_folder, 'matches.json'),
+                    'trainings.json': os.path.join(self.gui_manager.data_folder, 'trainings.json')
+                }
 
                 # Archiver les fichiers existants dans le dossier de la saison
-                if os.path.exists(source_club_file):
-                    DataManager.save_to_file(self.gui_manager.club.to_dict(), os.path.join(archive_folder, 'club.json'))
-                if os.path.exists(source_players_file):
-                    DataManager.save_to_file([player.to_dict() for player in self.gui_manager.players], os.path.join(archive_folder, 'players.json'))
-                if os.path.exists(source_staff_file):
-                    DataManager.save_to_file([staff.to_dict() for staff in self.gui_manager.staff_members], os.path.join(archive_folder, 'staff.json'))
-                if os.path.exists(source_teams_file):
-                    DataManager.save_to_file([team.to_dict() for team in self.gui_manager.teams], os.path.join(archive_folder, 'teams.json'))
-                if os.path.exists(source_matches_file):
-                    DataManager.save_to_file(self.gui_manager.matches, os.path.join(archive_folder, 'matches.json'))
-                if os.path.exists(source_trainings_file):
-                    DataManager.save_to_file(self.gui_manager.trainings, os.path.join(archive_folder, 'trainings.json'))
+                for filename, filepath in source_files.items():
+                    if os.path.exists(filepath):
+                        DataManager.save_to_file(DataManager.load_from_file(filepath), os.path.join(archive_folder, filename))
+
+                # Réinitialiser les données des evenements
+                self.gui_manager.matches = [] ## J'supprime matches parce que c'est là ou y a les données stats des joueurs
+                self.gui_manager.trainings = []
+
+                # Sauvegarder les fichiers réinitialisés
+                DataManager.save_to_file(self.gui_manager.matches, source_files['matches.json'])
+                DataManager.save_to_file(self.gui_manager.trainings, source_files['trainings.json'])
+                DataManager.save_to_file([player.to_dict() for player in self.gui_manager.players], source_files['players.json'])
+
+                # Supprimer les fichiers JSON evenemnts
+                if os.path.exists(source_files['matches.json']):
+                    os.remove(source_files['matches.json'])
+                if os.path.exists(source_files['trainings.json']):
+                    os.remove(source_files['trainings.json'])
+
+                # Mettre à jour l'interface utilisateur avec les nouvelles données
+                self.gui_manager.update_players_treeview()
+                self.gui_manager.update_teams_treeview()
 
                 messagebox.showinfo("Succès", f"La saison {season_name} a été archivée avec succès.")
             else:
@@ -60,52 +73,65 @@ class SeasonPage:
         """
         Charge les données d'une saison archivée à partir d'un dossier sélectionné par l'utilisateur.
         """
-        # Demander à l'utilisateur de sélectionner un dossier de saison
+        # Demande à l'utilisateur de sélectionner une saison
         archive_folder = filedialog.askdirectory(title="Sélectionnez le dossier de la saison à charger", initialdir=self.gui_manager.archives_folder)
         if archive_folder:
             try:
                 # Définir les chemins des fichiers à charger
-                club_file = os.path.join(archive_folder, 'club.json')
-                players_file = os.path.join(archive_folder, 'players.json')
-                staff_file = os.path.join(archive_folder, 'staff.json')
-                teams_file = os.path.join(archive_folder, 'teams.json')
-                matches_file = os.path.join(archive_folder, 'matches.json')
-                trainings_file = os.path.join(archive_folder, 'trainings.json')
+                archive_files = {
+                    'club.json': os.path.join(archive_folder, 'club.json'),
+                    'players.json': os.path.join(archive_folder, 'players.json'),
+                    'staff.json': os.path.join(archive_folder, 'staff.json'),
+                    'teams.json': os.path.join(archive_folder, 'teams.json'),
+                    'matches.json': os.path.join(archive_folder, 'matches.json'),
+                    'trainings.json': os.path.join(archive_folder, 'trainings.json')
+                }
+
+                # Chemins de destination dans le dossier data
+                destination_files = {
+                    'club.json': os.path.join(self.gui_manager.data_folder, 'club.json'),
+                    'players.json': os.path.join(self.gui_manager.data_folder, 'players.json'),
+                    'staff.json': os.path.join(self.gui_manager.data_folder, 'staff.json'),
+                    'teams.json': os.path.join(self.gui_manager.data_folder, 'teams.json'),
+                    'matches.json': os.path.join(self.gui_manager.data_folder, 'matches.json'),
+                    'trainings.json': os.path.join(self.gui_manager.data_folder, 'trainings.json')
+                }
+
+                # Charger les données depuis l'archive et les sauvegarder dans le dossier data
+                for filename, filepath in archive_files.items():
+                    if os.path.exists(filepath):
+                        data = DataManager.load_from_file(filepath)
+                        DataManager.save_to_file(data, destination_files[filename])
 
                 # Charger les données du club à partir du dossier sélectionné
-                if os.path.exists(club_file):
-                    club_data = DataManager.load_from_file(club_file)
+                if os.path.exists(archive_files['club.json']):
+                    club_data = DataManager.load_from_file(archive_files['club.json'])
                     if club_data is not None:
                         self.gui_manager.club = Club.from_dict(club_data)
                         self.gui_manager.update_club_info()  # Mettre à jour les informations du club dans l'interface
 
-                # Charger les données des joueurs à partir du dossier sélectionné
-                if os.path.exists(players_file):
-                    players_data = DataManager.load_from_file(players_file)
+                if os.path.exists(archive_files['players.json']):
+                    players_data = DataManager.load_from_file(archive_files['players.json'])
                     if players_data is not None:
                         self.gui_manager.players = [Player.from_dict(data) for data in players_data]
 
-                # Charger les données du staff à partir du dossier sélectionné
-                if os.path.exists(staff_file):
-                    staff_data = DataManager.load_from_file(staff_file)
+                if os.path.exists(archive_files['staff.json']):
+                    staff_data = DataManager.load_from_file(archive_files['staff.json'])
                     if staff_data is not None:
                         self.gui_manager.staff_members = [Staff.from_dict(data) for data in staff_data]
 
-                # Charger les données des équipes à partir du dossier sélectionné
-                if os.path.exists(teams_file):
-                    teams_data = DataManager.load_from_file(teams_file)
+                if os.path.exists(archive_files['teams.json']):
+                    teams_data = DataManager.load_from_file(archive_files['teams.json'])
                     if teams_data is not None:
                         self.gui_manager.teams = [Team.from_dict(data) for data in teams_data]
 
-                # Charger les données des matchs à partir du dossier sélectionné
-                if os.path.exists(matches_file):
-                    matches_data = DataManager.load_from_file(matches_file)
+                if os.path.exists(archive_files['matches.json']):
+                    matches_data = DataManager.load_from_file(archive_files['matches.json'])
                     if matches_data is not None:
                         self.gui_manager.matches = matches_data
 
-                # Charger les données des entraînements à partir du dossier sélectionné
-                if os.path.exists(trainings_file):
-                    trainings_data = DataManager.load_from_file(trainings_file)
+                if os.path.exists(archive_files['trainings.json']):
+                    trainings_data = DataManager.load_from_file(archive_files['trainings.json'])
                     if trainings_data is not None:
                         self.gui_manager.trainings = trainings_data
 
