@@ -318,14 +318,15 @@ class TrainingPage(Frame):
         self.view_trainings_window.title("Voir les entraînements")
 
         trainings_data = DataManager.load_from_file('data/trainings.json')
-        if trainings_data is not None:
+        if trainings_data:
             for index, training in enumerate(trainings_data):
                 training_obj = Training.from_dict(training)
                 Label(self.view_trainings_window, text=f"{training['my_team']} - {training['location']} - {training['date']}").grid(row=index, column=0, padx=10, pady=5)
                 Button(self.view_trainings_window, text="Voir plus", command=lambda t=training_obj: self.view_training_details(t)).grid(row=index, column=1, padx=10, pady=5)
                 Button(self.view_trainings_window, text="Modifier", command=lambda t=training_obj: self.open_edit_training_form(t)).grid(row=index, column=2, padx=10, pady=5)
                 Button(self.view_trainings_window, text="Supprimer", command=lambda t=training_obj: self.delete_training(t)).grid(row=index, column=3, padx=10, pady=5)
-
+        else:
+            messagebox.showerror("Erreur", "Aucun entrainement enregistré pour cette saison.")
     def view_training_details(self, training):
         """
         Ouvre une nouvelle fenêtre pour afficher les détails d'un entraînement spécifique.
