@@ -60,8 +60,12 @@ python main.py
   - **`team.py`** : Classe pour les équipes.
   - **`match.py`** : Classe pour les matchs.
   - **`training.py`** : Classe pour les entraînements.
+  - **`contract.py`** : Classe pour les contrats, gérant les informations contractuelles des joueurs et du staff.
+  - **`person.py`** : Classe de base pour les personnes (joueurs et staff), incluant les informations personnelles et contractuelles.
+  - **`match_statistics.py`** : Classe pour gérer les statistiques des matchs.
   - **`data_manager.py`** : Classe pour gérer le chargement et la sauvegarde des données.
 - **`data/`** : Contient les fichiers de données JSON pour les joueurs, le staff, les équipes, les matchs, les entraînements, etc.
+- **`archives/`** : Contient les archives des saisons précédentes.
 - **`tools.py`** : Contient des fonctions utilitaires pour l'application.
 
 
