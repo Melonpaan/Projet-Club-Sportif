@@ -1,0 +1,277 @@
+[
+    {
+        "person_ID": 1,
+        "last_name": "Dupont",
+        "first_name": "Jean",
+        "birth_date": "15-05-1990",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "123 Rue Principale",
+        "phone_number": "0123456789",
+        "position": "Attaquant",
+        "jersey_number": "9",
+        "gender": "Masculin",
+        "assists": 0,
+        "goals": 1
+    },
+    {
+        "person_ID": 2,
+        "last_name": "Martin",
+        "first_name": "Pierre",
+        "birth_date": "22-03-1988",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "45 Avenue de la R\u00c3\u00a9publique",
+        "phone_number": "0987654321",
+        "position": "D\u00c3\u00a9fenseur",
+        "jersey_number": "5",
+        "gender": "Masculin",
+        "goals": 3,
+        "assists": 1,
+        "yellow_cards": 1
+    },
+    {
+        "person_ID": 3,
+        "last_name": "Bernard",
+        "first_name": "Luc",
+        "birth_date": "14-07-1992",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "78 Boulevard Saint-Germain",
+        "phone_number": "0123987654",
+        "position": "Milieu",
+        "jersey_number": "8",
+        "gender": "Masculin",
+        "goals": 0,
+        "assists": 1
+    },
+    {
+        "person_ID": 4,
+        "last_name": "Robert",
+        "first_name": "Julien",
+        "birth_date": "30-08-1994",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "56 Rue de Rivoli",
+        "phone_number": "0234567890",
+        "position": "Gardien",
+        "jersey_number": "1",
+        "gender": "Masculin",
+        "goals": 0,
+        "assists": 0
+    },
+    {
+        "person_ID": 5,
+        "last_name": "Dubois",
+        "first_name": "Antoine",
+        "birth_date": "12-11-1985",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "34 Rue des Fleurs",
+        "phone_number": "0987653214",
+        "position": "Attaquant",
+        "jersey_number": "11",
+        "gender": "Masculin",
+        "goals": 1,
+        "assists": 1
+    },
+    {
+        "person_ID": 6,
+        "last_name": "Moreau",
+        "first_name": "Vincent",
+        "birth_date": "25-06-1991",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "67 Rue de la Paix",
+        "phone_number": "0345678921",
+        "position": "D\u00c3\u00a9fenseur",
+        "jersey_number": "4",
+        "gender": "Masculin",
+        "goals": 0,
+        "yellow_cards": 1
+    },
+    {
+        "person_ID": 7,
+        "last_name": "Leroy",
+        "first_name": "Louis",
+        "birth_date": "05-12-1989",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "89 Rue des Champs",
+        "phone_number": "0123456781",
+        "position": "Milieu",
+        "jersey_number": "6",
+        "gender": "Masculin",
+        "goals": 0,
+        "assists": 0
+    },
+    {
+        "person_ID": 8,
+        "last_name": "Roux",
+        "first_name": "Henri",
+        "birth_date": "01-02-1993",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "123 Avenue du G\u00c3\u00a9n\u00c3\u00a9ral",
+        "phone_number": "0981234567",
+        "position": "Attaquant",
+        "jersey_number": "7",
+        "gender": "Masculin",
+        "goals": 0,
+        "yellow_cards": 0
+    },
+    {
+        "person_ID": 9,
+        "last_name": "Simon",
+        "first_name": "Claude",
+        "birth_date": "18-09-1987",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "45 Rue de l'Universit\u00c3\u00a9",
+        "phone_number": "0145678932",
+        "position": "D\u00c3\u00a9fenseur",
+        "jersey_number": "3",
+        "gender": "Masculin",
+        "goals": 1
+    },
+    {
+        "person_ID": 10,
+        "last_name": "Michel",
+        "first_name": "Paul",
+        "birth_date": "20-04-1995",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "67 Rue du Faubourg",
+        "phone_number": "0234567812",
+        "position": "Milieu",
+        "jersey_number": "10",
+        "gender": "Masculin",
+        "goals": 1
+    },
+    {
+        "person_ID": 11,
+        "last_name": "Garcia",
+        "first_name": "Emmanuel",
+        "birth_date": "03-03-1990",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "34 Boulevard Haussmann",
+        "phone_number": "0123987650",
+        "position": "Attaquant",
+        "jersey_number": "13",
+        "gender": "Masculin"
+    },
+    {
+        "person_ID": 12,
+        "last_name": "Lopez",
+        "first_name": "Jacques",
+        "birth_date": "15-10-1986",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "78 Rue de la Libert\u00c3\u00a9",
+        "phone_number": "0345671234",
+        "position": "D\u00c3\u00a9fenseur",
+        "jersey_number": "2",
+        "gender": "Masculin"
+    },
+    {
+        "person_ID": 13,
+        "last_name": "Fournier",
+        "first_name": "Charles",
+        "birth_date": "29-07-1992",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "89 Avenue Victor Hugo",
+        "phone_number": "0123987546",
+        "position": "Milieu",
+        "jersey_number": "15",
+        "gender": "Masculin"
+    },
+    {
+        "person_ID": 14,
+        "last_name": "Mercier",
+        "first_name": "Fran\u00c3\u00a7ois",
+        "birth_date": "21-11-1988",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "34 Rue du March\u00c3\u00a9",
+        "phone_number": "0123987543",
+        "position": "Gardien",
+        "jersey_number": "16",
+        "gender": "Masculin"
+    },
+    {
+        "person_ID": 15,
+        "last_name": "Girard",
+        "first_name": "Jacques",
+        "birth_date": "30-08-1990",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "56 Rue des Peupliers",
+        "phone_number": "0123987547",
+        "position": "Attaquant",
+        "jersey_number": "17",
+        "gender": "Masculin"
+    },
+    {
+        "person_ID": 16,
+        "last_name": "Renaud",
+        "first_name": "David",
+        "birth_date": "11-11-1991",
+        "contract": {
+            "start_date": "01-01-2023",
+            "end_date": "31-12-2023",
+            "salary": "5000"
+        },
+        "address": "78 Rue des Rosiers",
+        "phone_number": "0123498765",
+        "position": "Milieu",
+        "jersey_number": "18",
+        "gender": "Masculin"
+    }
+]

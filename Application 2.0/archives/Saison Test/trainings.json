@@ -1,0 +1,31 @@
+[
+    {
+        "training_id": 1,
+        "date": "13-06-2024",
+        "my_team": "D1-homme",
+        "location": "Stade labas la",
+        "training_type": "Entrainement aux passes",
+        "players": [
+            "Jean Dupont (Attaquant)",
+            "Pierre Martin (D\u00c3\u00a9fenseur)",
+            "Julien Robert (Gardien)",
+            "Vincent Moreau (D\u00c3\u00a9fenseur)",
+            "Louis Leroy (Milieu)",
+            "Henri Roux (Attaquant)",
+            "Claude Simon (D\u00c3\u00a9fenseur)",
+            "Paul Michel (Milieu)",
+            "Jacques Girard (Attaquant)"
+        ],
+        "ratings": {
+            "Jean Dupont (Attaquant)": 3,
+            "Pierre Martin (D\u00c3\u00a9fenseur)": 2,
+            "Julien Robert (Gardien)": 3,
+            "Vincent Moreau (D\u00c3\u00a9fenseur)": 5,
+            "Louis Leroy (Milieu)": 2,
+            "Henri Roux (Attaquant)": 1,
+            "Claude Simon (D\u00c3\u00a9fenseur)": 2,
+            "Paul Michel (Milieu)": 2,
+            "Jacques Girard (Attaquant)": 4
+        }
+    }
+]

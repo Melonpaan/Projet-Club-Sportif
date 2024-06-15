@@ -11,6 +11,8 @@ from GUI.team_page import TeamPage
 from GUI.Match_page import MatchPage
 from GUI.Training_page import TrainingPage
 from GUI.Statistics_page import StatisticsPage
+from classes.Match import Match
+from classes.Training import Training
 from tools import Tools
 from classes.data_manager import DataManager
 import os
@@ -117,13 +119,13 @@ class GUIManager(tk.Tk):
 
         matches_data = DataManager.load_from_file(os.path.join(self.data_folder, 'matches.json'))
         if matches_data is not None:
-            self.matches = matches_data
+            self.matches = [Match.from_dict(data) for data in matches_data]  
         else:
             self.matches = []
 
         trainings_data = DataManager.load_from_file(os.path.join(self.data_folder, 'trainings.json'))
         if trainings_data is not None:
-            self.trainings = trainings_data
+            self.trainings = [Training.from_dict(data) for data in trainings_data]  
         else:
             self.trainings = []
 

@@ -4,19 +4,7 @@
         "name": "D1-femme",
         "gender": "F\u00e9minin",
         "category": "Division 1",
-        "players": [
-            23,
-            24,
-            25,
-            26,
-            28,
-            29,
-            30,
-            16,
-            17,
-            18,
-            20
-        ],
+        "players": [],
         "doctor_id": 2,
         "coach_id": 1
     },
@@ -25,7 +13,24 @@
         "name": "D1-homme",
         "gender": "Masculin",
         "category": "Division 1",
-        "players": [],
+        "players": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+        ],
         "doctor_id": "",
         "coach_id": ""
     }

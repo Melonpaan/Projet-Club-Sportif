@@ -1,0 +1,71 @@
+[
+    {
+        "match_id": 1,
+        "date": "24-12-2024",
+        "my_team": "D1-homme",
+        "opponent": "Les m\u00e9chants",
+        "players": [
+            "Jean Dupont",
+            "Pierre Martin",
+            "Luc Bernard",
+            "Julien Robert",
+            "Antoine Dubois"
+        ],
+        "score": "2-1",
+        "statistics": [
+            {
+                "scorer": "Pierre Martin",
+                "assister": "",
+                "minute": "12"
+            },
+            {
+                "scorer": "Jean Dupont",
+                "assister": "Luc Bernard",
+                "minute": "24"
+            }
+        ],
+        "yellow_cards": [
+            "Pierre Martin"
+        ],
+        "red_cards": []
+    },
+    {
+        "match_id": 2,
+        "date": "17-06-2024",
+        "my_team": "D1-homme",
+        "opponent": "m\u00e9chant test",
+        "players": [
+            "Jean Dupont",
+            "Pierre Martin",
+            "Luc Bernard",
+            "Julien Robert",
+            "Antoine Dubois",
+            "Vincent Moreau",
+            "Louis Leroy",
+            "Henri Roux",
+            "Claude Simon"
+        ],
+        "score": "3-1",
+        "statistics": [
+            {
+                "scorer": "Pierre Martin",
+                "assister": "",
+                "minute": "12"
+            },
+            {
+                "scorer": "Pierre Martin",
+                "assister": "Antoine Dubois",
+                "minute": "24"
+            },
+            {
+                "scorer": "Antoine Dubois",
+                "assister": "Pierre Martin",
+                "minute": "36"
+            }
+        ],
+        "yellow_cards": [
+            "Vincent Moreau"
+        ],
+        "red_cards": []
+    }
+]
