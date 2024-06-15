@@ -45,7 +45,7 @@ class GUIManager(tk.Tk):
             os.makedirs(self.archives_folder)
 
         # Charger les données
-        self.load_initial_data()  # Charger les données initiales depuis le dossier data
+        self.load_initial_data()  
 
         # Créer un Notebook pour les onglets
         self.notebook = ttk.Notebook(self)
@@ -58,7 +58,7 @@ class GUIManager(tk.Tk):
         self.saison_frame = tk.Frame(self.notebook)
         self.team_frame = tk.Frame(self.notebook)
         self.events_frame = tk.Frame(self.notebook)
-        self.statistics_frame = tk.Frame(self.notebook)  # Ajouter une nouvelle frame pour les statistiques
+        self.statistics_frame = tk.Frame(self.notebook) 
 
         # Ajouter les frames au Notebook
         self.notebook.add(self.accueil_frame, text="Accueil")
@@ -66,7 +66,7 @@ class GUIManager(tk.Tk):
         self.notebook.add(self.staff_frame, text="Staff")
         self.notebook.add(self.team_frame, text="Equipe")
         self.notebook.add(self.events_frame, text="Evenements")
-        self.notebook.add(self.statistics_frame, text="Statistiques")  # Ajouter un nouvel onglet pour les statistiques
+        self.notebook.add(self.statistics_frame, text="Statistiques")  
         self.notebook.add(self.saison_frame, text="Saison")
 
         # Créer le contenu des frames
@@ -76,7 +76,7 @@ class GUIManager(tk.Tk):
         self.create_team_frame(self.team_frame)
         self.create_saison_frame(self.saison_frame)
         self.create_events_frame(self.events_frame)
-        self.create_statistics_frame(self.statistics_frame)  # Créer le contenu de la page des statistiques
+        self.create_statistics_frame(self.statistics_frame)  
 
         # Charger les données initiales dans les Treeviews
         self.update_players_treeview()

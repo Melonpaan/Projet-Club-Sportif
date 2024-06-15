@@ -5,10 +5,28 @@ from datetime import datetime
 
 class StaffPage:
     def __init__(self, gui_manager):
+        """
+        Initialise la gestion de la page Staff.
+
+        Args:
+            gui_manager (GUIManager): Instance de la classe GUIManager pour accéder aux données et méthodes de l'application.
+        """
         self.gui_manager = gui_manager
 
     def create_form_widget(self, parent, label_text, row, default_value=None, disabled=False):
-        """Create and configure a form field (label + entry) in a Tkinter GUI."""
+        """
+        Crée et configure un champ de formulaire (label + entry) dans une interface Tkinter.
+
+        Args:
+            parent (tk.Widget): Le widget parent dans lequel créer le champ de formulaire.
+            label_text (str): Le texte de l'étiquette du champ.
+            row (int): La ligne dans la grille où placer le champ.
+            default_value (str, optional): La valeur par défaut du champ d'entrée.
+            disabled (bool, optional): Si True, désactive le champ d'entrée.
+
+        Returns:
+            Entry: Le widget d'entrée créé.
+        """
         Label(parent, text=label_text).grid(row=row, column=0)
         entry = Entry(parent)
         entry.grid(row=row, column=1)
@@ -19,16 +37,33 @@ class StaffPage:
         return entry
 
     def open_form_widget(self, staff=None):
-        """Méthode qui permet d'ajouter ou de modifier un membre du staff suivant si staff est donné"""
+        """
+        Ouvre une fenêtre de formulaire pour ajouter ou modifier un membre du staff.
+
+        Args:
+            staff (Staff, optional): Le membre du staff à modifier. Si None, crée un nouveau membre du staff.
+        """
         def staff_exists(last_name, first_name, birth_date):
-            """Check if a staff member with the same name and birth date already exists."""
+            """
+            Vérifie si un membre du staff avec le même nom et la même date de naissance existe déjà.
+
+            Args:
+                last_name (str): Le nom de famille du membre du staff.
+                first_name (str): Le prénom du membre du staff.
+                birth_date (str): La date de naissance du membre du staff.
+
+            Returns:
+                bool: True si un membre du staff avec les mêmes informations existe déjà, False sinon.
+            """
             for s in self.gui_manager.staff_members:
                 if s.last_name == last_name and s.first_name == first_name and s.birth_date == birth_date:
                     return True
             return False
 
         def submit():
-            """Méthode permettant de soumettre les données entrées"""
+            """
+            Soumet les données entrées dans le formulaire et crée ou met à jour un membre du staff.
+            """
             last_name = entry_last_name.get()
             first_name = entry_first_name.get()
             birth_date = entry_birth_date.get()
@@ -84,7 +119,7 @@ class StaffPage:
         form_window = Toplevel(self.gui_manager)
         form_window.title("Modifier un membre du staff" if staff else "Ajouter un membre du staff")
 
-        # Création des entrées pour le formulaire vide ou rempli suivant si l'objet staff est donné. getattr permet d'accéder à un attribut d'un objet (objet, 'nom_attribut', valeur_attribut)
+        # Création des entrées pour le formulaire vide ou rempli suivant si l'objet staff est donné
         entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(staff, 'last_name', ''))
         entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(staff, 'first_name', ''))
         entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(staff, 'birth_date', ''))
@@ -112,7 +147,7 @@ class StaffPage:
         if staff:
             entry_role.set(staff.role)
         
-        # Utiliser un Combobox pour le champ "gender"
+        # Utiliser un Combobox pour le champ "Genre"
         Label(form_window, text="Genre").grid(row=10, column=0)
         entry_gender = ttk.Combobox(form_window, values=["Masculin", "Féminin"])
         entry_gender.grid(row=10, column=1)
@@ -123,15 +158,22 @@ class StaffPage:
         Button(form_window, text="Modifier" if staff else "Ajouter", command=submit).grid(row=11, column=0, columnspan=2)
 
     def add_staff(self):
+        """
+        Ouvre une fenêtre de formulaire pour ajouter un nouveau membre du staff.
+        """
         self.open_form_widget()
 
     def modify_staff(self):
-        """Modifie les données d'un membre du staff. On choisit un membre puis on récupère ses données"""
+        """
+        Modifie les données d'un membre du staff sélectionné.
+
+        On choisit un membre du staff dans la Treeview, puis on récupère et affiche ses données dans le formulaire.
+        """
         selected_item = self.gui_manager.tree_staff.selection()
         if selected_item:
             item = self.gui_manager.tree_staff.item(selected_item)
             values = item['values']
-            person_ID = str(values[0])  # La conversion garantit la comparaison correcte de person_id avec l'objet staff
+            person_ID = str(values[0])
             staff = None
             for data in self.gui_manager.staff_members:
                 if str(data.person_ID) == person_ID:
@@ -142,12 +184,16 @@ class StaffPage:
             messagebox.showerror("Erreur", "Aucun membre du staff sélectionné")
 
     def delete_staff(self):
-        """Supprime un membre du staff sélectionné. On choisit un membre puis on le supprime de la liste."""
+        """
+        Supprime un membre du staff sélectionné.
+
+        On choisit un membre du staff dans la Treeview, puis on le supprime de la liste et des données sauvegardées.
+        """
         selected_item = self.gui_manager.tree_staff.selection()
         if selected_item:
             item = self.gui_manager.tree_staff.item(selected_item)
             values = item['values']
-            person_ID = str(values[0])  # La conversion garantit la comparaison correcte de person_id avec l'objet staff
+            person_ID = str(values[0])
             staff = None
             for data in self.gui_manager.staff_members:
                 if str(data.person_ID) == person_ID:
@@ -158,7 +204,7 @@ class StaffPage:
                 # Confirmer la suppression
                 confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer ce membre du staff ?")
                 if confirmation:
-                    Staff.delete(staff)  # Ajoute l'ID du membre du staff à la liste des IDs disponibles
+                    Staff.delete(staff)
                     self.gui_manager.staff_members.remove(staff)
                     self.gui_manager.update_staff_treeview()
                     Staff.save_to_file(self.gui_manager.staff_members)

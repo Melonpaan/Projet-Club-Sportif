@@ -5,9 +5,28 @@ from datetime import datetime
 
 class PlayerPage:
     def __init__(self, gui_manager):
+        """
+        Initialise la classe PlayerPage avec une référence au gestionnaire d'interface utilisateur.
+
+        Args:
+            gui_manager: Référence à l'objet GUIManager.
+        """
         self.gui_manager = gui_manager
 
     def create_form_widget(self, parent, label_text, row, default_value=None, disabled=False):
+        """
+        Crée un widget de formulaire avec une étiquette et une entrée.
+
+        Args:
+            parent: Widget parent.
+            label_text (str): Texte de l'étiquette.
+            row (int): Ligne dans la grille.
+            default_value (str, optional): Valeur par défaut pour l'entrée.
+            disabled (bool, optional): Si True, désactive l'entrée.
+
+        Returns:
+            Entry: Widget d'entrée.
+        """
         Label(parent, text=label_text).grid(row=row, column=0)
         entry = Entry(parent)
         entry.grid(row=row, column=1)
@@ -18,6 +37,19 @@ class PlayerPage:
         return entry
 
     def create_combobox(self, parent, label_text, row, values, default_value=None):
+        """
+        Crée un widget de formulaire avec une étiquette et une combobox.
+
+        Args:
+            parent: Widget parent.
+            label_text (str): Texte de l'étiquette.
+            row (int): Ligne dans la grille.
+            values (list): Liste des valeurs pour la combobox.
+            default_value (str, optional): Valeur par défaut pour la combobox.
+
+        Returns:
+            ttk.Combobox: Widget combobox.
+        """
         Label(parent, text=label_text).grid(row=row, column=0)
         combobox = ttk.Combobox(parent, values=values)
         combobox.grid(row=row, column=1)
@@ -27,17 +59,32 @@ class PlayerPage:
 
     def open_form_widget(self, player=None):
         """
-        Méthode pour ajouter ou modifier un joueur suivant si player est donné.
+        Ouvre le formulaire pour ajouter ou modifier un joueur.
+
+        Args:
+            player (Player, optional): Objet joueur à modifier. Si None, ajoute un nouveau joueur.
         """
         def player_exists(last_name, first_name, birth_date):
-            """Check if a player with the same name and birth date already exists."""
+            """
+            Vérifie si un joueur avec le même nom et date de naissance existe déjà.
+
+            Args:
+                last_name (str): Nom de famille.
+                first_name (str): Prénom.
+                birth_date (str): Date de naissance.
+
+            Returns:
+                bool: True si le joueur existe déjà, sinon False.
+            """
             for p in self.gui_manager.players:
                 if p.last_name == last_name and p.first_name == first_name and p.birth_date == birth_date:
                     return True
             return False
 
         def submit():
-            """Méthode permettant de soumettre les données entrées"""
+            """
+            Soumet les données du formulaire pour créer ou modifier un joueur.
+            """
             last_name = entry_last_name.get()
             first_name = entry_first_name.get()
             birth_date = entry_birth_date.get()
@@ -50,6 +97,7 @@ class PlayerPage:
             jersey_number = entry_jersey_number.get()
             gender = entry_gender.get()
 
+            # Validation des entrées
             if not last_name.isalpha():
                 messagebox.showerror("Erreur", "Le nom de famille doit être composé uniquement de lettres.")
                 return
@@ -79,7 +127,7 @@ class PlayerPage:
 
             contract = Contract(contract_start, contract_end, salary)
 
-            # Crée ou met à jour l'objet player
+            # Crée ou met à jour l'objet joueur
             if player is None:
                 new_player = Player.create_new(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number, gender)
                 self.gui_manager.players.append(new_player)
@@ -88,16 +136,16 @@ class PlayerPage:
                 player.update_details(last_name, first_name, birth_date, contract, address, phone_number, position, jersey_number, gender)
                 messagebox.showinfo("Information", f"Joueur modifié avec l'ID {player.person_ID}")
 
-            # Mettre à jour l'interface avec les infos et enregistrer les modifications
+            # Mettre à jour l'interface et enregistrer les modifications
             self.gui_manager.update_players_treeview()
             Player.save_to_file(self.gui_manager.players)
             form_window.destroy()
 
-        # Set up le formulaire, Toplevel permet de créer une page au-dessus d'une autre page
+        # Créer la fenêtre de formulaire
         form_window = Toplevel(self.gui_manager)
         form_window.title("Modifier un joueur" if player else "Ajouter un joueur")
 
-        # Création des entrées pour le formulaire vide ou rempli suivant si l'objet player est donné.
+        # Créer les widgets de formulaire
         entry_last_name = self.create_form_widget(form_window, "Nom", 1, getattr(player, 'last_name', ''))
         entry_first_name = self.create_form_widget(form_window, "Prénom", 2, getattr(player, 'first_name', ''))
         entry_birth_date = self.create_form_widget(form_window, "Date de Naissance (JJ-MM-AAAA)", 3, getattr(player, 'birth_date', ''))
@@ -120,7 +168,7 @@ class PlayerPage:
 
         # Utiliser un Combobox pour le champ "Poste"
         Label(form_window, text="Poste").grid(row=9, column=0)
-        entry_position = ttk.Combobox(form_window, values=["Attaquant", "Milieu", "Defenseur", "Gardien"])
+        entry_position = ttk.Combobox(form_window, values=["Attaquant", "Milieu", "Défenseur", "Gardien"])
         entry_position.grid(row=9, column=1)
         if player:
             entry_position.set(player.position)
@@ -138,15 +186,20 @@ class PlayerPage:
         Button(form_window, text="Modifier" if player else "Ajouter", command=submit).grid(row=12, column=0, columnspan=2)
 
     def add_player(self):
+        """
+        Ouvre le formulaire pour ajouter un nouveau joueur.
+        """
         self.open_form_widget()
 
     def modify_player(self):
-        """Modifie les données d'un joueur. On choisit un joueur puis on récupère ses données"""
+        """
+        Modifie les données d'un joueur sélectionné dans le Treeview.
+        """
         selected_item = self.gui_manager.tree_players.selection()
         if selected_item:
             item = self.gui_manager.tree_players.item(selected_item)
             values = item['values']
-            person_ID = str(values[0])  # La conversion garantit la comparaison correcte de person_id avec l'objet player
+            person_ID = str(values[0])  
             player = None
             for data in self.gui_manager.players:
                 if str(data.person_ID) == person_ID:
@@ -157,12 +210,14 @@ class PlayerPage:
             messagebox.showerror("Erreur", "Aucun joueur sélectionné")
 
     def delete_player(self):
-        """Supprime un joueur sélectionné. On choisit un joueur puis on le supprime de la liste."""
+        """
+        Supprime un joueur sélectionné dans le Treeview.
+        """
         selected_item = self.gui_manager.tree_players.selection()
         if selected_item:
             item = self.gui_manager.tree_players.item(selected_item)
             values = item['values']
-            person_ID = str(values[0])  # La conversion garantit la comparaison correcte de person_id avec l'objet player
+            person_ID = str(values[0])  
             player = None
             for data in self.gui_manager.players:
                 if str(data.person_ID) == person_ID:
@@ -173,7 +228,7 @@ class PlayerPage:
                 # Confirmer la suppression
                 confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer ce joueur ?")
                 if confirmation:
-                    Player.delete(player)  # Ajoute l'ID du joueur à la liste des IDs disponibles
+                    Player.delete(player)  
                     self.gui_manager.players.remove(player)
                     self.gui_manager.update_players_treeview()
                     Player.save_to_file(self.gui_manager.players)

@@ -5,9 +5,28 @@ from classes.team import Team
 
 class TeamPage:
     def __init__(self, gui_manager):
+        """
+        Initialise la classe TeamPage avec une référence au gestionnaire d'interface utilisateur.
+
+        Args:
+            gui_manager: Référence à l'objet GUIManager.
+        """
         self.gui_manager = gui_manager
 
     def create_form_widget(self, parent, label_text, row, default_value=None, disabled=False):
+        """
+        Crée un widget de formulaire avec une étiquette et une entrée.
+
+        Args:
+            parent: Widget parent.
+            label_text (str): Texte de l'étiquette.
+            row (int): Ligne dans la grille.
+            default_value (str, optional): Valeur par défaut pour l'entrée.
+            disabled (bool, optional): Si True, désactive l'entrée.
+
+        Returns:
+            Entry: Widget d'entrée.
+        """
         Label(parent, text=label_text).grid(row=row, column=0)
         entry = Entry(parent)
         entry.grid(row=row, column=1)
@@ -18,6 +37,19 @@ class TeamPage:
         return entry
 
     def create_combobox(self, parent, label_text, row, values, default_value=None):
+        """
+        Crée un widget de formulaire avec une étiquette et une combobox.
+
+        Args:
+            parent: Widget parent.
+            label_text (str): Texte de l'étiquette.
+            row (int): Ligne dans la grille.
+            values (list): Liste des valeurs pour la combobox.
+            default_value (str, optional): Valeur par défaut pour la combobox.
+
+        Returns:
+            ttk.Combobox: Widget combobox.
+        """
         Label(parent, text=label_text).grid(row=row, column=0)
         combobox = ttk.Combobox(parent, values=values)
         combobox.grid(row=row, column=1)
@@ -26,6 +58,15 @@ class TeamPage:
         return combobox
 
     def extract_id(self, text):
+        """
+        Extrait l'ID d'un texte donné.
+
+        Args:
+            text (str): Texte contenant l'ID.
+
+        Returns:
+            int: ID extrait ou None en cas d'échec.
+        """
         if not text:
             return None
         try:
@@ -34,7 +75,16 @@ class TeamPage:
             return None
 
     def open_form_widget(self, team=None):
+        """
+        Ouvre le formulaire pour ajouter ou modifier une équipe.
+
+        Args:
+            team (Team, optional): Objet équipe à modifier. Si None, ajoute une nouvelle équipe.
+        """
         def submit():
+            """
+            Soumet les données du formulaire pour créer ou modifier une équipe.
+            """
             name = entry_name.get()
             gender = entry_gender.get()
             category = entry_category.get()
@@ -79,9 +129,15 @@ class TeamPage:
 
             
     def add_team(self):
+        """
+        Ouvre le formulaire pour ajouter une nouvelle équipe.
+        """
         self.open_form_widget()
 
     def modify_team(self):
+        """
+        Modifie les données d'une équipe sélectionnée dans le Treeview.
+        """
         selected_item = self.gui_manager.tree_teams.selection()
         if selected_item:
             item = self.gui_manager.tree_teams.item(selected_item)
@@ -97,6 +153,9 @@ class TeamPage:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
 
     def delete_team(self):
+        """
+        Supprime une équipe sélectionnée dans le Treeview.
+        """
         selected_item = self.gui_manager.tree_teams.selection()
         if selected_item:
             item = self.gui_manager.tree_teams.item(selected_item)
@@ -139,6 +198,12 @@ class TeamPage:
             messagebox.showerror("Erreur", "Aucune équipe sélectionnée")
 
     def open_add_players_window(self, team):
+        """
+        Ouvre une fenêtre pour ajouter des joueurs à l'équipe sélectionnée.
+
+        Args:
+            team (Team): Équipe à laquelle ajouter des joueurs.
+        """
         add_players_window = Toplevel(self.gui_manager)
         add_players_window.title(f"Ajouter des joueurs à l'équipe {team.name}")
 
@@ -156,12 +221,15 @@ class TeamPage:
                 players_tree.insert("", "end", text=player.person_ID, values=(player.last_name, player.first_name, player.position, team_name or ""))
 
         def add_selected_players():
+            """
+            Ajoute les joueurs sélectionnés à l'équipe.
+            """
             selected_items = players_tree.selection()
             for item in selected_items:
                 player_id = int(players_tree.item(item, "text"))
                 current_team_name = self.get_player_team(player_id)
                 if current_team_name and current_team_name != team.name:
-                    confirmation = messagebox.askyesno("Confirmation",f"Le joueur est déja dans l'équipe {current_team_name}. Voulez-vous le déplacer dans l'équipe {team.name} ?")
+                    confirmation = messagebox.askyesno("Confirmation", f"Le joueur est déjà dans l'équipe {current_team_name}. Voulez-vous le déplacer dans l'équipe {team.name} ?")
                     if confirmation:
                         for _ in self.gui_manager.teams:
                             if player_id in _.players:
@@ -175,10 +243,9 @@ class TeamPage:
         add_button = Button(add_players_window, text="Ajouter", command=add_selected_players)
         add_button.pack()
 
-
     def view_team_players(self):
         """
-        Ouvre une fenêtre pour afficher les joueurs d'une équipe sélectionnée.
+        Ouvre une fenêtre pour afficher les joueurs de l'équipe sélectionnée.
         """
         selected_item = self.gui_manager.tree_teams.selection()
         if selected_item:
@@ -199,7 +266,10 @@ class TeamPage:
 
     def open_view_team_players_window(self, team):
         """
-        Ouvre une fenêtre pour afficher les joueurs d'une équipe.
+        Ouvre une fenêtre pour afficher les joueurs de l'équipe.
+
+        Args:
+            team (Team): Équipe dont les joueurs doivent être affichés.
         """
         view_players_window = Toplevel(self.gui_manager)
         view_players_window.title(f"Joueurs de l'équipe {team.name}")
@@ -221,6 +291,9 @@ class TeamPage:
                 players_tree.insert("", "end", text=player.person_ID, values=(player.last_name, player.first_name, player.position))
 
         def remove_selected_player():
+            """
+            Supprime le joueur sélectionné de l'équipe.
+            """
             selected_item = players_tree.selection()
             if selected_item:
                 player_id = int(players_tree.item(selected_item, "text"))
@@ -239,9 +312,16 @@ class TeamPage:
 
         close_button = Button(view_players_window, text="Fermer", command=view_players_window.destroy)
         close_button.pack()
+        
     def get_player_team(self, player_id):
         """
         Retourne le nom de l'équipe à laquelle appartient le joueur.
+
+        Args:
+            player_id (int): ID du joueur.
+
+        Returns:
+            str: Nom de l'équipe ou None si le joueur n'appartient à aucune équipe.
         """
         for team in self.gui_manager.teams:
             if isinstance(team.players, list) and player_id in team.players:

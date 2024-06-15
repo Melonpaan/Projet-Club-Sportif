@@ -5,10 +5,7 @@ from classes.club import Club
 from classes.player import Player
 from classes.staff import Staff
 from classes.team import Team
-'''
-from classes.Match import Match
-from classes.Training import Training
-'''
+
 
 class SeasonPage:
     def __init__(self, gui_manager):
@@ -47,7 +44,7 @@ class SeasonPage:
                         DataManager.save_to_file(DataManager.load_from_file(filepath), os.path.join(archive_folder, filename))
 
                 # Réinitialiser les données des evenements
-                self.gui_manager.matches = [] ## J'supprime matches parce que c'est là ou y a les données stats des joueurs
+                self.gui_manager.matches = []
                 self.gui_manager.trainings = []
 
                 # Sauvegarder les fichiers réinitialisés
@@ -55,7 +52,7 @@ class SeasonPage:
                 DataManager.save_to_file(self.gui_manager.trainings, source_files['trainings.json'])
                 DataManager.save_to_file([player.to_dict() for player in self.gui_manager.players], source_files['players.json'])
 
-                # Supprimer les fichiers JSON evenemnts
+                # Supprimer les fichiers JSON événements
                 if os.path.exists(source_files['matches.json']):
                     os.remove(source_files['matches.json'])
                 if os.path.exists(source_files['trainings.json']):
@@ -73,7 +70,7 @@ class SeasonPage:
         """
         Charge les données d'une saison archivée à partir d'un dossier sélectionné par l'utilisateur.
         """
-        # Demande à l'utilisateur de sélectionner une saison
+        # Demander à l'utilisateur de sélectionner un dossier de saison
         archive_folder = filedialog.askdirectory(title="Sélectionnez le dossier de la saison à charger", initialdir=self.gui_manager.archives_folder)
         if archive_folder:
             try:
@@ -108,7 +105,7 @@ class SeasonPage:
                     club_data = DataManager.load_from_file(archive_files['club.json'])
                     if club_data is not None:
                         self.gui_manager.club = Club.from_dict(club_data)
-                        self.gui_manager.update_club_info()  # Mettre à jour les informations du club dans l'interface
+                        self.gui_manager.update_club_info()  
 
                 if os.path.exists(archive_files['players.json']):
                     players_data = DataManager.load_from_file(archive_files['players.json'])
@@ -143,4 +140,4 @@ class SeasonPage:
                 messagebox.showinfo("Succès", f"La saison a été chargée avec succès depuis {archive_folder}.")
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur lors du chargement de la saison : {e}")
-                print(f"Erreur lors du chargement de la saison : {e}")  # Débogage
+                print(f"Erreur lors du chargement de la saison : {e}")  
