@@ -13,5 +13,20 @@
         "phone_number": "0789121314",
         "gender": "Masculin",
         "role": "M\u00e9decin"
+    },
+    {
+        "person_ID": 4,
+        "last_name": "elfassi",
+        "first_name": "abdel",
+        "birth_date": "07-10-2000",
+        "contract": {
+            "start_date": "07-10-2024",
+            "end_date": "07-10-2026",
+            "salary": "2222"
+        },
+        "address": "e",
+        "phone_number": "3",
+        "gender": "Masculin",
+        "role": "Entra\u00eeneur"
     }
 ]

@@ -25,14 +25,21 @@ class TeamPage:
             combobox.set(default_value)
         return combobox
 
+    def extract_id(self, text):
+        if not text:
+            return None
+        try:
+            return int(text.split()[-1][:-1])
+        except (ValueError, IndexError):
+            return None
 
     def open_form_widget(self, team=None):
         def submit():
             name = entry_name.get()
             gender = entry_gender.get()
             category = entry_category.get()
-            doctor_id = int(entry_doctor.get().split()[-1][:-1]) if entry_doctor.get() else None
-            coach_id = int(entry_coach.get().split()[-1][:-1]) if entry_coach.get() else None
+            doctor_id = self.extract_id(entry_doctor.get())
+            coach_id = self.extract_id(entry_coach.get())
 
             if not name:
                 messagebox.showerror("Erreur", "Le nom de l'équipe ne peut pas être vide.")
@@ -43,6 +50,11 @@ class TeamPage:
                 self.gui_manager.teams.append(new_team)
                 messagebox.showinfo("Information", f"Équipe ajoutée avec l'ID {new_team.team_id}")
             else:
+                # Conserver les IDs existants si les nouvelles valeurs sont None
+                if doctor_id is None:
+                    doctor_id = team.doctor_id
+                if coach_id is None:
+                    coach_id = team.coach_id
                 team.update_details(name, gender, category, doctor_id, coach_id)
                 messagebox.showinfo("Information", f"Équipe modifiée avec l'ID {team.team_id}")
 
@@ -56,7 +68,7 @@ class TeamPage:
         entry_name = self.create_form_widget(form_window, "Nom de l'équipe", 1, getattr(team, 'name', ''))
         entry_gender = self.create_combobox(form_window, "Genre", 2, ["Masculin", "Féminin"], getattr(team, 'gender', ''))
         entry_category = self.create_combobox(form_window, "Catégorie", 3, ["Division 1", "Division 2", "Division 3", "Division 4"], getattr(team, 'category', ''))
-        
+
         # Combobox pour le médecin et l'entraîneur
         doctor_values = [f"{staff.first_name} {staff.last_name} (ID: {staff.person_ID})" for staff in self.gui_manager.staff_members if staff.role == "Médecin"]
         coach_values = [f"{staff.first_name} {staff.last_name} (ID: {staff.person_ID})" for staff in self.gui_manager.staff_members if staff.role == "Entraîneur"]
@@ -65,6 +77,7 @@ class TeamPage:
 
         Button(form_window, text="Modifier" if team else "Ajouter", command=submit).grid(row=6, column=0, columnspan=2)
 
+            
     def add_team(self):
         self.open_form_widget()
 
