@@ -48,9 +48,9 @@ class SeasonPage:
                 if os.path.exists(source_teams_file):
                     DataManager.save_to_file([team.to_dict() for team in self.gui_manager.teams], os.path.join(archive_folder, 'teams.json'))
                 if os.path.exists(source_matches_file):
-                    DataManager.save_to_file(self.gui_manager.matches, os.path.join(archive_folder, 'matches.json'))
+                    DataManager.save_to_file([match.to_dict() for match in self.gui_manager.matches], os.path.join(archive_folder, 'matches.json'))  # Archiver les matchs
                 if os.path.exists(source_trainings_file):
-                    DataManager.save_to_file(self.gui_manager.trainings, os.path.join(archive_folder, 'trainings.json'))
+                    DataManager.save_to_file([training.to_dict() for training in self.gui_manager.trainings], os.path.join(archive_folder, 'trainings.json'))  # Archiver les entraînements
 
                 messagebox.showinfo("Succès", f"La saison {season_name} a été archivée avec succès.")
             else:
@@ -101,18 +101,22 @@ class SeasonPage:
                 if os.path.exists(matches_file):
                     matches_data = DataManager.load_from_file(matches_file)
                     if matches_data is not None:
-                        self.gui_manager.matches = matches_data
+                        self.gui_manager.matches = [Match.from_dict(data) for data in matches_data]  # Charger les matchs
 
                 # Charger les données des entraînements à partir du dossier sélectionné
                 if os.path.exists(trainings_file):
                     trainings_data = DataManager.load_from_file(trainings_file)
                     if trainings_data is not None:
-                        self.gui_manager.trainings = trainings_data
+                        self.gui_manager.trainings = [Training.from_dict(data) for data in trainings_data]  # Charger les entraînements
 
                 # Mettre à jour l'interface utilisateur avec les nouvelles données
                 self.gui_manager.update_players_treeview()
                 self.gui_manager.update_staff_treeview()
                 self.gui_manager.update_teams_treeview()
+                
+                # Sauvegarder les données chargées dans les fichiers actifs
+                #DataManager.save_to_file([match.to_dict() for match in self.gui_manager.matches], os.path.join(self.gui_manager.data_folder, 'matches.json'))
+                #DataManager.save_to_file([training.to_dict() for training in self.gui_manager.trainings], os.path.join(self.gui_manager.data_folder, 'trainings.json'))
 
                 messagebox.showinfo("Succès", f"La saison a été chargée avec succès depuis {archive_folder}.")
             except Exception as e:
