@@ -286,7 +286,6 @@ class MatchPage(Frame):
 
         try:
             my_team_score, opponent_score = map(int, score_text.split('-'))
-            total_goals = my_team_score + opponent_score
         except ValueError:
             messagebox.showerror("Erreur", "Le score doit être au format 'X-Y'.")
             return
@@ -346,7 +345,6 @@ class MatchPage(Frame):
             return
 
         if edit:
-            # Revert old statistics
             for stat in match.statistics:
                 player_name = stat['scorer']
                 assister_name = stat['assister']
@@ -376,7 +374,7 @@ class MatchPage(Frame):
 
         DataManager.save_to_file(players_data, 'data/players.json')
 
-        # Charger les données actuelles des matchs
+        # Charge les données actuelles des matchs
         matches_data = DataManager.load_from_file('data/matches.json')
         if matches_data is not None:
             for i, m in enumerate(matches_data):
@@ -389,7 +387,6 @@ class MatchPage(Frame):
                     break
             DataManager.save_to_file(matches_data, 'data/matches.json')
 
-        messagebox.showinfo("Information", "Les statistiques du match ont été soumises avec succès.")
         self.goal_scorer_window.destroy()
         self.open_card_input_window(match, edit)
 
@@ -443,7 +440,6 @@ class MatchPage(Frame):
             return
 
         if edit:
-            # Revert old card statistics
             for player_data in players_data:
                 player_name = f"{player_data['first_name']} {player_data['last_name']}"
                 if player_name in match.yellow_cards:
@@ -460,7 +456,7 @@ class MatchPage(Frame):
 
         DataManager.save_to_file(players_data, 'data/players.json')
 
-        # Charger les données actuelles des matchs
+        # Charge les données actuelles des matchs
         matches_data = DataManager.load_from_file('data/matches.json')
         if matches_data is not None:
             for i, m in enumerate(matches_data):
@@ -470,7 +466,7 @@ class MatchPage(Frame):
                     break
             DataManager.save_to_file(matches_data, 'data/matches.json')
 
-        messagebox.showinfo("Information", "Les statistiques des cartons ont été soumises avec succès.")
+        messagebox.showinfo("Information", "Les statistiques du match ont été soumises avec succès.")
         self.card_input_window.destroy()
 
     def view_matches(self):
@@ -481,13 +477,15 @@ class MatchPage(Frame):
         self.view_matches_window.title("Voir les matchs")
 
         matches_data = DataManager.load_from_file('data/matches.json')
-        if matches_data is not None:
+        if matches_data:
             for index, match in enumerate(matches_data):
                 match_obj = Match.from_dict(match)
                 Label(self.view_matches_window, text=f"{match_obj.my_team} vs {match_obj.opponent} - {match_obj.date}").grid(row=index, column=0, padx=10, pady=5)
                 Button(self.view_matches_window, text="Voir plus", command=lambda m=match_obj: self.view_match_details(m)).grid(row=index, column=1, padx=10, pady=5)
                 Button(self.view_matches_window, text="Modifier", command=lambda m=match_obj: self.open_edit_match_form(m)).grid(row=index, column=2, padx=10, pady=5)
                 Button(self.view_matches_window, text="Supprimer", command=lambda m=match_obj: self.delete_match(m)).grid(row=index, column=3, padx=10, pady=5)
+        else:
+            messagebox.showerror("Erreur", "Aucun match enregistré pour cette saison.")
 
     def view_match_details(self, match):
         """
